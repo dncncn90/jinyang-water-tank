@@ -111,14 +111,14 @@ export default function CartPage() {
                                                 {/* Options & Requirements */}
                                                 <div className="space-y-2 mb-6 w-full">
                                                     {item.options.map((opt, i) => (
-                                                        <div key={i} className="text-base text-gray-600 flex flex-col sm:grid sm:grid-cols-[200px_1fr] gap-1 sm:gap-4 items-start py-3 px-4 bg-gray-50 rounded-xl border border-gray-100/50">
-                                                            <span className="font-bold text-gray-900 border-b sm:border-b-0 sm:border-r border-gray-200 pr-2 w-full sm:w-auto mb-1 sm:mb-0">
+                                                        <div key={i} className="text-sm text-gray-600 flex flex-col gap-1 py-3 px-4 bg-gray-50 rounded-xl border border-gray-100/50">
+                                                            <span className="font-bold text-gray-900 text-xs uppercase tracking-wide break-keep">
                                                                 {opt.name}
                                                             </span>
                                                             <div className="flex justify-between items-center w-full">
-                                                                <span className="text-gray-700 font-medium">{opt.value}</span>
+                                                                <span className="text-gray-700 font-medium break-keep">{opt.value}</span>
                                                                 {opt.priceChange > 0 && (
-                                                                    <span className="text-sm text-industrial-500 font-bold ml-2 bg-industrial-50 px-2 py-0.5 rounded-md">
+                                                                    <span className="text-sm text-industrial-500 font-bold ml-2 bg-industrial-50 px-2 py-0.5 rounded-md shrink-0">
                                                                         +{opt.priceChange.toLocaleString()}원
                                                                     </span>
                                                                 )}

@@ -551,16 +551,10 @@ export default function FloatingChatWidget() {
         // Convert quote options to cart options format
         const formattedOptions = [];
 
-        // Helper to format size nicely like the product page
+        // Helper to format size - using mm to match products.ts option labels
         const mapSize = (s: string) => {
-            if (s === '15') return '15A (1/2")';
-            if (s === '20') return '20A (3/4")';
-            if (s === '25') return '25A (1")';
-            if (s === '40') return '40A (1.5")';
-            if (s === '50') return '50A (2")';
-            if (s === '65') return '65A (2.5")';
-            if (s === '75') return '75A (3")';
-            if (s === '100') return '100A (4")';
+            const num = parseInt(s);
+            if (!isNaN(num)) return `${num}mm`;
             return `${s}mm`;
         };
 

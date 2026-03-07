@@ -3,7 +3,7 @@ import { Phone, Mail, FileText, CheckCircle2, Truck } from 'lucide-react';
 
 export default function PERoundCSSection() {
     return (
-        <div className="w-full bg-[#f4f8fc] px-6 sm:px-12 py-12 -mt-1 relative z-10 border-t border-[#e2ecf5]">
+        <div className="w-full bg-[#f4f8fc] px-4 sm:px-6 lg:px-12 py-12 -mt-1 relative z-10 border-t border-[#e2ecf5] overflow-hidden">
             {/* 맞춤 제작 및 고객센터 */}
             <div className="bg-white rounded-[2rem] p-8 sm:p-12 shadow-[0_10px_40px_rgba(0,0,0,0.03)] mb-8 border border-white/80 relative overflow-hidden">
                 <div className="relative z-10">
@@ -18,27 +18,27 @@ export default function PERoundCSSection() {
 
                     <div className="grid md:grid-cols-2 gap-6 pb-2">
                         {/* Contact Box (Phone) */}
-                        <div className="bg-[#f8fafd] border-2 border-[#d5e2f0] rounded-2xl p-6 sm:p-8 flex flex-col group hover:border-[#003366] transition-colors duration-300">
+                        <div className="bg-[#f8fafd] border-2 border-[#d5e2f0] rounded-2xl p-5 sm:p-8 flex flex-col group hover:border-[#003366] transition-colors duration-300">
                             <div className="text-sm text-[#555555] mb-2 font-bold">전화 및 팩스</div>
-                            <div className="flex items-center gap-3 mb-3 text-[#003366]">
-                                <Phone className="w-7 h-7" />
-                                <span className="text-2xl sm:text-3xl font-black tracking-tight">TEL: 031-236-8227</span>
+                            <div className="flex items-center gap-2 mb-3 text-[#003366]">
+                                <Phone className="w-5 h-5 shrink-0" />
+                                <a href="tel:031-236-8227" className="text-xl sm:text-2xl font-black tracking-tight hover:underline break-all">TEL: 031-236-8227</a>
                             </div>
-                            <div className="text-[#666666] font-bold text-lg pl-[40px]">
+                            <div className="text-[#666666] font-bold text-base pl-7">
                                 FAX: 031-237-4435
                             </div>
                         </div>
 
                         {/* Contact Box (Online) */}
-                        <div className="bg-[#f8fafd] border-2 border-[#d5e2f0] rounded-2xl p-6 sm:p-8 flex flex-col justify-center group hover:border-[#003366] transition-colors duration-300">
+                        <div className="bg-[#f8fafd] border-2 border-[#d5e2f0] rounded-2xl p-5 sm:p-8 flex flex-col justify-center group hover:border-[#003366] transition-colors duration-300">
                             <div className="text-sm text-[#555555] mb-2 font-bold">온라인 문의</div>
-                            <div className="flex items-center gap-3 mb-3 text-[#333333]">
-                                <Mail className="w-6 h-6 text-[#003366]" />
-                                <span className="text-xl font-bold">E-mail: jy2368227@naver.com</span>
+                            <div className="flex items-start gap-2 mb-3 text-[#333333]">
+                                <Mail className="w-5 h-5 text-[#003366] shrink-0 mt-0.5" />
+                                <a href="mailto:jy2368227@naver.com" className="text-sm sm:text-base font-bold break-all hover:underline">jy2368227@naver.com</a>
                             </div>
-                            <div className="flex items-center gap-3 text-[#666666] font-bold text-lg">
-                                <FileText className="w-6 h-6 text-[#003366]" />
-                                <span>스마트 견적 시스템 24시간 운영</span>
+                            <div className="flex items-center gap-2 text-[#666666] font-bold text-sm sm:text-base">
+                                <FileText className="w-5 h-5 text-[#003366] shrink-0" />
+                                <span className="break-keep">스마트 견적 시스템 24시간 운영</span>
                             </div>
                         </div>
                     </div>
@@ -95,8 +95,8 @@ export default function PERoundCSSection() {
                                 <CheckCircle2 className="w-6 h-6 text-[#003366] shrink-0 fill-[#003366]/10" />
                                 <div>고객 단순 변심 및 사이즈 오인으로 인한 교환/반품 시 발생하는 구매 왕복 화물비는 전액 고객님 부담입니다. (구매 전 규격표 확인 필수)</div>
                             </li>
-                            <li className="flex items-start gap-3 text-red-600 font-bold text-lg leading-relaxed mt-4 bg-red-50 p-4 rounded-xl border border-red-100">
-                                <div>사용, 오염, 파손, 타공 등 설치가 진행되어 상품 가치가 훼손된 경우에는 어떠한 사유로도 반품 및 교환이불가합니다.</div>
+                            <li className="flex items-start gap-3 text-red-600 font-bold text-base leading-relaxed mt-4 bg-red-50 p-4 rounded-xl border border-red-100 break-keep">
+                                <div>사용, 오염, 파손, 타공 등 설치가 진행되어 상품 가치가 훼손된 경우에는 어떠한 사유로도 반품 및 교환이 불가합니다.</div>
                             </li>
                         </ul>
                     </div>
