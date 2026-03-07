@@ -634,7 +634,7 @@ export default function FloatingChatWidget() {
             </button>
 
             {isOpen && (
-                <div className="fixed bottom-0 right-0 sm:bottom-6 sm:right-6 z-50 w-full sm:w-[400px] h-[100dvh] sm:h-[600px] flex flex-col bg-white sm:rounded-2xl shadow-2xl border border-gray-200 overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300">
+                <div className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 z-[100] w-full sm:w-[420px] h-[100dvh] sm:h-[650px] flex flex-col bg-white sm:rounded-2xl shadow-2xl border-none sm:border sm:border-gray-200 overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300">
 
                     <div className="bg-industrial-900 p-4 flex items-center justify-between text-white shrink-0">
                         <div className="flex items-center gap-3">
@@ -649,9 +649,9 @@ export default function FloatingChatWidget() {
                         </div>
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="p-2 hover:bg-industrial-800 rounded-lg transition-colors"
+                            className="p-3 hover:bg-industrial-800 rounded-full transition-all active:scale-90"
                         >
-                            <ChevronRight className="w-6 h-6 rotate-90" />
+                            <X className="w-6 h-6" />
                         </button>
                     </div>
 
@@ -680,10 +680,10 @@ export default function FloatingChatWidget() {
                                                     <button
                                                         key={opt.value}
                                                         onClick={() => handleOptionSelect(opt.value, opt.label)}
-                                                        className="bg-white border-2 border-industrial-100 hover:border-industrial-500 text-gray-800 hover:text-industrial-600 font-bold py-3 px-4 rounded-xl transition-all text-left flex justify-between items-center group text-base"
+                                                        className="bg-white border-2 border-industrial-100 hover:border-industrial-500 text-gray-800 hover:text-industrial-600 font-bold py-4 px-5 rounded-2xl transition-all text-left flex justify-between items-center group text-base sm:text-lg active:bg-industrial-50 shadow-sm"
                                                     >
                                                         <span>{opt.label}</span>
-                                                        <div className="w-5 h-5 rounded-full border border-gray-300 group-hover:border-industrial-500"></div>
+                                                        <div className="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-industrial-500 shrink-0"></div>
                                                     </button>
                                                 ))}
                                             </div>

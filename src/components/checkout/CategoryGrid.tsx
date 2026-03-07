@@ -75,21 +75,21 @@ export default function CategoryGrid() {
     return (
         <section id="products" className="py-16 sm:py-24 bg-gray-50">
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
-                <div className="flex justify-between items-end mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 gap-4">
                     <div>
-                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">상품 목록</h2>
-                        <p className="mt-2 text-gray-500">원하시는 규격의 물탱크를 바로 확인해 보세요</p>
+                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">상품 목록</h2>
+                        <p className="mt-1 text-sm sm:text-base text-gray-500">원하시는 규격의 물탱크를 바로 확인해 보세요</p>
                     </div>
                 </div>
 
-                <div className="flex flex-wrap gap-4 mb-12 border-b border-slate-100 pb-4">
+                <div className="flex gap-2 mb-10 border-b border-slate-100 pb-2 overflow-x-auto no-scrollbar scroll-smooth">
                     {TABS.map(tab => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
-                            className={`text-sm font-bold pb-2 transition-colors ${activeTab === tab
-                                ? 'text-slate-900 border-b-2 border-slate-900'
-                                : 'text-slate-400 hover:text-slate-900'}`}
+                            className={`text-sm sm:text-base font-bold px-4 py-2 whitespace-nowrap transition-all ${activeTab === tab
+                                ? 'text-[#003399] border-b-2 border-[#003399]'
+                                : 'text-slate-400 hover:text-slate-600'}`}
                         >
                             {tab}
                         </button>
@@ -160,9 +160,9 @@ export default function CategoryGrid() {
                                     <div className="mt-auto pt-4 border-t border-slate-100">
                                         <div className="flex items-end justify-between">
                                             <div className="flex flex-col">
-                                                <span className="text-[10px] text-slate-400 font-medium mb-0.5">판매가 (VAT 포함)</span>
-                                                <span className="font-bold text-lg tracking-tight text-slate-900">
-                                                    {item.price.toLocaleString()}원{isOverview && <span className="text-sm font-normal text-slate-500 ml-1">~</span>}
+                                                <span className="text-[10px] text-slate-400 font-semibold mb-0.5 uppercase tracking-wider">판매가 (VAT 포함)</span>
+                                                <span className="font-bold text-xl tracking-tight text-slate-900">
+                                                    {item.price.toLocaleString()}원{isOverview && <span className="text-sm font-normal text-slate-500 ml-0.5">~</span>}
                                                 </span>
                                             </div>
                                             {isOverview ? (
