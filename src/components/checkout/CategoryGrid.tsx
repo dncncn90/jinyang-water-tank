@@ -129,12 +129,12 @@ export default function CategoryGrid() {
                                         </div>
                                     )}
                                     {item.capacityBadge && (
-                                        <div className="absolute top-3 right-3 bg-yellow-400 text-gray-900 text-xs font-black px-2.5 py-1 rounded-md shadow-sm z-10 border border-yellow-500">
+                                        <div className="absolute top-2 right-2 bg-yellow-400 text-gray-900 text-[11px] font-black px-2 py-0.5 rounded-md shadow-sm z-10 border border-yellow-500 whitespace-nowrap">
                                             {item.capacityBadge}
                                         </div>
                                     )}
                                     {!item.capacityBadge && item.specs?.capacity && (
-                                        <div className="absolute top-3 right-3 bg-yellow-400 text-gray-900 text-xs font-black px-2.5 py-1 rounded-md shadow-sm z-10 border border-yellow-500">
+                                        <div className="absolute top-2 right-2 bg-yellow-400 text-gray-900 text-[11px] font-black px-2 py-0.5 rounded-md shadow-sm z-10 border border-yellow-500 whitespace-nowrap">
                                             {item.specs.capacity}
                                         </div>
                                     )}
