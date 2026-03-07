@@ -82,7 +82,7 @@ export default function CategoryGrid() {
                     </div>
                 </div>
 
-                <div className="flex gap-2 mb-10 border-b border-slate-100 pb-2 overflow-x-auto no-scrollbar scroll-smooth">
+                <div className="flex gap-4 mb-10 border-b border-slate-100 pb-2 overflow-x-auto no-scrollbar scroll-smooth pr-6">
                     {TABS.map(tab => (
                         <button
                             key={tab}

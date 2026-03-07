@@ -623,7 +623,7 @@ export default function FloatingChatWidget() {
             <button
                 id="floating-chat-trigger"
                 onClick={() => setIsOpen(!isOpen)}
-                className={`${isOpen ? 'hidden' : 'flex'} fixed bottom-8 right-8 z-50 items-center gap-2 bg-industrial-600 hover:bg-industrial-500 text-white font-bold py-4 px-6 rounded-full shadow-2xl transition-all hover:scale-105`}
+                className={`${isOpen ? 'hidden' : 'flex'} fixed bottom-24 sm:bottom-8 right-4 sm:right-8 z-50 items-center gap-2 bg-industrial-600 hover:bg-industrial-500 text-white font-bold py-3.5 px-5 sm:py-4 sm:px-6 rounded-full shadow-2xl transition-all hover:scale-105 active:scale-95`}
             >
                 <div className="relative flex h-3 w-3">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>

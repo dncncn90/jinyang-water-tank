@@ -53,18 +53,18 @@ export default function Header() {
                 <div className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8" aria-label="Global">
 
                     {/* Logo Area */}
-                    <div className="flex lg:flex-1">
-                        <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-2 group">
-                            <div className="flex items-center gap-2 group">
+                    <div className="flex lg:flex-1 shrink-0">
+                        <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-1.5 group">
+                            <div className="flex items-center gap-1.5 group">
                                 <Image
                                     src="/logo.png"
                                     alt="진양건재 로고"
-                                    width={56}
-                                    height={56}
-                                    className="object-contain h-12 w-12 sm:h-14 sm:w-14 drop-shadow-sm group-hover:scale-105 transition-transform"
+                                    width={48}
+                                    height={48}
+                                    className="object-contain h-10 w-10 sm:h-12 sm:w-12 drop-shadow-sm group-hover:scale-105 transition-transform"
                                     priority
                                 />
-                                <span className={`text-xl sm:text-2xl font-black tracking-tight whitespace-nowrap ${isSolid ? 'text-gray-900' : 'text-slate-800'} mt-0.5`}>
+                                <span className={`text-lg sm:text-xl font-black tracking-tighter whitespace-nowrap ${isSolid ? 'text-gray-900' : 'text-slate-800'} mt-0.5`}>
                                     진양건재
                                 </span>
                             </div>
@@ -72,10 +72,9 @@ export default function Header() {
                     </div>
 
 
-                    {/* Mobile: Call Button (Always Visible) */}
-                    <div className="flex lg:hidden mr-2">
-                        <a href="tel:031-236-8227" className="flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-full text-sm font-bold shadow-md animate-pulse">
-                            <Phone className="w-3.5 h-3.5" />
+                    <div className="flex lg:hidden items-center gap-2">
+                        <a href="tel:031-236-8227" className="flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white px-2.5 py-1.5 rounded-full text-[11px] font-bold shadow-md transition-transform active:scale-95">
+                            <Phone className="w-3 h-3" />
                             <span>전화상담</span>
                         </a>
                     </div>

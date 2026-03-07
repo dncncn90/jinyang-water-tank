@@ -8,12 +8,12 @@ export default function HeroSection() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32 relative z-10">
                 <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
                     <div className="flex flex-col gap-4 sm:gap-6 max-w-2xl text-center lg:text-left mx-auto lg:mx-0">
-                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white leading-[1.3] tracking-tight break-keep">
+                        <h2 className="text-[28px] sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white leading-[1.25] tracking-tight break-keep">
                             물탱크 가격? <br className="sm:hidden" />
                             진양스마트견적이면<br />
                             <span className="text-[#003399]">1분만에</span> 확인 끝!
                         </h2>
-                        <p className="text-lg sm:text-xl text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-lg break-keep mx-auto lg:mx-0">
+                        <p className="text-base sm:text-lg lg:text-xl text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-lg break-keep mx-auto lg:mx-0">
                             복잡한 전화 상담 없이, 규격만 입력하세요.<br className="hidden sm:block" />
                             진양건재에서 가장 합리적인 단가를 제안합니다.
                         </p>
