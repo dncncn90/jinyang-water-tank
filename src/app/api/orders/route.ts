@@ -58,16 +58,16 @@ export async function POST(request: Request) {
                     await supabase.from('order_items').insert(orderItems);
                 }
             } else {
-                console.log("Supabase 미설정으로 인해 DB 저장을 건너뜁니다.");
+                console.log("Supabase DB 에러:", orderError.message);
             }
         } catch (dbError) {
-            console.log("Supabase DB 연결 오류 (테스트용 주문 ID 반환):", dbError);
+            console.log("Supabase 미설정 또는 연결 오류 (임시 주문 ID 반환):", dbError);
         }
 
         return NextResponse.json({ success: true, orderId: orderUuid });
 
-    } catch (error) {
-        console.error('Server Error:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    } catch (error: any) {
+        console.error('Server /api/orders Error:', error?.message || error);
+        return NextResponse.json({ error: error?.message || 'Internal Server Error' }, { status: 500 });
     }
 }

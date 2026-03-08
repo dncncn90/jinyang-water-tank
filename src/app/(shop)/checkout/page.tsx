@@ -121,19 +121,28 @@ export default function CheckoutPage() {
     };
 
     const handleSubmitOrder = async () => {
-        if (!formData.name || !formData.phone || !formData.password || !formData.address) {
+        if (shippingType === 'delivery' && (!formData.name || !formData.phone || !formData.password || !formData.address)) {
             alert('배송지를 포함한 필수 정보를 모두 입력해주세요. (이름, 연락처, 비밀번호, 주소)');
+            return;
+        }
+
+        if (shippingType === 'pickup' && (!formData.name || !formData.phone || !formData.password)) {
+            alert('필수 정보를 모두 입력해주세요. (이름, 연락처, 비밀번호)');
             return;
         }
 
         setIsSubmitting(true);
 
         try {
+            const finalAddress = shippingType === 'pickup'
+                ? '방문 수령 (수원시 팔달구 효원로 209-5 진양건재 본점)'
+                : `(${formData.zipcode}) ${formData.address} ${formData.detailAddress}`;
+
             const orderPayload = {
                 name: formData.name,
                 phone: formData.phone,
                 password: formData.password,
-                address: `(${formData.zipcode}) ${formData.address} ${formData.detailAddress}`,
+                address: finalAddress,
                 requirements: formData.requirements,
                 totalAmount: totalAmount,
                 items: items.map(item => ({

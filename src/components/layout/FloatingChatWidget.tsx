@@ -16,7 +16,7 @@ type Message = {
 };
 
 type QuoteState = {
-    step: 'INIT' | 'USAGE_SELECTED' | 'RECOMMENDATION_SHOWN' | 'CAPACITY_SELECTED' | 'FITTING_SIZE_SELECTED' | 'FITTING_COUNT_SELECTED' | 'FITTING_SELECTED' | 'NIPPLE_SELECTED' | 'BALLVALVE_SELECTED' | 'BALLTOP_SELECTED' | 'GAUGE_SELECTED' | 'LID_SELECTED' | 'DELIVERY_METHOD_CHOSEN' | 'DONE';
+    step: 'INIT' | 'SHAPE_SELECTED' | 'USAGE_SELECTED' | 'RECOMMENDATION_SHOWN' | 'CAPACITY_SELECTED' | 'FITTING_SIZE_SELECTED' | 'FITTING_COUNT_SELECTED' | 'FITTING_SELECTED' | 'PE_FITTING_SELECTED' | 'NIPPLE_SELECTED' | 'BALLVALVE_SELECTED' | 'BALLTOP_SELECTED' | 'GAUGE_SELECTED' | 'LID_SELECTED' | 'DELIVERY_METHOD_CHOSEN' | 'DONE';
     capacity?: string;
     type?: 'standard' | 'm_series' | 'u_series' | 'white';
     fittingSize?: string;
@@ -386,45 +386,66 @@ export default function FloatingChatWidget() {
                     ];
                     nextType = 'options';
                 } else {
-                    // 피팅 없음 경로: nipple 직접 선택 or none
+                    // 피팅 없음 경로: 단니플부터 시작
                     nextState.step = 'NIPPLE_SELECTED';
-                    if (value !== 'none') {
-                        const sizeMap: Record<string, number> = {
-                            'nipple_15': 1000, 'nipple_20': 1700, 'nipple_25': 2700,
-                            'nipple_32': 5100, 'nipple_40': 6400, 'nipple_50': 9900
-                        };
-                        const sizeLabel = value.replace('nipple_', '');
-                        const np = sizeMap[value] || 0;
-                        nextState.items.push({ name: `신주단니플 ${sizeLabel}mm`, price: np, quantity: 1 });
-                        nextState.totalPrice += np;
-                        nextState.nippleSize = sizeLabel;
-                    }
-                    const valveTip = quoteState.fittingSize ? `\n\n💡 팁: 피팅이 ${quoteState.fittingSize}mm이므로, 볼밸브도 ${quoteState.fittingSize}mm를 추천합니다.` : '';
-                    responseText = `황동볼밸브가 필요하신가요?\n볼밸브는 물 흐름을 증연하는 개폐 밸브입니다.${valveTip}`;
+                    responseText = `단니플 규격을 선택해주세요.\n단니플은 배관과 밸브 사이를 짧게 이어주는 연결 부속입니다.`;
                     nextOptions = [
-                        { label: '15mm', value: 'valve_15' },
-                        { label: '20mm', value: 'valve_20' },
-                        { label: '25mm', value: 'valve_25' },
-                        { label: '40mm', value: 'valve_40' },
-                        { label: '50mm', value: 'valve_50' },
-                        { label: '볼밸브 필요없음', value: 'none' }
+                        { label: '15mm', value: 'nipple_15' },
+                        { label: '20mm', value: 'nipple_20' },
+                        { label: '25mm', value: 'nipple_25' },
+                        { label: '32mm', value: 'nipple_32' },
+                        { label: '40mm', value: 'nipple_40' },
+                        { label: '50mm', value: 'nipple_50' },
+                        { label: '단니플 필요없음', value: 'none' }
                     ];
                     nextType = 'options';
                 }
             }
 
-            // Step 8 (개별): 볼밸브 선택 -> 볼탑
+            // Step 8 (수동): 단니플 선택 -> 볼밸브 묻기
             else if (quoteState.step === 'NIPPLE_SELECTED') {
                 nextState.step = 'BALLVALVE_SELECTED';
                 if (value !== 'none') {
+                    const sizeMap: Record<string, number> = {
+                        'nipple_15': 1000, 'nipple_20': 1700, 'nipple_25': 2700,
+                        'nipple_32': 5100, 'nipple_40': 6400, 'nipple_50': 9900
+                    };
+                    const sizeLabel = value.replace('nipple_', '');
+                    const np = sizeMap[value] || 0;
+                    const fCount = quoteState.fittingCount || 1; // 갯수 유지
+                    nextState.items.push({ name: `신주단니플 ${sizeLabel}mm × ${fCount}개`, price: np * fCount, quantity: 1 });
+                    nextState.totalPrice += np * fCount;
+                    nextState.nippleSize = sizeLabel;
+                }
+
+                const valveTip = quoteState.fittingSize && quoteState.fittingSize !== 'none' ? `\n\n💡 팁: 피팅이 ${quoteState.fittingSize}mm이므로, 볼밸브도 ${quoteState.fittingSize}mm를 추천합니다.` : '';
+                responseText = `황동볼밸브 규격을 선택해주세요.\n볼밸브는 물 흐름을 제어하는 개폐 밸브입니다.${valveTip}`;
+                nextOptions = [
+                    { label: '15mm', value: 'valve_15' },
+                    { label: '20mm', value: 'valve_20' },
+                    { label: '25mm', value: 'valve_25' },
+                    { label: '40mm', value: 'valve_40' },
+                    { label: '50mm', value: 'valve_50' },
+                    { label: '볼밸브 필요없음', value: 'none' }
+                ];
+                nextType = 'options';
+            }
+
+            // Step 8: 볼밸브 선택 -> 볼탑
+            else if (quoteState.step === 'BALLVALVE_SELECTED') {
+                nextState.step = 'BALLTOP_SELECTED';
+
+                // 직전 단계(단니플 선택 후)에서 넘어온 value가 볼밸브(valve_xx)인지 확인하여 장바구니에 담기
+                if (value !== 'none' && value.startsWith('valve_')) {
                     const valvePriceMap: Record<string, number> = {
                         'valve_15': 10000, 'valve_20': 12000, 'valve_25': 15000,
                         'valve_40': 25000, 'valve_50': 35000
                     };
                     const sizeLabel = value.replace('valve_', '');
                     const valvePrice = valvePriceMap[value] || 0;
-                    nextState.items.push({ name: `황동볼밸브 ${sizeLabel}mm`, price: valvePrice, quantity: 1 });
-                    nextState.totalPrice += valvePrice;
+                    const fCount = quoteState.fittingCount || 1; // 갯수 유지
+                    nextState.items.push({ name: `황동볼밸브 ${sizeLabel}mm × ${fCount}개`, price: valvePrice * fCount, quantity: 1 });
+                    nextState.totalPrice += valvePrice * fCount;
                     nextState.ballvalveSize = sizeLabel;
                 }
 
@@ -441,9 +462,9 @@ export default function FloatingChatWidget() {
                 nextType = 'options';
             }
 
-            // Step 8: Ball Tap -> Ask Level Gauge
-            else if (quoteState.step === 'BALLVALVE_SELECTED') {
-                nextState.step = 'BALLTOP_SELECTED';
+            // Step 9: 볼탑 선택 -> 레벨게이지
+            else if (quoteState.step === 'BALLTOP_SELECTED') {
+                nextState.step = 'GAUGE_SELECTED';
                 if (value !== 'none') {
                     const balltopPriceMap: Record<string, number> = {
                         'balltop_15': 7600, 'balltop_20': 11700, 'balltop_25': 13600,
@@ -464,9 +485,9 @@ export default function FloatingChatWidget() {
                 nextType = 'options';
             }
 
-            // Step 9: Level Gauge -> Ask Lid (extra)
-            else if (quoteState.step === 'BALLTOP_SELECTED') {
-                nextState.step = 'GAUGE_SELECTED';
+            // Step 10: 레벨게이지 -> 추가 뚜껑
+            else if (quoteState.step === 'GAUGE_SELECTED') {
+                nextState.step = 'LID_SELECTED';
                 if (value !== 'none') {
                     nextState.hasGauge = true;
                     nextState.items.push({ name: '레벨게이지(수위계)', price: 30000, quantity: 1 });
@@ -490,15 +511,20 @@ export default function FloatingChatWidget() {
                 nextType = 'options';
             }
 
-            // Step 10: Lid -> Ask Delivery
-            else if (quoteState.step === 'GAUGE_SELECTED') {
-                nextState.step = 'LID_SELECTED';
-                nextState.lid = value as any;
+            // Step 11: 뚜껑 -> 배송 방법
+            else if (quoteState.step === 'LID_SELECTED') {
+                nextState.step = 'DELIVERY_METHOD_CHOSEN';
+
+                // 직전 단계 뚜껑 선택 저장
+                nextState.lid = value as 'small' | 'large' | 'none';
                 if (value !== 'none') {
+                    const isSmall = value === 'small';
                     const lidPrice = PRICING_DB.lids[value as 'small' | 'large'];
+                    const label = isSmall ? '소형 Ø380mm' : '대형 Ø470mm';
                     nextState.items.push({ name: `물탱크 뚜껑 추가 (${label})`, price: lidPrice, quantity: 1 });
                     nextState.totalPrice += lidPrice;
                 }
+
                 responseText = `마지막으로 수령 방법을 선택해주세요.\n\n💡 타공 위치는 걱정 마세요! 주문 확인 후 진양건재 전문가가 직접 전화(해피콜)를 드려 꼼꼼히 체크해 드립니다.`;
                 nextOptions = [
                     { label: '화물 배송 (착불)', value: 'delivery' },
@@ -507,16 +533,26 @@ export default function FloatingChatWidget() {
                 nextType = 'options';
             }
 
-            // Step 11: Delivery -> Address or Finish
-            else if (quoteState.step === 'LID_SELECTED') {
+            // Step 12: 배송 수단(DELIVERY_METHOD_CHOSEN) -> 주소 입력 또는 방문수령 완료
+            else if (quoteState.step === 'DELIVERY_METHOD_CHOSEN') {
                 nextState.deliveryMethod = value as 'delivery' | 'pickup';
                 if (value === 'pickup') {
+                    // 방문 수령일 경우엔 주소입력 생략하고 바로 DONE
                     calculateFinalQuote('pickup', '방문 수령');
                 } else {
-                    nextState.step = 'DELIVERY_METHOD_CHOSEN';
+                    // 화물 배송은 주소를 입력받기 위해 text 타입으로 전환
+                    nextState.step = 'DONE'; // 여기서 원래는 주소 입력 스텝을 하나 더 둘 수도 있지만, 기존 로직이 이 단계에서 텍스트 입력창을 띄우는 것이었음. 상태값을 맞추기 위해 DONE 직전 임시 상태를 쓰거나 텍스트 입력 대기로 둠
+                    // 기존 코드를 보면 deliveryMethod 저장 후 주소를 물어봄. 
+                    nextState.step = 'DELIVERY_METHOD_CHOSEN'; // 상태 유지하며 텍스트 응답 기다림
                     responseText = `배송받으실 주소(동/읍/면 단위)를 입력해주세요.\n(예: 경기도 화성시 남양읍)`;
                     nextType = 'text';
                 }
+            }
+
+            // Step 13: 주소 입력 (텍스트) -> 완료
+            else if (quoteState.step === 'DELIVERY_METHOD_CHOSEN' && quoteState.deliveryMethod === 'delivery' && value) {
+                calculateFinalQuote('delivery', value);
+                return; // 상태 업데이트는 calculateFinalQuote 안에서 이루어짐
             }
 
             setQuoteState(nextState);
