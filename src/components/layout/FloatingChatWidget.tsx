@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Store, Send, X, MessageSquare, ChevronRight, CheckCircle2, RotateCcw, Box, Truck, Receipt, Check, ShoppingCart, FileText } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Store, Send, X, MessageSquare, ChevronRight, CheckCircle2, RotateCcw, Box, Truck, Receipt, Check, ShoppingCart, FileText, CreditCard, Phone } from 'lucide-react';
 import { PRICING_DB, calculateLogistics, getProductName, PRODUCTS } from '@/lib/products';
 import { useCart } from '@/context/CartContext';
 
@@ -15,11 +16,16 @@ type Message = {
 };
 
 type QuoteState = {
-    step: 'INIT' | 'USAGE_SELECTED' | 'RECOMMENDATION_SHOWN' | 'CAPACITY_SELECTED' | 'FITTING_SIZE_SELECTED' | 'FITTING_SELECTED' | 'LID_SELECTED' | 'DELIVERY_METHOD_CHOSEN' | 'DONE';
+    step: 'INIT' | 'USAGE_SELECTED' | 'RECOMMENDATION_SHOWN' | 'CAPACITY_SELECTED' | 'FITTING_SIZE_SELECTED' | 'FITTING_COUNT_SELECTED' | 'FITTING_SELECTED' | 'NIPPLE_SELECTED' | 'BALLVALVE_SELECTED' | 'BALLTOP_SELECTED' | 'GAUGE_SELECTED' | 'LID_SELECTED' | 'DELIVERY_METHOD_CHOSEN' | 'DONE';
     capacity?: string;
     type?: 'standard' | 'm_series' | 'u_series' | 'white';
     fittingSize?: string;
+    fittingCount?: number;
     fittingType?: 'bronze' | 'pe' | 'none';
+    nippleSize?: string;
+    ballvalveSize?: string;
+    balltopSize?: string;
+    hasGauge?: boolean;
     lid?: 'small' | 'large' | 'none';
     location?: string;
     shippingCost: number;
@@ -37,6 +43,7 @@ type QuoteState = {
 };
 
 export default function FloatingChatWidget() {
+    const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -56,11 +63,11 @@ export default function FloatingChatWidget() {
         {
             id: '1',
             role: 'assistant',
-            content: '안녕하세요! 진양스마트견적입니다.\n고객님께 딱 맞는 물탱크 견적을 내어드릴게요.\n\n먼저, 어떤 형태의 물탱크를 찾으시나요?',
+            content: '안녕하세요! 진양스마트견적입니다.\n어떤 형태의 물탱크를 찾으시나요?',
             type: 'options',
             options: [
-                { label: '원형 물탱크 (튼튼하고 가성비 좋음)', value: 'standard' },
-                { label: '사각 물탱크 (공간 효율, 옥상용)', value: 'm_series' }
+                { label: '원형 물탱크', value: 'standard' },
+                { label: '사각 물탱크', value: 'm_series' }
             ]
         }
     ]);
@@ -199,30 +206,30 @@ export default function FloatingChatWidget() {
                 nextState.step = 'RECOMMENDATION_SHOWN' as any;
                 nextState.recType = shape;
 
-                responseText = `${shape === 'standard' ? '원형' : '사각'} 물탱크를 선택하셨습니다.\n\n필요하신 용량을 선택해주세요.`;
+                responseText = `${shape === 'standard' ? '원형' : '사각'} 선택하셨군요!\n필요한 용량을 선택해주세요.`;
 
                 // Construct options based on recType
                 if (shape === 'm_series') {
                     nextOptions = [
-                        { label: '0.2톤 (200L 소용량, 좁은 틈새 보관용)', value: '0.2' },
-                        { label: '0.4톤 (베란다, 세탁실 등 협소 공간용)', value: '0.4' },
-                        { label: '0.6톤 (다용도실 모서리 밀착형)', value: '0.6' },
-                        { label: '1톤 (가장 인기 있는 기성 사각 베스트셀러)', value: '1' },
-                        { label: '2톤 (옥상/지하실 코너용 대용량)', value: '2' }
+                        { label: '0.2톤 (가정용, 소형 상가에 적합)', value: '0.2' },
+                        { label: '0.4톤 (가정용, 소형 상가에 적합)', value: '0.4' },
+                        { label: '0.6톤 (가정용, 소형 상가에 적합)', value: '0.6' },
+                        { label: '1톤 (가장 인기 있는 규격입니다! ⭐)', value: '1' },
+                        { label: '2톤 (농업용, 공업용, 대형 건물용)', value: '2' }
                     ];
                 } else {
                     nextOptions = [
-                        { label: '0.2톤 (일반 가정집, 소형 상가용)', value: '0.2' },
-                        { label: '0.4톤 (다가구 주택, 좁은 공간용)', value: '0.4' },
-                        { label: '0.6톤 (다용도실용 중소형 사이즈)', value: '0.6' },
-                        { label: '1톤 (가장 대중적인 다목적 표준 용량)', value: '1' },
-                        { label: '2톤 (옥상용, 농업용수로 널리 쓰임)', value: '2' },
-                        { label: '3톤 (중소형 공장, 대농장, 상가 건물용)', value: '3' },
-                        { label: '4톤 (안정적인 용량 확보가 필요한 현장)', value: '4' },
-                        { label: '5톤 (대량 용수 확보용 초대형 탱크)', value: '5' },
-                        { label: '6톤 (다량의 급수 및 특수 시설용)', value: '6' },
-                        { label: '8톤 (산업단지나 시설 재배 특대형)', value: '8' },
-                        { label: '10톤 (대규모 플랜트, 소방용수 등 최대 용량)', value: '10' }
+                        { label: '0.2톤 (가정용, 소형 상가에 적합)', value: '0.2' },
+                        { label: '0.4톤 (가정용, 소형 상가에 적합)', value: '0.4' },
+                        { label: '0.6톤 (가정용, 소형 상가에 적합)', value: '0.6' },
+                        { label: '1톤 (가장 인기 있는 규격입니다! ⭐)', value: '1' },
+                        { label: '2톤 (농업용, 공업용, 대형 건물용)', value: '2' },
+                        { label: '3톤 (농업용, 공업용, 대형 건물용)', value: '3' },
+                        { label: '4톤 (농업용, 공업용, 대형 건물용)', value: '4' },
+                        { label: '5톤 (농업용, 공업용, 대형 건물용)', value: '5' },
+                        { label: '6톤 (농업용, 공업용, 대형 건물용)', value: '6' },
+                        { label: '8톤 (농업용, 공업용, 대형 건물용)', value: '8' },
+                        { label: '10톤 (농업용, 공업용, 대형 건물용)', value: '10' }
                     ];
                 }
                 nextType = 'options';
@@ -231,13 +238,11 @@ export default function FloatingChatWidget() {
             // Step 3: Capacity Selected -> Ask Fitting Size
             else if (quoteState.step === 'RECOMMENDATION_SHOWN') {
                 const cap = value;
-                // quoteState.recType should hold 'standard' | 'm_series' | 'u_series' | 'white'
                 const dbKey = (quoteState.recType || 'standard') as keyof typeof PRICING_DB.tanks;
                 const basePrice = (PRICING_DB.tanks[dbKey] as any)[cap];
 
-                // Fallback if invalid (shouldn't happen with buttons)
                 if (!basePrice) {
-                    responseText = '죄송합니다. 해당 용량의 가격 정보가 없습니다. 상담원에게 문의해주세요.';
+                    responseText = '해당 용량의 가격 정보가 없습니다. 상담원에게 문의해주세요.';
                     nextType = 'text';
                 } else {
                     nextState.step = 'CAPACITY_SELECTED';
@@ -250,99 +255,266 @@ export default function FloatingChatWidget() {
                     }];
                     nextState.totalPrice = basePrice;
 
-                    responseText = `${cap}톤으로 선택하셨습니다.\n연결하실 배관(피팅) 사이즈가 어떻게 되나요? \n(모르시면 '선택안함'을 눌러주세요)`;
+                    responseText = `${cap}톤 선택 완료!\n\n물탱크에 배관을 연결할 피팅 크기를 골라주세요.\n(피팅은 물탱크에 구멍을 뚫고 배관을 연결하는 부속입니다)`;
                     nextOptions = [
-                        { label: '15mm', value: '15' }, { label: '20mm', value: '20' },
-                        { label: '25mm', value: '25' }, { label: '40mm', value: '40' },
-                        { label: '50mm', value: '50' }, { label: '선택안함 (필요없음)', value: 'none' }
+                        { label: '15mm (가정용 수도)', value: '15' },
+                        { label: '20mm (가장 많이 쓰는 표준 ⭐)', value: '20' },
+                        { label: '25mm (물 양이 많이 필요할 때)', value: '25' },
+                        { label: '40mm (대형·배수용)', value: '40' },
+                        { label: '50mm (대형·배수용)', value: '50' },
+                        { label: '피팅 필요없음', value: 'none' }
                     ];
                     nextType = 'options';
                 }
             }
 
-            // Step 4: Fitting Size -> Ask Fitting Type (Standard Flow resumes)
+            // Step 4: Fitting Size -> 갯수 선택
             else if (quoteState.step === 'CAPACITY_SELECTED') {
                 if (value === 'none') {
+                    // 피팅 없음 -> 단니플로 바로
                     nextState.step = 'FITTING_SELECTED';
-                    nextState.fittingSize = undefined;
-                    responseText = `피팅을 선택하지 않으셨습니다.\n물탱크 뚜껑이 필요하신가요?`;
+                    responseText = `피팅 없이 진행합니다.\n\n신주단니플이 필요하신가요?\n단니플은 배관과 밸브 사이를 짧게 이어주는 연결 부속입니다.`;
                     nextOptions = [
-                        { label: '소 (10,000원)', value: 'small' },
-                        { label: '대 (20,000원)', value: 'large' },
-                        { label: '필요없음', value: 'none' }
+                        { label: '15mm', value: 'nipple_15' },
+                        { label: '20mm', value: 'nipple_20' },
+                        { label: '25mm', value: 'nipple_25' },
+                        { label: '32mm', value: 'nipple_32' },
+                        { label: '40mm', value: 'nipple_40' },
+                        { label: '50mm', value: 'nipple_50' },
+                        { label: '다니플 필요없음', value: 'none' }
                     ];
                     nextType = 'options';
                 } else {
                     nextState.step = 'FITTING_SIZE_SELECTED';
                     nextState.fittingSize = value;
-                    responseText = `${value}mm를 선택하셨습니다. 피팅 재질을 선택해주세요.`;
+                    responseText = `${value}mm 피팅 선택!\n\n몇 개가 필요하신가요?\n(도움말: 일반적으로 입수・출수・퇴수용으로 3개를 설치합니다)`;
                     nextOptions = [
-                        { label: '청동 (내구성 우수)', value: 'bronze' },
-                        { label: 'PE제작 (부식 없음)', value: 'pe' },
-                        { label: '선택안함 (필요없음)', value: 'none' }
+                        { label: '1개', value: '1' },
+                        { label: '2개', value: '2' },
+                        { label: '3개 (권장: 입수·출수·퇴수용)', value: '3' },
+                        { label: '4개', value: '4' },
                     ];
                     nextType = 'options';
                 }
             }
 
-            // Step 5: Fitting Material -> Ask Lid
+            // Step 5: 갯수 -> 재질 선택
             else if (quoteState.step === 'FITTING_SIZE_SELECTED') {
-                nextState.step = 'FITTING_SELECTED';
-
-                if (value !== 'none') {
-                    nextState.fittingType = value as 'bronze' | 'pe';
-                    const fitPrice = (PRICING_DB.fittings as any)[value][nextState.fittingSize!];
-                    nextState.items.push({
-                        name: `${value === 'bronze' ? '청동' : 'PE'} 피팅 ${nextState.fittingSize}mm`,
-                        price: fitPrice || 0,
-                        quantity: 1
-                    });
-                    if (fitPrice) nextState.totalPrice += fitPrice;
-                    responseText = `피팅이 추가되었습니다.\n물탱크 뚜껑이 필요하신가요?`;
-                } else {
-                    responseText = `피팅을 선택하지 않으셨습니다.\n물탱크 뚜껑이 필요하신가요?`;
-                }
-
+                nextState.step = 'FITTING_COUNT_SELECTED';
+                nextState.fittingCount = parseInt(value);
+                responseText = `${value}개로 준비하겠습니다.\n\n피팅 재질을 선택해주세요.\n청동(신주)은 내구성이 우수하고, PE는 부식에 강해 약품·식품용에 적합합니다.`;
                 nextOptions = [
-                    { label: '소 (600L 이하 / 1만원)', value: 'small' },
-                    { label: '대 (1톤 이상 / 2만원)', value: 'large' },
-                    { label: '필요없음 (기존 보유)', value: 'none' }
+                    { label: '청동(신주) — 내구성 우수, 일반용', value: 'bronze' },
+                    { label: 'PE제작 — 부식없음, 약품·식품용', value: 'pe' },
                 ];
                 nextType = 'options';
             }
 
-            // Step 6: Lid -> Ask Delivery Method
+            // Step 6: 재질 -> 피팅 추가 + 번들 확인
+            else if (quoteState.step === 'FITTING_COUNT_SELECTED') {
+                nextState.step = 'FITTING_SELECTED';
+                nextState.fittingType = value as 'bronze' | 'pe';
+                const fCount = nextState.fittingCount || 1;
+                const fitUnitPrice = (PRICING_DB.fittings as any)[value]?.[nextState.fittingSize!] || 0;
+                if (fitUnitPrice) {
+                    nextState.items.push({
+                        name: `${value === 'bronze' ? '청동' : 'PE'} 피팅 ${nextState.fittingSize}mm × ${fCount}개`,
+                        price: fitUnitPrice * fCount,
+                        quantity: 1
+                    });
+                    nextState.totalPrice += fitUnitPrice * fCount;
+                }
+
+                // 번들 예상금액 계산
+                const nipplePriceMap: Record<string, number> = { '15': 1000, '20': 1700, '25': 2700, '32': 5100, '40': 6400, '50': 9900 };
+                const valvePriceMap: Record<string, number> = { '15': 10000, '20': 12000, '25': 15000, '40': 25000, '50': 35000 };
+                const nippleUnit = nipplePriceMap[nextState.fittingSize!] || 0;
+                const valveUnit = valvePriceMap[nextState.fittingSize!] || 0;
+                const bundleTotal = (nippleUnit + valveUnit) * fCount;
+
+                responseText = `${value === 'bronze' ? '청동(신주)' : 'PE'} 피팅 ${nextState.fittingSize}mm × ${fCount}개 추가 완료!\n\n단니플(${nextState.fittingSize}mm) + 볼밸브(${nextState.fittingSize}mm) ${fCount}세트를 함께 담으시겠어요?\n(${fCount}세트 연결 합계: ${bundleTotal.toLocaleString()}원, 부가세 별도)`;
+                nextOptions = [
+                    { label: `${fCount}세트 함께 담기 (추천)`, value: 'auto' },
+                    { label: '아니요, 직접 선택할게요', value: 'manual' },
+                ];
+                nextType = 'options';
+            }
+
+            // Step 7 (번들/개별): 단니플+볼밸브 처리
             else if (quoteState.step === 'FITTING_SELECTED') {
+                if (value === 'auto') {
+                    // 자동 번들 담기
+                    const fSize = quoteState.fittingSize!;
+                    const fCount = quoteState.fittingCount || 1;
+                    const nipplePriceMap: Record<string, number> = { '15': 1000, '20': 1700, '25': 2700, '32': 5100, '40': 6400, '50': 9900 };
+                    const valvePriceMap: Record<string, number> = { '15': 10000, '20': 12000, '25': 15000, '40': 25000, '50': 35000 };
+                    const nippleUnit = nipplePriceMap[fSize] || 0;
+                    const valveUnit = valvePriceMap[fSize] || 0;
+                    if (nippleUnit) {
+                        nextState.items.push({ name: `신주단니플 ${fSize}mm × ${fCount}개`, price: nippleUnit * fCount, quantity: 1 });
+                        nextState.totalPrice += nippleUnit * fCount;
+                    }
+                    if (valveUnit) {
+                        nextState.items.push({ name: `황동볼밸브 ${fSize}mm × ${fCount}개`, price: valveUnit * fCount, quantity: 1 });
+                        nextState.totalPrice += valveUnit * fCount;
+                    }
+                    nextState.step = 'BALLVALVE_SELECTED';
+                    responseText = `단니플 + 볼밸브 ${fCount}세트 자동 추가!\n\n볼탑(수위조절 밸브)이 필요하신가요?\n볼탑은 탱크 안에 부구(플로트)를 달아 일정 수위가 되면 자동으로 물 공급을 차단합니다.`;
+                    nextOptions = [
+                        { label: '15mm', value: 'balltop_15' },
+                        { label: '20mm', value: 'balltop_20' },
+                        { label: '25mm', value: 'balltop_25' },
+                        { label: '32mm', value: 'balltop_32' },
+                        { label: '40mm', value: 'balltop_40' },
+                        { label: '50mm', value: 'balltop_50' },
+                        { label: '볼탑 필요없음', value: 'none' }
+                    ];
+                    nextType = 'options';
+                } else if (value === 'manual') {
+                    // 직접 선택 -> 단니플부터
+                    nextState.step = 'NIPPLE_SELECTED';
+                    const tip = quoteState.fittingSize ? `\n\n💡 팁: 피팅 ${quoteState.fittingSize}mm에 맞춰 ${quoteState.fittingSize}mm를 추천합니다.` : '';
+                    responseText = `단니플 규격을 선택해주세요.\n단니플은 배관과 밸브 사이를 짧게 이어주는 연결 부속입니다.${tip}`;
+                    nextOptions = [
+                        { label: '15mm', value: 'nipple_15' },
+                        { label: '20mm', value: 'nipple_20' },
+                        { label: '25mm', value: 'nipple_25' },
+                        { label: '32mm', value: 'nipple_32' },
+                        { label: '40mm', value: 'nipple_40' },
+                        { label: '50mm', value: 'nipple_50' },
+                        { label: '단니플 필요없음', value: 'none' }
+                    ];
+                    nextType = 'options';
+                } else {
+                    // 피팅 없음 경로: nipple 직접 선택 or none
+                    nextState.step = 'NIPPLE_SELECTED';
+                    if (value !== 'none') {
+                        const sizeMap: Record<string, number> = {
+                            'nipple_15': 1000, 'nipple_20': 1700, 'nipple_25': 2700,
+                            'nipple_32': 5100, 'nipple_40': 6400, 'nipple_50': 9900
+                        };
+                        const sizeLabel = value.replace('nipple_', '');
+                        const np = sizeMap[value] || 0;
+                        nextState.items.push({ name: `신주단니플 ${sizeLabel}mm`, price: np, quantity: 1 });
+                        nextState.totalPrice += np;
+                        nextState.nippleSize = sizeLabel;
+                    }
+                    const valveTip = quoteState.fittingSize ? `\n\n💡 팁: 피팅이 ${quoteState.fittingSize}mm이므로, 볼밸브도 ${quoteState.fittingSize}mm를 추천합니다.` : '';
+                    responseText = `황동볼밸브가 필요하신가요?\n볼밸브는 물 흐름을 증연하는 개폐 밸브입니다.${valveTip}`;
+                    nextOptions = [
+                        { label: '15mm', value: 'valve_15' },
+                        { label: '20mm', value: 'valve_20' },
+                        { label: '25mm', value: 'valve_25' },
+                        { label: '40mm', value: 'valve_40' },
+                        { label: '50mm', value: 'valve_50' },
+                        { label: '볼밸브 필요없음', value: 'none' }
+                    ];
+                    nextType = 'options';
+                }
+            }
+
+            // Step 8 (개별): 볼밸브 선택 -> 볼탑
+            else if (quoteState.step === 'NIPPLE_SELECTED') {
+                nextState.step = 'BALLVALVE_SELECTED';
+                if (value !== 'none') {
+                    const valvePriceMap: Record<string, number> = {
+                        'valve_15': 10000, 'valve_20': 12000, 'valve_25': 15000,
+                        'valve_40': 25000, 'valve_50': 35000
+                    };
+                    const sizeLabel = value.replace('valve_', '');
+                    const valvePrice = valvePriceMap[value] || 0;
+                    nextState.items.push({ name: `황동볼밸브 ${sizeLabel}mm`, price: valvePrice, quantity: 1 });
+                    nextState.totalPrice += valvePrice;
+                    nextState.ballvalveSize = sizeLabel;
+                }
+
+                responseText = `볼탑(수위조절 밸브)이 필요하신가요?\n볼탑은 탱크 안에 부구(플로트)를 달아 일정 수위가 되면 자동으로 물 공급을 차단합니다.`;
+                nextOptions = [
+                    { label: '15mm', value: 'balltop_15' },
+                    { label: '20mm', value: 'balltop_20' },
+                    { label: '25mm', value: 'balltop_25' },
+                    { label: '32mm', value: 'balltop_32' },
+                    { label: '40mm', value: 'balltop_40' },
+                    { label: '50mm', value: 'balltop_50' },
+                    { label: '볼탑 필요없음', value: 'none' }
+                ];
+                nextType = 'options';
+            }
+
+            // Step 8: Ball Tap -> Ask Level Gauge
+            else if (quoteState.step === 'BALLVALVE_SELECTED') {
+                nextState.step = 'BALLTOP_SELECTED';
+                if (value !== 'none') {
+                    const balltopPriceMap: Record<string, number> = {
+                        'balltop_15': 7600, 'balltop_20': 11700, 'balltop_25': 13600,
+                        'balltop_32': 34700, 'balltop_40': 44100, 'balltop_50': 67800
+                    };
+                    const sizeLabel = value.replace('balltop_', '');
+                    const balltopPrice = balltopPriceMap[value] || 0;
+                    nextState.items.push({ name: `볼탑 ${sizeLabel}mm`, price: balltopPrice, quantity: 1 });
+                    nextState.totalPrice += balltopPrice;
+                    nextState.balltopSize = sizeLabel;
+                }
+
+                responseText = `레벨게이지(수위계)가 필요하신가요?\n투명 튜브를 탱크 외부에 연결하여 내부 수위를 눈으로 바로 확인할 수 있습니다. 별도 전원 없이 사용 가능합니다.`;
+                nextOptions = [
+                    { label: '레벨게이지 추가 (30,000원, 부가세 별도)', value: 'yes' },
+                    { label: '필요없음', value: 'none' }
+                ];
+                nextType = 'options';
+            }
+
+            // Step 9: Level Gauge -> Ask Lid (extra)
+            else if (quoteState.step === 'BALLTOP_SELECTED') {
+                nextState.step = 'GAUGE_SELECTED';
+                if (value !== 'none') {
+                    nextState.hasGauge = true;
+                    nextState.items.push({ name: '레벨게이지(수위계)', price: 30000, quantity: 1 });
+                    nextState.totalPrice += 30000;
+                }
+
+                responseText = `물탱크 뚜껑은 기본 1개 포함입니다.\n뚜껑이 추가로 더 필요하신가요? (특수 설치 시 필요)`;
+                // 용량에 따라 뚜껑 규격 자동 매칭
+                const capacityNum = parseFloat(quoteState.capacity || '1');
+                if (capacityNum <= 2) {
+                    nextOptions = [
+                        { label: '추가 뚜껑 필요없음 (기본 포함)', value: 'none' },
+                        { label: '소형 추가 (Ø380mm, 10,000원 부가세별도)', value: 'small' },
+                    ];
+                } else {
+                    nextOptions = [
+                        { label: '추가 뚜껑 필요없음 (기본 포함)', value: 'none' },
+                        { label: '대형 추가 (Ø470mm, 20,000원 부가세별도)', value: 'large' },
+                    ];
+                }
+                nextType = 'options';
+            }
+
+            // Step 10: Lid -> Ask Delivery
+            else if (quoteState.step === 'GAUGE_SELECTED') {
                 nextState.step = 'LID_SELECTED';
                 nextState.lid = value as any;
-
                 if (value !== 'none') {
                     const lidPrice = PRICING_DB.lids[value as 'small' | 'large'];
-                    nextState.items.push({
-                        name: `물탱크 뚜껑 (${label})`,
-                        price: lidPrice,
-                        quantity: 1
-                    });
+                    nextState.items.push({ name: `물탱크 뚜껑 추가 (${label})`, price: lidPrice, quantity: 1 });
                     nextState.totalPrice += lidPrice;
                 }
-
-                responseText = `마지막으로 수령 방법을 선택해주세요.`;
+                responseText = `마지막으로 수령 방법을 선택해주세요.\n\n💡 타공 위치는 걱정 마세요! 주문 확인 후 진양건재 전문가가 직접 전화(해피콜)를 드려 꼼꼼히 체크해 드립니다.`;
                 nextOptions = [
-                    { label: '일반 화물 배송 (착불)', value: 'delivery' },
-                    { label: '방문 수령 (수원시 팔달구 효원로 209-5 / 운임 0원)', value: 'pickup' }
+                    { label: '화물 배송 (착불)', value: 'delivery' },
+                    { label: '방문 수령 (수원 팔달구 효원로 / 운임 0원)', value: 'pickup' }
                 ];
                 nextType = 'options';
             }
 
-            // Step 7: Delivery Method Selected -> Ask Address OR Finish
+            // Step 11: Delivery -> Address or Finish
             else if (quoteState.step === 'LID_SELECTED') {
                 nextState.deliveryMethod = value as 'delivery' | 'pickup';
                 if (value === 'pickup') {
                     calculateFinalQuote('pickup', '방문 수령');
                 } else {
-                    // Ask for Address text
                     nextState.step = 'DELIVERY_METHOD_CHOSEN';
-                    responseText = `배송받으실 상세 주소(동/읍/면 까지)를 입력해주세요.\n(예: 경기도 화성시 남양읍)`;
+                    responseText = `배송받으실 주소(동/읍/면 단위)를 입력해주세요.\n(예: 경기도 화성시 남양읍)`;
                     nextType = 'text';
                 }
             }
@@ -365,11 +537,11 @@ export default function FloatingChatWidget() {
         setMessages([{
             id: Date.now().toString(),
             role: 'assistant',
-            content: '새로운 견적 상담을 시작합니다.\n먼저, 어떤 형태의 물탱크를 찾으시나요?',
+            content: '새 견적을 시작합니다.\n어떤 형태의 물탱크가 필요하신가요?',
             type: 'options',
             options: [
-                { label: '원형 물탱크 (튼튼하고 가성비 좋음)', value: 'standard' },
-                { label: '사각 물탱크 (공간 효율, 옥상용)', value: 'm_series' }
+                { label: '원형 물탱크', value: 'standard' },
+                { label: '사각 물탱크', value: 'm_series' }
             ]
         }]);
         setShowQuoteModal(false);
@@ -538,20 +710,13 @@ export default function FloatingChatWidget() {
         }
     };
 
-    const handleAddToCart = () => {
-        // Find matching product in PRODUCTS array to get image and correct IDs
-        // Here we do a simple mapping based on category/type
+    const executeAddToCart = () => {
         let productIdStr = 'pe-round-series';
         if (quoteState.type === 'm_series') {
             productIdStr = 'pe-square-series';
         }
 
-        const matchedProduct = PRODUCTS.find(p => p.id === productIdStr);
-
-        // Convert quote options to cart options format
         const formattedOptions = [];
-
-        // Helper to format size - using mm to match products.ts option labels
         const mapSize = (s: string) => {
             const num = parseInt(s);
             if (!isNaN(num)) return `${num}mm`;
@@ -606,10 +771,20 @@ export default function FloatingChatWidget() {
             quantity: 1,
             image: quoteState.type === 'm_series' ? '/images/products/tank-square-real.jpg' : '/images/products/tank-round-real.png'
         });
+    };
 
+    const handleAddToCart = () => {
+        executeAddToCart();
         alert('장바구니에 담겼습니다!');
         setShowQuoteModal(false);
         setIsOpen(false);
+    };
+
+    const handleDirectCheckout = () => {
+        executeAddToCart();
+        setShowQuoteModal(false);
+        setIsOpen(false);
+        router.push('/checkout');
     };
 
     return (
@@ -663,7 +838,7 @@ export default function FloatingChatWidget() {
 
                                     <div className="space-y-2 w-full">
                                         {msg.content && (
-                                            <div className={`p-4 rounded-xl text-base whitespace-pre-wrap leading-relaxed shadow-sm ${msg.role === 'user' ? 'bg-industrial-600 text-white rounded-tr-none' : 'bg-white text-gray-900 border border-gray-200 rounded-tl-none font-medium'}`}>
+                                            <div className={`px-3.5 py-2.5 rounded-xl text-sm whitespace-pre-wrap leading-relaxed shadow-sm ${msg.role === 'user' ? 'bg-industrial-600 text-white rounded-tr-none' : 'bg-white text-gray-900 border border-gray-200 rounded-tl-none font-medium'}`}>
                                                 {msg.content}
                                             </div>
                                         )}
@@ -674,10 +849,10 @@ export default function FloatingChatWidget() {
                                                     <button
                                                         key={opt.value}
                                                         onClick={() => handleOptionSelect(opt.value, opt.label)}
-                                                        className="bg-white border-2 border-industrial-100 hover:border-industrial-500 text-gray-800 hover:text-industrial-600 font-bold py-4 px-5 rounded-2xl transition-all text-left flex justify-between items-center group text-base sm:text-lg active:bg-industrial-50 shadow-sm"
+                                                        className="bg-white border-2 border-industrial-100 hover:border-industrial-500 text-gray-800 hover:text-industrial-600 font-semibold py-2.5 px-4 rounded-xl transition-all text-left flex justify-between items-center group text-sm active:bg-industrial-50 shadow-sm"
                                                     >
                                                         <span>{opt.label}</span>
-                                                        <div className="w-6 h-6 rounded-full border-2 border-gray-300 group-hover:border-industrial-500 shrink-0"></div>
+                                                        <div className="w-5 h-5 rounded-full border-2 border-gray-300 group-hover:border-industrial-500 shrink-0 ml-2"></div>
                                                     </button>
                                                 ))}
                                             </div>
@@ -825,27 +1000,43 @@ export default function FloatingChatWidget() {
                                     </div>
 
                                     <button
-                                        onClick={handleAddToCart}
-                                        className="w-full bg-industrial-600 hover:bg-industrial-700 text-white font-bold py-4 px-4 rounded-xl shadow-md transition-colors flex justify-center items-center gap-2 text-lg"
+                                        onClick={handleDirectCheckout}
+                                        className="w-full bg-[#FF4500] hover:bg-[#E63E00] text-white font-bold py-4 px-4 rounded-xl shadow-md transition-colors flex justify-center items-center gap-2 text-lg"
                                     >
-                                        <ShoppingCart className="w-5 h-5" />
-                                        장바구니에 담기
+                                        <CreditCard className="w-5 h-5" />
+                                        바로 결제하기 (카드/무통장입금)
                                     </button>
 
-                                    <div className="grid grid-cols-2 gap-3">
+                                    <button
+                                        onClick={handleAddToCart}
+                                        className="w-full bg-industrial-600 hover:bg-industrial-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-colors flex justify-center items-center gap-2"
+                                    >
+                                        <ShoppingCart className="w-5 h-5" />
+                                        장바구니 담기
+                                    </button>
+
+                                    <a
+                                        href="tel:031-236-8227"
+                                        className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-colors flex justify-center items-center gap-2"
+                                    >
+                                        <Phone className="w-5 h-5" />
+                                        결제 전 전화상담
+                                    </a>
+
+                                    <div className="grid grid-cols-2 gap-3 mt-1 pt-3 border-t border-gray-100">
                                         <button
                                             onClick={handlePrint}
-                                            className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-bold py-3 px-4 rounded-xl transition-colors flex justify-center items-center gap-2"
+                                            className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-bold py-3 px-4 rounded-xl shadow-sm transition-colors flex justify-center items-center gap-2 text-sm"
                                         >
-                                            <FileText className="w-5 h-5" />
+                                            <FileText className="w-4 h-4" />
                                             견적서 인쇄
                                         </button>
 
                                         <button
                                             onClick={handleReset}
-                                            className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-bold py-3 px-4 rounded-xl transition-colors flex justify-center items-center gap-2"
+                                            className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-bold py-3 px-4 rounded-xl shadow-sm transition-colors flex justify-center items-center gap-2 text-sm"
                                         >
-                                            <RotateCcw className="w-5 h-5" />
+                                            <RotateCcw className="w-4 h-4" />
                                             다시 견적받기
                                         </button>
                                     </div>

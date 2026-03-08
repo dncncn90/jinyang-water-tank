@@ -33,7 +33,7 @@ export default function ChatInterface() {
         {
             id: '1',
             role: 'assistant',
-            content: '안녕하세요! 진양건재입니다.\n물탱크 찾으시나요? 어떤 형태(원형/사각)나 용량이 필요하신가요?',
+            content: '안녕하세요! 진양건재입니다.\n원형/사각 물탱크 중 어떤 걸 찾으시나요?',
         }
     ]);
 
@@ -109,12 +109,12 @@ export default function ChatInterface() {
                     responseMsg = {
                         id: Date.now().toString(),
                         role: 'assistant',
-                        content: '반갑습니다! 진양스마트견적입니다.\n\n고객님께 딱 맞는 물탱크 견적을 내어드릴게요.\n\n먼저, 어떤 형태의 물탱크를 찾으시나요?\n\n1. 원형 (튼튼하고 가성비 좋음)\n2. 사각 (공간 효율, 옥상용)',
+                        content: '반갑습니다!\n어떤 형태의 물탱크를 찾으시나요?\n\n① 원형 — 가성비 좋음\n② 사각 — 공간 효율',
                         type: 'text'
                     };
                     nextStep = 'ask-shape';
                 } else {
-                    responseMsg = { id: Date.now().toString(), role: 'assistant', content: '제가 잘 이해하지 못했어요. "견적 시작"이라고 말씀해주시겠어요?' };
+                    responseMsg = { id: Date.now().toString(), role: 'assistant', content: '"견적 시작"이라고 말씀해 주세요.' };
                 }
             } else if (step === 'ask-shape') {
                 let suggestedShape = 'Round';
@@ -125,7 +125,7 @@ export default function ChatInterface() {
                 responseMsg = {
                     id: Date.now().toString(),
                     role: 'assistant',
-                    content: `${suggestedShape === 'Square' ? '사각' : '원형'} 물탱크를 선택하셨습니다.\n\n이제 필요한 용량(톤)을 말씀해 주세요.\n(예: ${suggestedShape === 'Square' ? '0.2톤, 1톤, 2톤' : '0.2톤, 1톤, 5톤'})`,
+                    content: `${suggestedShape === 'Square' ? '사각' : '원형'} 선택하셨군요!\n필요한 용량(톤)을 알려주세요.\n(예: ${suggestedShape === 'Square' ? '0.2, 1, 2톤' : '0.2, 1, 5톤'})`,
                 };
                 nextStep = 'ask-tonnage';
 
@@ -136,11 +136,11 @@ export default function ChatInterface() {
                     responseMsg = {
                         id: Date.now().toString(),
                         role: 'assistant',
-                        content: `${tonnageMatch[0]}톤으로 진행하겠습니다.\n\n마지막으로 배송받으실 지역은 어디인가요?\n(예: 서울 강남구, 경기도 수원)`,
+                        content: `${tonnageMatch[0]}톤으로 진행할게요.\n배송받으실 지역을 알려주세요.\n(예: 서울 강남구, 경기도 수원)`,
                     };
                     nextStep = 'ask-location';
                 } else {
-                    responseMsg = { id: Date.now().toString(), role: 'assistant', content: '정확한 용량을 숫자로 말씀해 주세요. (예: 1톤, 2톤)' };
+                    responseMsg = { id: Date.now().toString(), role: 'assistant', content: '숫자로 용량을 말씀해 주세요.\n(예: 1톤, 2톤)' };
                 }
             } else if (step === 'ask-location') {
                 setSelection(prev => ({ ...prev, location: userInput }));
@@ -160,7 +160,7 @@ export default function ChatInterface() {
                 responseMsg = {
                     id: Date.now().toString(),
                     role: 'assistant',
-                    content: `견적 산출이 완료되었습니다!\n\n추천 제품: ${selection.shape === 'Round' ? '원형' : '사각'} 물탱크 ${selection.tonnage}톤\n배송지: ${userInput}\n예상 운임: ${formatPrice(shipping)} (부가세 포함 / 착불)\n\n아래 버튼을 눌러 상세 견적서를 확인하세요!`,
+                    content: `견적이 완료됐습니다!\n\n${selection.shape === 'Round' ? '원형' : '사각'} ${selection.tonnage}톤 · ${userInput}\n예상 운임: ${formatPrice(shipping)} (착불)\n\n아래에서 견적서를 확인하세요.`,
                     type: 'quote-ready'
                 };
                 nextStep = 'quote';
@@ -179,10 +179,10 @@ export default function ChatInterface() {
             {
                 id: Date.now().toString(),
                 role: 'assistant',
-                content: '새로운 견적 상담을 시작합니다.\n어떤 형태(원형/사각)의 물탱크를 찾으시나요?',
+                content: '새 견적을 시작합니다.\n원형/사각 중 어떤 물탱크가 필요하신가요?',
             }
         ]);
-        setStep('init'); // Reset to init to start fresh with new flow
+        setStep('init');
         setSelection({ tonnage: '', shape: '', location: '', quantity: 1, usage: '', locationContext: '' });
         setShowQuoteModal(false);
     };
@@ -203,7 +203,7 @@ export default function ChatInterface() {
     }
 
     return (
-        <div id="chat-section" className="flex flex-col h-[600px] w-full max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
+        <div id="chat-section" className="flex flex-col h-[560px] w-full max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
             {/* Header */}
             <div className="bg-industrial-900 p-4 flex items-center justify-between text-white">
                 <div className="flex items-center gap-3">
@@ -230,7 +230,7 @@ export default function ChatInterface() {
                         key={msg.id}
                         className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
-                        <div className={`flex max-w-[85%] sm:max-w-[70%] gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                        <div className={`flex max-w-[80%] gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
 
                             {/* Avatar */}
                             <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-gray-200' : 'bg-industrial-100 text-industrial-600'}`}>
@@ -240,7 +240,7 @@ export default function ChatInterface() {
                             {/* Bubble */}
                             <div className="space-y-2">
                                 {msg.content && (
-                                    <div className={`p-4 sm:p-5 rounded-2xl text-base sm:text-lg font-medium whitespace-pre-wrap leading-relaxed shadow-sm ${msg.role === 'user' ? 'bg-industrial-600 text-white rounded-tr-none' : 'bg-white text-gray-900 border border-gray-200 rounded-tl-none'}`}>
+                                    <div className={`px-3.5 py-2.5 rounded-2xl text-sm font-medium whitespace-pre-wrap leading-relaxed shadow-sm ${msg.role === 'user' ? 'bg-industrial-600 text-white rounded-tr-none' : 'bg-white text-gray-900 border border-gray-200 rounded-tl-none'}`}>
                                         {msg.content}
                                     </div>
                                 )}
@@ -278,9 +278,9 @@ export default function ChatInterface() {
                             <div className="w-8 h-8 rounded-full bg-industrial-100 flex items-center justify-center shrink-0 text-industrial-600">
                                 <Bot className="w-5 h-5" />
                             </div>
-                            <div className="bg-white p-4 sm:p-5 rounded-2xl rounded-tl-none border border-gray-200 shadow-sm flex items-center gap-3">
-                                <Loader2 className="w-5 h-5 animate-spin text-industrial-500" />
-                                <span className="text-base font-medium text-gray-600">최적의 견적을 산출 중입니다...</span>
+                            <div className="bg-white px-3.5 py-2.5 rounded-2xl rounded-tl-none border border-gray-200 shadow-sm flex items-center gap-2">
+                                <Loader2 className="w-4 h-4 animate-spin text-industrial-500" />
+                                <span className="text-sm font-medium text-gray-500">견적 산출 중...</span>
                             </div>
                         </div>
                     </div>
@@ -295,8 +295,8 @@ export default function ChatInterface() {
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                        placeholder="예: 3톤 물탱크 가격 얼마인가요?"
-                        className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-base sm:text-lg rounded-xl focus:ring-2 focus:ring-industrial-500 focus:border-industrial-500 block pl-4 p-4 sm:p-5 pr-14 transition-all"
+                        placeholder="예: 1톤, 원형, 서울 강남구"
+                        className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-industrial-500 focus:border-industrial-500 block pl-4 py-3 pr-12 transition-all"
                     />
                     <button
                         onClick={() => handleSend()}
@@ -306,14 +306,9 @@ export default function ChatInterface() {
                         <Send className="w-5 h-5" />
                     </button>
                 </div>
-                <div className="mt-2 text-center space-y-1">
-                    <p className="text-xs text-gray-400">
-                        진양스마트견적은 실시간 재고 및 단가표를 기반으로 답변합니다.
-                    </p>
-                    <p className="text-[10px] text-gray-300">
-                        * 본 견적은 진양스마트견적 기반 평균 견적 답변이며, 최종 주문 시 상담 전화(현장 확인)를 통해 확정됩니다. (배송비 착불)
-                    </p>
-                </div>
+                <p className="mt-1.5 text-center text-[10px] text-gray-300">
+                    실시간 단가 기반 · 최종 금액은 전화 확인 후 확정 (배송비 착불)
+                </p>
             </div>
 
             {/* Quote Modal Overlay (Simple implementation for now) */}

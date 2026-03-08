@@ -80,7 +80,7 @@ export default function Footer() {
                     className="w-full bg-[#FF4500] hover:bg-[#E63E00] text-white flex items-center justify-center gap-2 py-4 rounded-xl font-black text-lg shadow-lg active:scale-95 transition-transform"
                 >
                     <Phone className="w-5 h-5 fill-current" />
-                    📞 031-236-8227 전화 주문 및 도매 문의
+                    031-236-8227 전화 주문 및 도매 문의
                 </a>
             </div>
         </footer>
