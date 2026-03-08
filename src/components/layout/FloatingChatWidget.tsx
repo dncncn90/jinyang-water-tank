@@ -318,16 +318,16 @@ export default function FloatingChatWidget() {
                 const fitUnitPrice = (PRICING_DB.fittings as any)[value]?.[nextState.fittingSize!] || 0;
                 if (fitUnitPrice) {
                     nextState.items.push({
-                        name: `${value === 'bronze' ? '청동' : 'PE'} 피팅 ${nextState.fittingSize}mm × ${fCount}개`,
-                        price: fitUnitPrice * fCount,
-                        quantity: 1
+                        name: `${value === 'bronze' ? '청동' : 'PE'} 피팅 ${nextState.fittingSize}mm`,
+                        price: fitUnitPrice,
+                        quantity: fCount
                     });
                     nextState.totalPrice += fitUnitPrice * fCount;
                 }
 
                 // 번들 예상금액 계산
                 const nipplePriceMap: Record<string, number> = { '15': 1000, '20': 1700, '25': 2700, '32': 5100, '40': 6400, '50': 9900 };
-                const valvePriceMap: Record<string, number> = { '15': 10000, '20': 12000, '25': 15000, '40': 25000, '50': 35000 };
+                const valvePriceMap: Record<string, number> = { '15': 4200, '20': 5700, '25': 10100, '32': 15300, '40': 22500, '50': 33300 };
                 const nippleUnit = nipplePriceMap[nextState.fittingSize!] || 0;
                 const valveUnit = valvePriceMap[nextState.fittingSize!] || 0;
                 const bundleTotal = (nippleUnit + valveUnit) * fCount;
@@ -351,11 +351,11 @@ export default function FloatingChatWidget() {
                     const nippleUnit = nipplePriceMap[fSize] || 0;
                     const valveUnit = valvePriceMap[fSize] || 0;
                     if (nippleUnit) {
-                        nextState.items.push({ name: `신주단니플 ${fSize}mm × ${fCount}개`, price: nippleUnit * fCount, quantity: 1 });
+                        nextState.items.push({ name: `신주단니플 ${fSize}mm`, price: nippleUnit, quantity: fCount });
                         nextState.totalPrice += nippleUnit * fCount;
                     }
                     if (valveUnit) {
-                        nextState.items.push({ name: `황동볼밸브 ${fSize}mm × ${fCount}개`, price: valveUnit * fCount, quantity: 1 });
+                        nextState.items.push({ name: `황동볼밸브 ${fSize}mm`, price: valveUnit, quantity: fCount });
                         nextState.totalPrice += valveUnit * fCount;
                     }
                     nextState.step = 'BALLVALVE_SELECTED';
@@ -413,7 +413,7 @@ export default function FloatingChatWidget() {
                     const sizeLabel = value.replace('nipple_', '');
                     const np = sizeMap[value] || 0;
                     const fCount = quoteState.fittingCount || 1; // 갯수 유지
-                    nextState.items.push({ name: `신주단니플 ${sizeLabel}mm × ${fCount}개`, price: np * fCount, quantity: 1 });
+                    nextState.items.push({ name: `신주단니플 ${sizeLabel}mm`, price: np, quantity: fCount });
                     nextState.totalPrice += np * fCount;
                     nextState.nippleSize = sizeLabel;
                 }
@@ -424,6 +424,7 @@ export default function FloatingChatWidget() {
                     { label: '15mm', value: 'valve_15' },
                     { label: '20mm', value: 'valve_20' },
                     { label: '25mm', value: 'valve_25' },
+                    { label: '32mm', value: 'valve_32' },
                     { label: '40mm', value: 'valve_40' },
                     { label: '50mm', value: 'valve_50' },
                     { label: '볼밸브 필요없음', value: 'none' }
@@ -438,13 +439,13 @@ export default function FloatingChatWidget() {
                 // 직전 단계(단니플 선택 후)에서 넘어온 value가 볼밸브(valve_xx)인지 확인하여 장바구니에 담기
                 if (value !== 'none' && value.startsWith('valve_')) {
                     const valvePriceMap: Record<string, number> = {
-                        'valve_15': 10000, 'valve_20': 12000, 'valve_25': 15000,
-                        'valve_40': 25000, 'valve_50': 35000
+                        'valve_15': 4200, 'valve_20': 5700, 'valve_25': 10100,
+                        'valve_32': 15300, 'valve_40': 22500, 'valve_50': 33300
                     };
                     const sizeLabel = value.replace('valve_', '');
                     const valvePrice = valvePriceMap[value] || 0;
                     const fCount = quoteState.fittingCount || 1; // 갯수 유지
-                    nextState.items.push({ name: `황동볼밸브 ${sizeLabel}mm × ${fCount}개`, price: valvePrice * fCount, quantity: 1 });
+                    nextState.items.push({ name: `황동볼밸브 ${sizeLabel}mm`, price: valvePrice, quantity: fCount });
                     nextState.totalPrice += valvePrice * fCount;
                     nextState.ballvalveSize = sizeLabel;
                 }
@@ -534,15 +535,13 @@ export default function FloatingChatWidget() {
             }
 
             // Step 12: 배송 수단(DELIVERY_METHOD_CHOSEN) -> 주소 입력 또는 방문수령 완료
-            else if (quoteState.step === 'DELIVERY_METHOD_CHOSEN') {
+            else if (quoteState.step === 'DELIVERY_METHOD_CHOSEN' && !quoteState.deliveryMethod) {
                 nextState.deliveryMethod = value as 'delivery' | 'pickup';
                 if (value === 'pickup') {
                     // 방문 수령일 경우엔 주소입력 생략하고 바로 DONE
                     calculateFinalQuote('pickup', '방문 수령');
                 } else {
                     // 화물 배송은 주소를 입력받기 위해 text 타입으로 전환
-                    nextState.step = 'DONE'; // 여기서 원래는 주소 입력 스텝을 하나 더 둘 수도 있지만, 기존 로직이 이 단계에서 텍스트 입력창을 띄우는 것이었음. 상태값을 맞추기 위해 DONE 직전 임시 상태를 쓰거나 텍스트 입력 대기로 둠
-                    // 기존 코드를 보면 deliveryMethod 저장 후 주소를 물어봄. 
                     nextState.step = 'DELIVERY_METHOD_CHOSEN'; // 상태 유지하며 텍스트 응답 기다림
                     responseText = `배송받으실 주소(동/읍/면 단위)를 입력해주세요.\n(예: 경기도 화성시 남양읍)`;
                     nextType = 'text';

@@ -160,11 +160,12 @@ const COMMON_TANK_OPTIONS = [
         required: false,
         choices: [
             { label: '선택 안함', priceChange: 0 },
-            { label: '15mm - 11,000원', priceChange: 11000 },
-            { label: '20mm - 13,200원', priceChange: 13200 },
-            { label: '25mm - 16,500원', priceChange: 16500 },
-            { label: '40mm - 27,500원', priceChange: 27500 },
-            { label: '50mm - 38,500원', priceChange: 38500 },
+            { label: '15mm - 4,620원', priceChange: 4620 },
+            { label: '20mm - 6,270원', priceChange: 6270 },
+            { label: '25mm - 11,110원', priceChange: 11110 },
+            { label: '32mm - 16,830원', priceChange: 16830 },
+            { label: '40mm - 24,750원', priceChange: 24750 },
+            { label: '50mm - 36,630원', priceChange: 36630 },
         ]
     },
     {

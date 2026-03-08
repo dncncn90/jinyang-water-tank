@@ -93,7 +93,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                                 <option value="">— 용량을 선택하세요 —</option>
                                 {allProducts.map((p) => (
                                     <option key={p.id} value={p.id}>
-                                        {p.specs.capacity}  ({p.name.split(' ')[0]}) — {Number(p.price).toLocaleString()}원~
+                                        {p.name.split(' ')[0]}({p.specs.capacity}) — {Number(p.price).toLocaleString()}원~
                                     </option>
                                 ))}
                             </select>
