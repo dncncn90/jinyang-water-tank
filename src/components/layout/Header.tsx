@@ -58,9 +58,9 @@ export default function Header() {
         <div className="sticky top-0 z-50 w-full flex flex-col">
             {/* Top Bar for Business Members */}
             <div className="bg-industrial-900 text-white text-[10px] sm:text-xs py-2 px-4 text-center w-full relative z-50 shadow-md">
-                <span className="opacity-95 block sm:inline leading-tight break-keep">📢 <strong>사업자 회원</strong> 가입 시 즉시 할인 / 세금계산서 100% 발행 가능</span>
+                <span className="opacity-95 block sm:inline leading-tight break-keep">📢 <strong>전국 어디든</strong> 빠르고 안전하게 책임 배송해 드립니다!</span>
                 <span className="hidden sm:inline mx-2 text-industrial-500">|</span>
-                <span className="text-[#FFD400] font-black block sm:inline mt-1 sm:mt-0 text-[11px] sm:text-sm">문의: 031-236-8227</span>
+                <span className="text-[#FFD400] font-black block sm:inline mt-1 sm:mt-0 text-[11px] sm:text-sm">빠른 문의: 031-236-8227</span>
             </div>
 
             <header
@@ -72,7 +72,7 @@ export default function Header() {
                 <div className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8" aria-label="Global">
 
                     {/* Logo Area */}
-                    <div className="flex lg:flex-1 shrink-0">
+                    <div className="flex shrink-0">
                         <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-1.5 group">
                             <div className="flex items-center gap-1.5 group">
                                 <Image
@@ -83,16 +83,15 @@ export default function Header() {
                                     className="object-contain h-10 w-10 sm:h-12 sm:w-12 drop-shadow-sm group-hover:scale-105 transition-transform"
                                     priority
                                 />
-                                <span className={`text-lg sm:text-xl font-black tracking-tighter whitespace-nowrap ${isSolid ? 'text-gray-900' : 'text-slate-800'} mt-0.5`}>
+                                <span className={`text-lg sm:text-xl font-black tracking-tighter whitespace-nowrap shrink-0 ${isSolid ? 'text-gray-900' : 'text-slate-800'} mt-0.5`}>
                                     진양건재
                                 </span>
                             </div>
                         </Link>
                     </div>
 
-
                     <div className="flex lg:hidden items-center gap-2">
-                        <a href="tel:031-236-8227" className="flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded-full text-[10px] font-bold shadow-md transition-transform active:scale-95 whitespace-nowrap">
+                        <a href="tel:031-236-8227" className="flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded-full text-[10px] font-bold shadow-md transition-transform active:scale-95 whitespace-nowrap shrink-0">
                             <Phone className="w-2.5 h-2.5" />
                             <span>전화상담</span>
                         </a>
@@ -115,19 +114,19 @@ export default function Header() {
                     </div>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden lg:flex lg:gap-x-8 items-center">
+                    <div className="hidden lg:flex lg:gap-x-4 xl:gap-x-6 items-center overflow-x-auto justify-end flex-nowrap hide-scrollbar pb-1 -mb-1">
                         {NAVIGATION.map((item) => (
                             <Link
                                 key={item.name}
                                 href={item.href}
-                                className={`text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'}`}
+                                className={`whitespace-nowrap shrink-0 text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'}`}
                             >
                                 {item.name}
                             </Link>
                         ))}
                         <Link
                             href="/wholesale"
-                            className={`text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'}`}
+                            className={`whitespace-nowrap shrink-0 text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'}`}
                         >
                             도매·견적문의
                         </Link>
@@ -136,58 +135,24 @@ export default function Header() {
                             href="https://blog.naver.com/jypvc-"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`text-sm font-semibold leading-6 transition-colors hover:text-[#03C75A] ${isSolid ? 'text-gray-900' : 'text-slate-800'} flex items-center gap-1 ml-2`}
+                            className={`whitespace-nowrap shrink-0 text-sm font-semibold leading-6 transition-colors hover:text-[#03C75A] ${isSolid ? 'text-gray-900' : 'text-slate-800'} flex items-center gap-1 lg:ml-1 xl:ml-2`}
                         >
                             <span className="bg-[#03C75A] text-white text-[10px] px-1.5 py-0.5 rounded-sm font-black tracking-tighter">N</span>
                             블로그
                         </a>
 
-                        <div className={`h-4 w-px ${isSolid ? 'bg-gray-300' : 'bg-slate-300'} ml-2`}></div>
+                        <div className={`shrink-0 h-4 w-px ${isSolid ? 'bg-gray-300' : 'bg-slate-300'} lg:mx-1 xl:mx-2`}></div>
 
-                        {hasSession ? (
-                            <>
-                                <Link
-                                    href="/mypage"
-                                    className={`text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'} flex items-center gap-1`}
-                                >
-                                    마이페이지
-                                </Link>
-                                <button
-                                    onClick={async () => {
-                                        await supabase.auth.signOut();
-                                        window.location.reload();
-                                    }}
-                                    className={`text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'} flex items-center gap-1 whitespace-nowrap`}
-                                >
-                                    로그아웃
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <Link
-                                    href="/login"
-                                    className={`text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'} flex items-center gap-1`}
-                                >
-                                    로그인
-                                </Link>
-                                <Link
-                                    href="/register"
-                                    className={`text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'} flex items-center gap-1`}
-                                >
-                                    회원가입
-                                </Link>
-                                <Link
-                                    href="/guest/order-lookup"
-                                    className={`text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'} flex items-center gap-1 whitespace-nowrap`}
-                                >
-                                    비회원 주문조회
-                                </Link>
-                            </>
-                        )}
+                        <Link
+                            href="/guest/order-lookup"
+                            className={`whitespace-nowrap shrink-0 text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'} flex items-center gap-1`}
+                        >
+                            주문조회
+                        </Link>
 
                         <Link
                             href="/cart"
-                            className={`relative text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'} flex items-center gap-1`}
+                            className={`whitespace-nowrap shrink-0 relative text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'} flex items-center gap-1`}
                         >
                             <ShoppingCart className="w-5 h-5" />
                             {isMounted && getCartItemCount() > 0 && (
@@ -199,10 +164,10 @@ export default function Header() {
 
                         <Link
                             href="tel:031-236-8227"
-                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold transition-all bg-[#FFD400] hover:bg-yellow-400 text-gray-900 shadow-md ml-4`}
+                            className={`whitespace-nowrap shrink-0 flex items-center gap-2 px-3 xl:px-5 py-2 xl:py-2.5 rounded-xl font-bold transition-all bg-[#FFD400] hover:bg-yellow-400 text-gray-900 shadow-md lg:ml-2 xl:ml-4`}
                         >
-                            <Phone className="w-5 h-5" />
-                            <span className="text-xl tracking-tight">031-236-8227</span>
+                            <Phone className="w-4 h-4 xl:w-5 xl:h-5" />
+                            <span className="text-base xl:text-xl tracking-tight">031-236-8227</span>
                         </Link>
                     </div>
                 </div>
@@ -256,50 +221,14 @@ export default function Header() {
                                         </span>
                                     )}
                                 </Link>
-                                {hasSession ? (
-                                    <>
-                                        <Link
-                                            href="/mypage"
-                                            className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 flex items-center gap-2"
-                                            onClick={() => setMobileMenuOpen(false)}
-                                        >
-                                            마이페이지
-                                        </Link>
-                                        <button
-                                            onClick={async () => {
-                                                await supabase.auth.signOut();
-                                                window.location.reload();
-                                            }}
-                                            className="-mx-3 w-full text-left block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 flex items-center gap-2"
-                                        >
-                                            로그아웃
-                                        </button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Link
-                                            href="/login"
-                                            className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 flex items-center gap-2"
-                                            onClick={() => setMobileMenuOpen(false)}
-                                        >
-                                            로그인
-                                        </Link>
-                                        <Link
-                                            href="/register"
-                                            className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 flex items-center gap-2"
-                                            onClick={() => setMobileMenuOpen(false)}
-                                        >
-                                            회원가입
-                                        </Link>
-                                        <Link
-                                            href="/guest/order-lookup"
-                                            className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 flex items-center gap-2"
-                                            onClick={() => setMobileMenuOpen(false)}
-                                        >
-                                            비회원 주문조회
-                                        </Link>
-                                    </>
-                                )}
+                                <Link
+                                    href="/guest/order-lookup"
+                                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 flex items-center gap-2"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    주문조회
+                                </Link>
+                                
                                 <a
                                     href="tel:031-236-8227"
                                     className="-mx-3 mt-4 block rounded-lg px-3 py-2.5 text-base font-bold leading-7 text-white bg-industrial-600 hover:bg-industrial-700 flex items-center justify-center gap-2"
