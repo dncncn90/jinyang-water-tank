@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { CheckCircle, XCircle, Loader2, PhoneCall } from 'lucide-react';
 
 function SuccessContent() {
     const searchParams = useSearchParams();
@@ -129,12 +129,54 @@ function SuccessContent() {
                     </div>
                 </div>
 
-                {/* Notification Banner */}
+                {/* Happy Call 3-Step Guide */}
                 <div className="px-8 pb-8">
-                    <div className="flex items-start gap-3 bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <p className="text-sm text-gray-600 leading-relaxed font-medium">
-                            담당 엔지니어가 24시간 내에 현장 설치 및 배송 일정 조율을 위해 연락드릴 예정입니다. 주말 및 공휴일의 경우 다음 영업일에 안내됩니다.
-                        </p>
+                    <div className="bg-white border-2 border-industrial-100 rounded-2xl p-6 shadow-md overflow-hidden relative">
+                        <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
+                            <PhoneCall className="w-24 h-24 text-industrial-600" />
+                        </div>
+                        <h3 className="text-lg font-black text-industrial-900 mb-6 flex items-center gap-2">
+                            <PhoneCall className="w-5 h-5 text-orange-500" />
+                            진양건재의 약속: 1:1 맞춤 해피콜
+                        </h3>
+
+                        <div className="grid grid-cols-3 gap-2 relative">
+                            {/* Connection Lines */}
+                            <div className="absolute top-6 left-0 w-full h-0.5 bg-gray-100 -z-10"></div>
+
+                            <div className="flex flex-col items-center gap-3">
+                                <div className="w-12 h-12 bg-industrial-600 text-white rounded-full flex items-center justify-center font-bold shadow-lg">1</div>
+                                <div className="text-center">
+                                    <p className="text-xs font-bold text-gray-900 mb-1">주문 완료</p>
+                                    <p className="text-[11px] text-gray-500 leading-tight break-keep">시스템 접수 완료</p>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col items-center gap-3">
+                                <div className="w-12 h-12 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold shadow-lg shadow-orange-200 animate-bounce-subtle">
+                                    <PhoneCall className="w-6 h-6" />
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-xs font-black text-orange-600 mb-1 leading-tight">전문가 해피콜</p>
+                                    <p className="text-[11px] text-orange-700 font-bold leading-tight break-keep">운임 할인 및<br />일정 상담</p>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col items-center gap-3">
+                                <div className="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center font-bold">3</div>
+                                <div className="text-center">
+                                    <p className="text-xs font-bold text-gray-900 mb-1">배송 및 완료</p>
+                                    <p className="text-[11px] text-gray-500 leading-tight break-keep">안전하게 현장 배송</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-8 pt-6 border-t border-gray-100">
+                            <p className="text-sm text-center text-gray-600 font-medium leading-relaxed break-keep">
+                                <span className="text-industrial-600 font-black">잠시만 기다려주세요!</span> 담당 전문가가 주문 내역을 확인한 후, <br />
+                                24시간 이내에 직접 전화를 드려 <strong className="text-orange-600 font-black text-base italic">최저가 운임비</strong>를 맞춰드리겠습니다.
+                            </p>
+                        </div>
                     </div>
                 </div>
 

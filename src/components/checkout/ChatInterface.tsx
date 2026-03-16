@@ -347,7 +347,7 @@ export default function ChatInterface() {
                                 * 운임은 해피콜 시 확정됩니다.
                             </div>
                             <div className="flex justify-between pt-2 border-t border-gray-200 mt-2">
-                                <span className="font-bold text-gray-900">합계 (VAT, 배송비 별도)</span>
+                                <span className="font-bold text-gray-900">합계 (VAT 포함, 배송비 별도)</span>
                                 <span className="font-bold text-industrial-600 text-lg">{formatPrice(quoteDetails.total)}</span>
                             </div>
                         </div>

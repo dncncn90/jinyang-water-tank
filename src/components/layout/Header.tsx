@@ -38,10 +38,10 @@ export default function Header() {
     return (
         <div className="sticky top-0 z-50 w-full flex flex-col">
             {/* Top Bar for Business Members */}
-            <div className="bg-industrial-900 text-white text-[11px] sm:text-xs py-2 px-2 text-center w-full relative z-50 shadow-md">
-                <span className="opacity-90 block sm:inline leading-tight">📢 <strong>사업자 회원</strong> 가입 시 즉시 할인 / 세금계산서 100% 발행 가능</span>
+            <div className="bg-industrial-900 text-white text-[10px] sm:text-xs py-2 px-4 text-center w-full relative z-50 shadow-md">
+                <span className="opacity-95 block sm:inline leading-tight break-keep">📢 <strong>사업자 회원</strong> 가입 시 즉시 할인 / 세금계산서 100% 발행 가능</span>
                 <span className="hidden sm:inline mx-2 text-industrial-500">|</span>
-                <span className="text-[#FF4500] font-black block sm:inline mt-1 sm:mt-0 text-[12px] sm:text-sm">문의: 031-236-8227</span>
+                <span className="text-[#FFD400] font-black block sm:inline mt-1 sm:mt-0 text-[11px] sm:text-sm">문의: 031-236-8227</span>
             </div>
 
             <header
@@ -73,8 +73,8 @@ export default function Header() {
 
 
                     <div className="flex lg:hidden items-center gap-2">
-                        <a href="tel:031-236-8227" className="flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white px-2.5 py-1.5 rounded-full text-[11px] font-bold shadow-md transition-transform active:scale-95">
-                            <Phone className="w-3 h-3" />
+                        <a href="tel:031-236-8227" className="flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded-full text-[10px] font-bold shadow-md transition-transform active:scale-95 whitespace-nowrap">
+                            <Phone className="w-2.5 h-2.5" />
                             <span>전화상담</span>
                         </a>
                     </div>
@@ -113,7 +113,17 @@ export default function Header() {
                             도매·견적문의
                         </Link>
 
-                        <div className={`h-4 w-px ${isSolid ? 'bg-gray-300' : 'bg-slate-300'}`}></div>
+                        <a
+                            href="https://blog.naver.com/jypvc-"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`text-sm font-semibold leading-6 transition-colors hover:text-[#03C75A] ${isSolid ? 'text-gray-900' : 'text-slate-800'} flex items-center gap-1 ml-2`}
+                        >
+                            <span className="bg-[#03C75A] text-white text-[10px] px-1.5 py-0.5 rounded-sm font-black tracking-tighter">N</span>
+                            블로그
+                        </a>
+
+                        <div className={`h-4 w-px ${isSolid ? 'bg-gray-300' : 'bg-slate-300'} ml-2`}></div>
 
                         <Link
                             href="/guest/order-lookup"
@@ -166,6 +176,16 @@ export default function Header() {
                                 >
                                     도매·견적문의
                                 </Link>
+                                <a
+                                    href="https://blog.naver.com/jypvc-"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 flex items-center gap-2"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    <span className="bg-[#03C75A] text-white text-[10px] px-1.5 py-0.5 rounded-sm font-black tracking-tighter">N</span>
+                                    공식 블로그
+                                </a>
                             </div>
                             <div className="py-6 border-t border-gray-100 flex flex-col gap-2">
                                 <Link

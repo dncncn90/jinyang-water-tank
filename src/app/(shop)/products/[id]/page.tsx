@@ -257,17 +257,17 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
                             <div class="summary-container">
                                 <div class="summary-box">
-                                    <div class="summary-row">
+                                    <div className="summary-row">
                                         <span>공급가액</span>
-                                        <span>${totalPrice.toLocaleString()} 원</span>
+                                        <span>${(Math.round(totalPrice / 1.1)).toLocaleString()} 원</span>
                                     </div>
-                                    <div class="summary-row">
+                                    <div className="summary-row">
                                         <span>부가세 (VAT)</span>
-                                        <span>${(Math.floor(totalPrice * 0.1)).toLocaleString()} 원</span>
+                                        <span>${(totalPrice - Math.round(totalPrice / 1.1)).toLocaleString()} 원</span>
                                     </div>
-                                    <div class="summary-row total">
-                                        <span class="total-label">총 견적금액</span>
-                                        <span class="total-value">${(totalPrice + Math.floor(totalPrice * 0.1)).toLocaleString()} 원</span>
+                                    <div className="summary-row total">
+                                        <span className="total-label">총 견적금액</span>
+                                        <span className="total-value">${totalPrice.toLocaleString()} 원</span>
                                     </div>
                                     <div class="vat-note">* 위 금액은 부가세가 포함된 최종 입금액입니다.</div>
                                 </div>
@@ -312,9 +312,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                             className="aspect-square bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 relative cursor-zoom-in"
                             onClick={() => setIsZoomed(!isZoomed)}
                         >
-                            <div className={`w-full h-full flex items-center justify-center p-8 transition-transform duration-500 ${isZoomed ? 'scale-150' : 'scale-100'}`}>
+                            <div className={`w-full h-full flex items-center justify-center p-2 transition-transform duration-500 ${isZoomed ? 'scale-150' : 'scale-100'}`}>
                                 {product.images?.[0] ? (
-                                    <img src={product.images[0]} alt={product.name} className="max-w-full max-h-full object-contain drop-shadow-xl" />
+                                    <img src={product.images[0]} alt={product.name} className="w-full h-full object-contain drop-shadow-xl mix-blend-multiply" />
                                 ) : (
                                     <div className="text-gray-300 flex flex-col items-center">
                                         <FileText className="w-16 h-16 mb-2" />
@@ -341,7 +341,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                             <span className="inline-block px-3 py-1 text-xs font-bold text-blue-600 bg-blue-50 rounded-full mb-2">
                                 {isSquare ? '공간활용 최적화' : '대한민국 표준'}
                             </span>
-                            <h1 className="text-3xl lg:text-4xl font-extrabold text-gray-900 leading-tight mb-2">
+                            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 leading-tight mb-2 break-keep">
                                 {product.name}
                             </h1>
                             <p className="text-gray-500 text-sm lg:text-base">
@@ -354,15 +354,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         </div>
 
                         {/* Price Area */}
-                        <div className="mt-8 mb-8 p-6 bg-gray-50 rounded-2xl border border-gray-100">
-                            <div className="flex items-center gap-2 text-sm text-gray-600 bg-white inline-flex px-3 py-1 rounded border border-gray-200">
-                                <Truck className="w-4 h-4 text-industrial-500" />
+                        <div className="mt-6 sm:mt-8 mb-8 p-4 sm:p-6 bg-gray-50 rounded-2xl border border-gray-100">
+                            <div className="flex items-center gap-2 text-[11px] sm:text-sm text-gray-600 bg-white inline-flex px-2.5 py-1 rounded border border-gray-200 mb-4 sm:mb-0">
+                                <Truck className="w-3.5 h-3.5 sm:w-4 h-4 text-industrial-500" />
                                 <span>화물 착불 배송 (지역별 요금 상이)</span>
                             </div>
-                            <div className="border-t border-gray-100 pt-6">
-                                <div className="flex items-baseline gap-2 mb-1">
-                                    <span className="text-3xl font-bold text-industrial-600">{totalPrice.toLocaleString()}원</span>
-                                    <span className="text-sm text-gray-400 font-medium">(VAT 별도)</span>
+                            <div className="border-t border-gray-100 pt-4 sm:pt-6">
+                                <div className="flex flex-wrap items-baseline gap-2 mb-1">
+                                    <span className="text-2xl sm:text-3xl font-bold text-industrial-600">{totalPrice.toLocaleString()}원</span>
+                                    <span className="text-xs sm:text-sm text-gray-400 font-medium">(부가세 포함)</span>
                                 </div>
 
                                 {/* Product Options (Dropdowns) */}

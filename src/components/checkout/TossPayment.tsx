@@ -74,9 +74,13 @@ export default function TossPayment({ amount, orderId, orderName, customerName, 
                 successUrl: `${window.location.origin}/checkout/success`,
                 failUrl: `${window.location.origin}/checkout/fail`,
             });
-        } catch (error) {
+        } catch (error: any) {
             console.error('Payment Request Error:', error);
-            alert('결제 요청 중 오류가 발생했습니다.');
+            if (error.code === 'INVALID_API_KEY' || error.message?.includes('API_KEY')) {
+                alert('결제 키 설정에 오류가 있습니다.\n토스 개발자 센터에서 [결제위젯 연동 키]를 활성화하고 복사해 주세요.');
+            } else {
+                alert(`결제 요청 중 오류가 발생했습니다: ${error.message || '알 수 없는 오류'}`);
+            }
         }
     };
 

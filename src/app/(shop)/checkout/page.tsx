@@ -111,13 +111,46 @@ export default function CheckoutPage() {
         }
 
         setIsSubmitting(true);
-        // Simulate API call for saving order without payment
-        setTimeout(() => {
-            alert('주문서가 접수되었습니다! 빠른 시일 내에 사장님이 직접 운임비 할인 안내 전화를 드리겠습니다.');
+
+        try {
+            const finalAddress = shippingType === 'pickup'
+                ? '방문 수령 (수원시 팔달구 효원로 209-5 진양건재 본점)'
+                : `(${formData.zipcode}) ${formData.address} ${formData.detailAddress}`;
+
+            // 1. 서버에 주문 정보 저장 (결제 방식은 제외됨을 표시하기 위해 paymentMethod 미전달)
+            const response = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ...formData,
+                    address: finalAddress,
+                    totalAmount: totalAmount,
+                    items: items.map(item => ({
+                        productId: item.productId,
+                        name: item.name,
+                        price: item.totalPrice / item.quantity, // 개별 단가 계산
+                        quantity: item.quantity,
+                        options: item.options.map(opt => `${opt.name}: ${opt.value}`).join(', ')
+                    }))
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('주문 접수 중 서버 오류가 발생했습니다.');
+            }
+
+            // 성공 시 처리
+            alert('주문서가 정상적으로 접수되었습니다!\n\n빠른 시일 내에 담당 전문가가 직접 운임비 할인 안내 전화를 드리겠습니다.');
             clearCart();
             setIsSubmitting(false);
             router.push('/');
-        }, 1500);
+
+        } catch (error: any) {
+            console.error('Consultation Submit Error:', error);
+            alert(error.message || '상담 요청 중 오류가 발생했습니다. 다시 시도해 주세요.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleSubmitOrder = async () => {
@@ -420,27 +453,42 @@ export default function CheckoutPage() {
                                     </div>
                                 )}
 
-                                <div className="mt-8 flex flex-col md:flex-row justify-between items-center gap-4 border-t border-gray-100 pt-6">
+                                <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-t border-gray-100 pt-6">
                                     <button onClick={() => setStep(1)} className="text-gray-500 hover:text-gray-700 font-medium px-4 py-2 order-2 md:order-1 w-full md:w-auto">
                                         이전으로
                                     </button>
-                                    <div className="flex flex-col sm:flex-row gap-3 order-1 md:order-2 w-full md:w-auto">
-                                        <button
-                                            onClick={handleConsultationSubmit}
-                                            disabled={isSubmitting}
-                                            className="bg-white border-2 border-industrial-600 text-industrial-700 hover:bg-industrial-50 font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm w-full sm:w-auto"
-                                        >
-                                            <PhoneCall className="w-5 h-5" />
-                                            운임비 상담 후 결제하기
-                                        </button>
-                                        <button
-                                            onClick={handleSubmitOrder}
-                                            disabled={isSubmitting}
-                                            className="bg-industrial-600 hover:bg-industrial-700 text-white font-bold py-4 px-8 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
-                                        >
-                                            {isSubmitting ? '처리중...' : '지금 바로 결제하기'}
-                                            <CreditCard className="w-5 h-5" />
-                                        </button>
+                                    <div className="flex flex-col items-center gap-4 order-1 md:order-2 w-full md:w-auto">
+                                        {/* Happy Call Promise Box */}
+                                        <div className="w-full bg-orange-50 border border-orange-100 rounded-xl p-4 flex items-start gap-3">
+                                            <div className="w-8 h-8 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center shrink-0">
+                                                <PhoneCall className="w-4 h-4" />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-black text-orange-900 mb-0.5 leading-tight">[진양건재 해피콜 약속]</p>
+                                                <p className="text-[13px] text-orange-700 font-medium leading-relaxed break-keep">
+                                                    주문 즉시 <strong className="text-orange-900 underline underline-offset-2">담당 전문가가 직접 전화</strong>드려 고객님께 가장 유리한 <strong className="text-orange-900">최저가 배송비</strong>를 안내해 드립니다. 안심하고 주문하세요!
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex flex-col sm:flex-row gap-3 w-full">
+                                            <button
+                                                onClick={handleConsultationSubmit}
+                                                disabled={isSubmitting}
+                                                className="bg-white border-2 border-industrial-600 text-industrial-700 hover:bg-industrial-50 font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm w-full sm:w-auto flex-1 font-black"
+                                            >
+                                                <PhoneCall className="w-5 h-5" />
+                                                운임비 상담 후 결제하기
+                                            </button>
+                                            <button
+                                                onClick={handleSubmitOrder}
+                                                disabled={isSubmitting}
+                                                className="bg-industrial-600 hover:bg-industrial-700 text-white font-bold py-4 px-8 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto flex-1 font-black"
+                                            >
+                                                {isSubmitting ? '처리중...' : '지금 바로 결제하기'}
+                                                <CreditCard className="w-5 h-5" />
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

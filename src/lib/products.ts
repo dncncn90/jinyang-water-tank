@@ -506,7 +506,7 @@ export const PRODUCTS: Product[] = [
         id: 'fit-lid-series',
         name: '물탱크 뚜껑',
         category: 'fittings',
-        price: 16500,
+        price: 11000,
         description: '3중 구조로 자외선을 차단하여 이끼가 끼지 않는 고강도 물탱크 뚜껑입니다.',
         features: ['100% 규격 호환', '자외선 차단'],
         specs: { capacity: '소/대형', material: 'PE', warranty: '-' },
@@ -518,8 +518,8 @@ export const PRODUCTS: Product[] = [
                 type: 'select',
                 required: true,
                 choices: [
-                    { label: '소형 (직경380mm, ~2톤용) - 16,500원', priceChange: 0 },
-                    { label: '대형 (직경470mm, 3톤 이상) - 24,200원', priceChange: 7700 },
+                    { label: '소형 (직경380mm, ~2톤용) - 11,000원', priceChange: 0 },
+                    { label: '대형 (직경470mm, 3톤 이상) - 22,000원', priceChange: 11000 },
                 ]
             }
         ]

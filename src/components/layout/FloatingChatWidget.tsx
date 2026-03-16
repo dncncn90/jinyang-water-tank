@@ -326,13 +326,13 @@ export default function FloatingChatWidget() {
                 }
 
                 // 번들 예상금액 계산
-                const nipplePriceMap: Record<string, number> = { '15': 1000, '20': 1700, '25': 2700, '32': 5100, '40': 6400, '50': 9900 };
-                const valvePriceMap: Record<string, number> = { '15': 4200, '20': 5700, '25': 10100, '32': 15300, '40': 22500, '50': 33300 };
+                const nipplePriceMap: Record<string, number> = { '15': 1100, '20': 1870, '25': 2970, '32': 5610, '40': 7040, '50': 10890 };
+                const valvePriceMap: Record<string, number> = { '15': 4620, '20': 6270, '25': 11110, '32': 16830, '40': 24750, '50': 36630 };
                 const nippleUnit = nipplePriceMap[nextState.fittingSize!] || 0;
                 const valveUnit = valvePriceMap[nextState.fittingSize!] || 0;
                 const bundleTotal = (nippleUnit + valveUnit) * fCount;
 
-                responseText = `${value === 'bronze' ? '청동(신주)' : 'PE'} 피팅 ${nextState.fittingSize}mm × ${fCount}개 추가 완료!\n\n단니플(${nextState.fittingSize}mm) + 볼밸브(${nextState.fittingSize}mm) ${fCount}세트를 함께 담으시겠어요?\n(${fCount}세트 연결 합계: ${bundleTotal.toLocaleString()}원, 부가세 별도)`;
+                responseText = `${value === 'bronze' ? '청동(신주)' : 'PE'} 피팅 ${nextState.fittingSize}mm × ${fCount}개 추가 완료!\n\n단니플(${nextState.fittingSize}mm) + 볼밸브(${nextState.fittingSize}mm) ${fCount}세트를 함께 담으시겠어요?\n(${fCount}세트 연결 합계: ${bundleTotal.toLocaleString()}원, 부가세 포함)`;
                 nextOptions = [
                     { label: `${fCount}세트 함께 담기 (추천)`, value: 'auto' },
                     { label: '아니요, 직접 선택할게요', value: 'manual' },
@@ -346,8 +346,8 @@ export default function FloatingChatWidget() {
                     // 자동 번들 담기
                     const fSize = quoteState.fittingSize!;
                     const fCount = quoteState.fittingCount || 1;
-                    const nipplePriceMap: Record<string, number> = { '15': 1000, '20': 1700, '25': 2700, '32': 5100, '40': 6400, '50': 9900 };
-                    const valvePriceMap: Record<string, number> = { '15': 10000, '20': 12000, '25': 15000, '40': 25000, '50': 35000 };
+                    const nipplePriceMap: Record<string, number> = { '15': 1100, '20': 1870, '25': 2970, '32': 5610, '40': 7040, '50': 10890 };
+                    const valvePriceMap: Record<string, number> = { '15': 4620, '20': 6270, '25': 11110, '32': 16830, '40': 24750, '50': 36630 };
                     const nippleUnit = nipplePriceMap[fSize] || 0;
                     const valveUnit = valvePriceMap[fSize] || 0;
                     if (nippleUnit) {
@@ -358,7 +358,7 @@ export default function FloatingChatWidget() {
                         nextState.items.push({ name: `황동볼밸브 ${fSize}mm`, price: valveUnit, quantity: fCount });
                         nextState.totalPrice += valveUnit * fCount;
                     }
-                    nextState.step = 'BALLVALVE_SELECTED';
+                    nextState.step = 'BALLTOP_SELECTED'; // 중복 질문 방지를 위해 볼탑 선택 완료 단계로 바로 이동 (이미 볼탑 질문을 출력함)
                     responseText = `단니플 + 볼밸브 ${fCount}세트 자동 추가!\n\n볼탑(수위조절 밸브)이 필요하신가요?\n볼탑은 탱크 안에 부구(플로트)를 달아 일정 수위가 되면 자동으로 물 공급을 차단합니다.`;
                     nextOptions = [
                         { label: '15mm', value: 'balltop_15' },
@@ -407,8 +407,8 @@ export default function FloatingChatWidget() {
                 nextState.step = 'BALLVALVE_SELECTED';
                 if (value !== 'none') {
                     const sizeMap: Record<string, number> = {
-                        'nipple_15': 1000, 'nipple_20': 1700, 'nipple_25': 2700,
-                        'nipple_32': 5100, 'nipple_40': 6400, 'nipple_50': 9900
+                        'nipple_15': 1100, 'nipple_20': 1870, 'nipple_25': 2970,
+                        'nipple_32': 5610, 'nipple_40': 7040, 'nipple_50': 10890
                     };
                     const sizeLabel = value.replace('nipple_', '');
                     const np = sizeMap[value] || 0;
@@ -439,8 +439,8 @@ export default function FloatingChatWidget() {
                 // 직전 단계(단니플 선택 후)에서 넘어온 value가 볼밸브(valve_xx)인지 확인하여 장바구니에 담기
                 if (value !== 'none' && value.startsWith('valve_')) {
                     const valvePriceMap: Record<string, number> = {
-                        'valve_15': 4200, 'valve_20': 5700, 'valve_25': 10100,
-                        'valve_32': 15300, 'valve_40': 22500, 'valve_50': 33300
+                        'valve_15': 4620, 'valve_20': 6270, 'valve_25': 11110,
+                        'valve_32': 16830, 'valve_40': 24750, 'valve_50': 36630
                     };
                     const sizeLabel = value.replace('valve_', '');
                     const valvePrice = valvePriceMap[value] || 0;
@@ -480,7 +480,7 @@ export default function FloatingChatWidget() {
 
                 responseText = `레벨게이지(수위계)가 필요하신가요?\n투명 튜브를 탱크 외부에 연결하여 내부 수위를 눈으로 바로 확인할 수 있습니다. 별도 전원 없이 사용 가능합니다.`;
                 nextOptions = [
-                    { label: '레벨게이지 추가 (30,000원, 부가세 별도)', value: 'yes' },
+                    { label: '레벨게이지 추가 (33,000원, 부가세 포함)', value: 'yes' },
                     { label: '필요없음', value: 'none' }
                 ];
                 nextType = 'options';
@@ -501,12 +501,12 @@ export default function FloatingChatWidget() {
                 if (capacityNum <= 2) {
                     nextOptions = [
                         { label: '추가 뚜껑 필요없음 (기본 포함)', value: 'none' },
-                        { label: '소형 추가 (Ø380mm, 10,000원 부가세별도)', value: 'small' },
+                        { label: '소형 추가 (Ø380mm, 11,000원 부가세 포함)', value: 'small' },
                     ];
                 } else {
                     nextOptions = [
                         { label: '추가 뚜껑 필요없음 (기본 포함)', value: 'none' },
-                        { label: '대형 추가 (Ø470mm, 20,000원 부가세별도)', value: 'large' },
+                        { label: '대형 추가 (Ø470mm, 22,000원 부가세 포함)', value: 'large' },
                     ];
                 }
                 nextType = 'options';
@@ -703,21 +703,21 @@ export default function FloatingChatWidget() {
 
                             <div class="summary-container">
                                 <div class="summary-box">
-                                    <div class="summary-row">
+                                    <div className="summary-row">
                                         <span>공급가액</span>
-                                        <span>${quoteState.totalPrice.toLocaleString()} 원</span>
+                                        <span>${(Math.round(quoteState.totalPrice / 1.1)).toLocaleString()} 원</span>
                                     </div>
-                                    <div class="summary-row">
+                                    <div className="summary-row">
                                         <span>부가세 (VAT)</span>
-                                        <span>${Math.floor(quoteState.totalPrice * 0.1).toLocaleString()} 원</span>
+                                        <span>${(quoteState.totalPrice - Math.round(quoteState.totalPrice / 1.1)).toLocaleString()} 원</span>
                                     </div>
-                                    <div class="summary-row">
-                                        <span style="color: #d97706;">+ 운임 (착불/별도)</span>
-                                        <span style="color: #d97706;">${quoteState.shippingCost.toLocaleString()} 원</span>
+                                    <div className="summary-row">
+                                        <span style={{ color: '#d97706' }}>+ 운임 (착불/별도)</span>
+                                        <span style={{ color: '#d97706' }}>${quoteState.shippingCost.toLocaleString()} 원</span>
                                     </div>
-                                    <div class="summary-row total">
-                                        <span class="total-label">총 견적금액</span>
-                                        <span class="total-value">${(quoteState.totalPrice + Math.floor(quoteState.totalPrice * 0.1)).toLocaleString()} 원</span>
+                                    <div className="summary-row total">
+                                        <span className="total-label">총 견적금액</span>
+                                        <span className="total-value">${quoteState.totalPrice.toLocaleString()} 원</span>
                                     </div>
                                     <div class="vat-note">* 위 금액은 부가세가 포함된 최종 입금액입니다.</div>
                                 </div>
@@ -975,7 +975,7 @@ export default function FloatingChatWidget() {
                                     {quoteState.items.map((item, idx) => (
                                         <div key={idx} className="flex justify-between text-sm py-1">
                                             <span className="text-gray-600">- {item.name} {item.quantity > 1 ? `x${item.quantity}` : ''}</span>
-                                            <span className="font-medium text-gray-800">{item.price.toLocaleString()}원</span>
+                                            <span className="font-medium text-gray-800">{(item.price * item.quantity).toLocaleString()}원</span>
                                         </div>
                                     ))}
 
@@ -986,17 +986,17 @@ export default function FloatingChatWidget() {
 
                                     <div className="flex justify-between text-sm py-1 mt-2">
                                         <span className="text-gray-600">공급가액</span>
-                                        <span className="font-medium text-gray-800">{quoteState.totalPrice.toLocaleString()}원</span>
+                                        <span className="font-medium text-gray-800">{Math.round(quoteState.totalPrice / 1.1).toLocaleString()}원</span>
                                     </div>
 
                                     <div className="flex justify-between text-sm py-1">
-                                        <span className="text-gray-600">부가세(10%)</span>
-                                        <span className="font-medium text-gray-800">{(quoteState.totalPrice * 0.1).toLocaleString()}원</span>
+                                        <span className="text-gray-600">부가세(VAT)</span>
+                                        <span className="font-medium text-gray-800">{(quoteState.totalPrice - Math.round(quoteState.totalPrice / 1.1)).toLocaleString()}원</span>
                                     </div>
 
                                     <div className="flex justify-between items-center pt-2 mt-2 border-t border-gray-100">
                                         <span className="font-bold text-gray-900">최종 제품가</span>
-                                        <span className="font-bold text-industrial-600 text-lg">{(quoteState.totalPrice * 1.1).toLocaleString()}원</span>
+                                        <span className="font-bold text-industrial-600 text-lg">{quoteState.totalPrice.toLocaleString()}원</span>
                                     </div>
                                     <p className="text-[11px] text-gray-400 text-right -mt-2">표시된 금액은 부가세가 포함된 실제 결제 금액입니다.</p>
 
@@ -1023,7 +1023,7 @@ export default function FloatingChatWidget() {
                                     <div className="font-bold text-gray-800 mt-4 mb-1">[운송비 별도 안내]</div>
                                     <ul className="list-disc pl-4 space-y-1 text-gray-500">
                                         <li>제품 가격은 정찰제이나, <b>운송비는 지역 및 배차 상황에 따른 실비(착불)</b>가 적용됩니다.</li>
-                                        <li>과도한 운임이 발생하지 않도록 가장 효율적인 배송 방식을 사장님이 직접 조율해 드립니다.</li>
+                                        <li>과도한 운임이 발생하지 않도록 가장 효율적인 배송 방식을 담당 전문가가 직접 조율해 드립니다.</li>
                                     </ul>
                                 </div>
 
