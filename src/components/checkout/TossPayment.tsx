@@ -44,15 +44,11 @@ export default function TossPayment({ amount, orderId, orderName, customerName, 
                 paymentWidgetRef.current = paymentWidget;
                 paymentMethodsWidgetRef.current = paymentMethodsWidget;
 
-                // Listen for ready event if available to ensure it's fully rendered
-                paymentMethodsWidget.on('ready', () => {
-                   if (isMounted) setIsLoading(false);
-                });
-
-                // Fail-safe in case ready event doesn't fire
+                // According to Toss docs, we should wait a moment or use the built-in events.
+                // If .on is not available, we rely on a safe timeout to ensure iframes load.
                 setTimeout(() => {
-                    if (isMounted && isLoading) setIsLoading(false);
-                }, 1500);
+                    if (isMounted) setIsLoading(false);
+                }, 1000);
 
             } catch (error) {
                 console.error('Error loading Toss Payment Widget:', error);
