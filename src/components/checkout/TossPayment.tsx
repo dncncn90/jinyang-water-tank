@@ -23,10 +23,13 @@ export default function TossPayment({ amount, orderId, orderName, customerName, 
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        let isMounted = true;
         (async () => {
             try {
                 // Load Payment Widget
                 const paymentWidget = await loadPaymentWidget(clientKey, customerKey);
+
+                if (!isMounted) return;
 
                 // Render Payment Methods
                 const paymentMethodsWidget = paymentWidget.renderPaymentMethods(
@@ -41,17 +44,26 @@ export default function TossPayment({ amount, orderId, orderName, customerName, 
                 paymentWidgetRef.current = paymentWidget;
                 paymentMethodsWidgetRef.current = paymentMethodsWidget;
 
-                // Set loading to false after a short delay to ensure rendering completes
+                // Listen for ready event if available to ensure it's fully rendered
+                paymentMethodsWidget.on('ready', () => {
+                   if (isMounted) setIsLoading(false);
+                });
+
+                // Fail-safe in case ready event doesn't fire
                 setTimeout(() => {
-                    setIsLoading(false);
-                }, 500);
+                    if (isMounted && isLoading) setIsLoading(false);
+                }, 1500);
 
             } catch (error) {
                 console.error('Error loading Toss Payment Widget:', error);
-                setIsLoading(false); // Enable anyway on error so user isn't stuck forever, or maybe show error UI
+                if (isMounted) setIsLoading(false);
             }
         })();
-    }, [amount]);
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
 
     useEffect(() => {
         const paymentMethodsWidget = paymentMethodsWidgetRef.current;
@@ -63,7 +75,10 @@ export default function TossPayment({ amount, orderId, orderName, customerName, 
 
     const handlePaymentRequest = async () => {
         const paymentWidget = paymentWidgetRef.current;
-        if (!paymentWidget) return;
+        if (!paymentWidget) {
+            alert('결제 위젯이 초기화되지 않았습니다. 잠시 후 다시 시도해주세요.');
+            return;
+        }
 
         try {
             await paymentWidget.requestPayment({

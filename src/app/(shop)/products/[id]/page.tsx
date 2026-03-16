@@ -556,7 +556,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                             </button>
 
                         </div>
-                        <div className="bg-white p-4 border-t border-gray-100 text-center">
+                        <div className="bg-white p-4 border-t border-gray-100 text-center" onClick={(e) => e.stopPropagation()}>
                             <span className="text-sm text-gray-500 mr-2">이미 회원이신가요?</span>
                             <Link href="/auth/login" className="text-sm font-bold text-industrial-600 hover:underline">
                                 아이디로 로그인

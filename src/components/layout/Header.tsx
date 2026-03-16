@@ -15,14 +15,17 @@ const NAVIGATION = [
 ];
 
 import { usePathname } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
+    const [hasSession, setHasSession] = useState(false);
     const pathname = usePathname();
     const isMainPage = pathname === '/';
     const { getCartItemCount } = useCart();
+    const supabase = createClient();
 
     useEffect(() => {
         setIsMounted(true);
@@ -30,7 +33,23 @@ export default function Header() {
             setScrolled(window.scrollY > 20);
         };
         window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+
+        // Check Auth Profile
+        const checkAuth = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            setHasSession(!!session);
+        };
+        checkAuth();
+
+        // Listen for auth changes
+        const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+            setHasSession(!!session);
+        });
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            authListener?.subscription.unsubscribe();
+        };
     }, []);
 
     const isSolid = scrolled || mobileMenuOpen || !isMainPage;
@@ -125,12 +144,46 @@ export default function Header() {
 
                         <div className={`h-4 w-px ${isSolid ? 'bg-gray-300' : 'bg-slate-300'} ml-2`}></div>
 
-                        <Link
-                            href="/guest/order-lookup"
-                            className={`text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'} flex items-center gap-1`}
-                        >
-                            주문조회
-                        </Link>
+                        {hasSession ? (
+                            <>
+                                <Link
+                                    href="/mypage"
+                                    className={`text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'} flex items-center gap-1`}
+                                >
+                                    마이페이지
+                                </Link>
+                                <button
+                                    onClick={async () => {
+                                        await supabase.auth.signOut();
+                                        window.location.reload();
+                                    }}
+                                    className={`text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'} flex items-center gap-1 whitespace-nowrap`}
+                                >
+                                    로그아웃
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <Link
+                                    href="/login"
+                                    className={`text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'} flex items-center gap-1`}
+                                >
+                                    로그인
+                                </Link>
+                                <Link
+                                    href="/register"
+                                    className={`text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'} flex items-center gap-1`}
+                                >
+                                    회원가입
+                                </Link>
+                                <Link
+                                    href="/guest/order-lookup"
+                                    className={`text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'} flex items-center gap-1 whitespace-nowrap`}
+                                >
+                                    비회원 주문조회
+                                </Link>
+                            </>
+                        )}
 
                         <Link
                             href="/cart"
@@ -203,13 +256,50 @@ export default function Header() {
                                         </span>
                                     )}
                                 </Link>
-                                <Link
-                                    href="/guest/order-lookup"
-                                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 flex items-center gap-2"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                >
-                                    주문조회/마이페이지
-                                </Link>
+                                {hasSession ? (
+                                    <>
+                                        <Link
+                                            href="/mypage"
+                                            className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 flex items-center gap-2"
+                                            onClick={() => setMobileMenuOpen(false)}
+                                        >
+                                            마이페이지
+                                        </Link>
+                                        <button
+                                            onClick={async () => {
+                                                await supabase.auth.signOut();
+                                                window.location.reload();
+                                            }}
+                                            className="-mx-3 w-full text-left block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 flex items-center gap-2"
+                                        >
+                                            로그아웃
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link
+                                            href="/login"
+                                            className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 flex items-center gap-2"
+                                            onClick={() => setMobileMenuOpen(false)}
+                                        >
+                                            로그인
+                                        </Link>
+                                        <Link
+                                            href="/register"
+                                            className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 flex items-center gap-2"
+                                            onClick={() => setMobileMenuOpen(false)}
+                                        >
+                                            회원가입
+                                        </Link>
+                                        <Link
+                                            href="/guest/order-lookup"
+                                            className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 flex items-center gap-2"
+                                            onClick={() => setMobileMenuOpen(false)}
+                                        >
+                                            비회원 주문조회
+                                        </Link>
+                                    </>
+                                )}
                                 <a
                                     href="tel:031-236-8227"
                                     className="-mx-3 mt-4 block rounded-lg px-3 py-2.5 text-base font-bold leading-7 text-white bg-industrial-600 hover:bg-industrial-700 flex items-center justify-center gap-2"
