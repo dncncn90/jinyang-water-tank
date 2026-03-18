@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Store, Send, X, MessageSquare, ChevronRight, CheckCircle2, RotateCcw, Box, Truck, Receipt, Check, ShoppingCart, FileText, CreditCard, Phone } from 'lucide-react';
+import { Store, Send, X, MessageSquare, ChevronRight, CheckCircle2, RotateCcw, Box, Truck, Receipt, Check, ShoppingCart, FileText, CreditCard, Phone, Info, HelpCircle } from 'lucide-react';
 import { PRICING_DB, calculateLogistics, getProductName, PRODUCTS } from '@/lib/products';
 import { useCart } from '@/context/CartContext';
 
@@ -13,6 +13,7 @@ type Message = {
     type?: 'text' | 'product-recommendation' | 'quote-ready' | 'options';
     options?: { label: string; value: string }[];
     productData?: any;
+    helpText?: string;
 };
 
 type QuoteState = {
@@ -40,6 +41,19 @@ type QuoteState = {
     tempUsage?: string;
     recType?: string;
     deliveryMethod?: 'delivery' | 'pickup';
+};
+
+const HELP_TEXTS: Record<string, string> = {
+    'INIT': "좁은 공간엔 사각, 가성비와 안정성은 원형을 추천해요.",
+    'RECOMMENDATION_SHOWN': "0.5톤은 가정용, 2톤 이상은 농공업용으로 가장 많이 써요.",
+    'CAPACITY_SELECTED': "탱크에 구멍을 뚫고 배관을 연결하는 입구예요. 20mm가 표준입니다.",
+    'FITTING_SIZE_SELECTED': "물이 들어오고(입수), 나가고(출수), 청소하는(퇴수) 용도로 3개를 권장해요.",
+    'FITTING_COUNT_SELECTED': "신주(청동)는 금속이라 튼튼하고, PE는 약품이나 식품 탱크에 녹슬지 않아 좋아요.",
+    'FITTING_SELECTED': "밸브가 없으면 물을 잠글 수 없어요! 단니플(연결부)과 볼밸브(스위치) 세트를 추천해요.",
+    'BALLTOP_SELECTED': "물이 꽉 차면 화장실 변기처럼 자동으로 공급을 끊어주는 스마트 부속이에요.",
+    'GAUGE_SELECTED': "탱크 밖에서 물이 얼마나 남았는지 눈으로 바로 확인하는 눈금자예요.",
+    'LID_SELECTED': "기본 1개는 포함! 분실이나 파손에 대비해 예비용이 필요한 분만 선택하세요.",
+    'DELIVERY_METHOD_CHOSEN': "부피가 커서 택배가 안 돼요. 화물(착불)이나 방문(수원)을 골라주세요."
 };
 
 export default function FloatingChatWidget() {
@@ -86,13 +100,14 @@ export default function FloatingChatWidget() {
         return () => window.removeEventListener('open-chat', handleOpenChat);
     }, []);
 
-    const addMessage = (role: 'user' | 'assistant', content: string, type: Message['type'] = 'text', options?: Message['options']) => {
+    const addMessage = (role: 'user' | 'assistant', content: string, type: Message['type'] = 'text', options?: Message['options'], helpText?: string) => {
         setMessages(prev => [...prev, {
             id: Date.now().toString(),
             role,
             content,
             type,
-            options
+            options,
+            helpText
         }]);
     };
 
@@ -205,357 +220,205 @@ export default function FloatingChatWidget() {
                 const shape = value;
                 nextState.step = 'RECOMMENDATION_SHOWN' as any;
                 nextState.recType = shape;
-
                 responseText = `${shape === 'standard' ? '원형' : '사각'} 선택하셨군요!\n필요한 용량을 선택해주세요.`;
-
-                // Construct options based on recType
-                if (shape === 'm_series') {
-                    nextOptions = [
-                        { label: '0.2톤 (가정용, 소형 상가에 적합)', value: '0.2' },
-                        { label: '0.4톤 (가정용, 소형 상가에 적합)', value: '0.4' },
-                        { label: '0.6톤 (가정용, 소형 상가에 적합)', value: '0.6' },
-                        { label: '1톤 (가장 인기 있는 규격입니다! ⭐)', value: '1' },
-                        { label: '2톤 (농업용, 공업용, 대형 건물용)', value: '2' }
-                    ];
-                } else {
-                    nextOptions = [
-                        { label: '0.2톤 (가정용, 소형 상가에 적합)', value: '0.2' },
-                        { label: '0.4톤 (가정용, 소형 상가에 적합)', value: '0.4' },
-                        { label: '0.6톤 (가정용, 소형 상가에 적합)', value: '0.6' },
-                        { label: '1톤 (가장 인기 있는 규격입니다! ⭐)', value: '1' },
-                        { label: '2톤 (농업용, 공업용, 대형 건물용)', value: '2' },
-                        { label: '3톤 (농업용, 공업용, 대형 건물용)', value: '3' },
-                        { label: '4톤 (농업용, 공업용, 대형 건물용)', value: '4' },
-                        { label: '5톤 (농업용, 공업용, 대형 건물용)', value: '5' },
-                        { label: '6톤 (농업용, 공업용, 대형 건물용)', value: '6' },
-                        { label: '8톤 (농업용, 공업용, 대형 건물용)', value: '8' },
-                        { label: '10톤 (농업용, 공업용, 대형 건물용)', value: '10' }
-                    ];
+                nextOptions = [
+                    { label: '0.2톤', value: '0.2' }, { label: '0.4톤', value: '0.4' },
+                    { label: '0.6톤', value: '0.6' }, { label: '1톤', value: '1' },
+                    { label: '2톤', value: '2' }
+                ];
+                if (shape === 'standard') {
+                    nextOptions.push(
+                        { label: '3톤', value: '3' }, { label: '4톤', value: '4' },
+                        { label: '5톤', value: '5' }, { label: '6톤', value: '6' },
+                        { label: '8톤', value: '8' }, { label: '10톤', value: '10' }
+                    );
                 }
                 nextType = 'options';
+                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['RECOMMENDATION_SHOWN']);
             }
 
-            // Step 3: Capacity Selected -> Ask Fitting Size
+            // Step 2: Capacity Selected -> Ask Fitting Size
             else if (quoteState.step === 'RECOMMENDATION_SHOWN') {
                 const cap = value;
                 const dbKey = (quoteState.recType || 'standard') as keyof typeof PRICING_DB.tanks;
                 const basePrice = (PRICING_DB.tanks[dbKey] as any)[cap];
-
                 if (!basePrice) {
-                    responseText = '해당 용량의 가격 정보가 없습니다. 상담원에게 문의해주세요.';
-                    nextType = 'text';
+                    addMessage('assistant', '해당 용량의 가격 정보가 없습니다. 상담원에게 문의해주세요.');
                 } else {
                     nextState.step = 'CAPACITY_SELECTED';
                     nextState.capacity = cap;
                     nextState.type = dbKey as any;
-                    nextState.items = [{
-                        name: `${cap}톤 물탱크 (${getProductName(dbKey)})`,
-                        price: basePrice,
-                        quantity: 1
-                    }];
+                    nextState.items = [{ name: `${cap}톤 물탱크 (${getProductName(dbKey)})`, price: basePrice, quantity: 1 }];
                     nextState.totalPrice = basePrice;
-
-                    responseText = `${cap}톤 선택 완료!\n\n물탱크에 배관을 연결할 피팅 크기를 골라주세요.\n(피팅은 물탱크에 구멍을 뚫고 배관을 연결하는 부속입니다)`;
+                    responseText = `${cap}톤 선택 완료!\n\n물탱크에 배관을 연결할 피팅 크기를 골라주세요.`;
                     nextOptions = [
-                        { label: '15mm (가정용 수도)', value: '15' },
-                        { label: '20mm (가장 많이 쓰는 표준 ⭐)', value: '20' },
-                        { label: '25mm (물 양이 많이 필요할 때)', value: '25' },
-                        { label: '40mm (대형·배수용)', value: '40' },
-                        { label: '50mm (대형·배수용)', value: '50' },
-                        { label: '피팅 필요없음', value: 'none' }
+                        { label: '15mm', value: '15' }, { label: '20mm', value: '20' },
+                        { label: '25mm', value: '25' }, { label: '40mm', value: '40' },
+                        { label: '50mm', value: '50' }, { label: '피팅 필요없음', value: 'none' }
                     ];
                     nextType = 'options';
+                    addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['CAPACITY_SELECTED']);
                 }
             }
 
-            // Step 4: Fitting Size -> 갯수 선택
+            // Step 3: Fitting Size Selected -> If None Jump to Balltop, else Fitting Count
             else if (quoteState.step === 'CAPACITY_SELECTED') {
                 if (value === 'none') {
-                    // 피팅 없음 -> 단니플로 바로
-                    nextState.step = 'FITTING_SELECTED';
-                    responseText = `피팅 없이 진행합니다.\n\n신주단니플이 필요하신가요?\n단니플은 배관과 밸브 사이를 짧게 이어주는 연결 부속입니다.`;
+                    nextState.step = 'BALLTOP_SELECTED'; // Jump to Balltop
+                    responseText = `피팅 없이 진행합니다.\n\n볼탑(자동밸브)이 필요하신가요?`;
                     nextOptions = [
-                        { label: '15mm', value: 'nipple_15' },
-                        { label: '20mm', value: 'nipple_20' },
-                        { label: '25mm', value: 'nipple_25' },
-                        { label: '32mm', value: 'nipple_32' },
-                        { label: '40mm', value: 'nipple_40' },
-                        { label: '50mm', value: 'nipple_50' },
-                        { label: '다니플 필요없음', value: 'none' }
+                        { label: '15mm', value: 'balltop_15' }, { label: '20mm', value: 'balltop_20' },
+                        { label: '25mm', value: 'balltop_25' }, { label: '32mm', value: 'balltop_32' },
+                        { label: '40mm', value: 'balltop_40' }, { label: '50mm', value: 'balltop_50' },
+                        { label: '볼탑 필요없음', value: 'none' }
                     ];
                     nextType = 'options';
+                    addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['BALLTOP_SELECTED']);
                 } else {
                     nextState.step = 'FITTING_SIZE_SELECTED';
                     nextState.fittingSize = value;
-                    responseText = `${value}mm 피팅 선택!\n\n몇 개가 필요하신가요?\n(도움말: 일반적으로 입수・출수・퇴수용으로 3개를 설치합니다)`;
+                    responseText = `${value}mm 피팅 선택!\n\n몇 개가 필요하신가요?`;
                     nextOptions = [
-                        { label: '1개', value: '1' },
-                        { label: '2개', value: '2' },
-                        { label: '3개 (권장: 입수·출수·퇴수용)', value: '3' },
-                        { label: '4개', value: '4' },
+                        { label: '1개', value: '1' }, { label: '2개', value: '2' },
+                        { label: '3개 (권장)', value: '3' }, { label: '4개', value: '4' }
                     ];
                     nextType = 'options';
+                    addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['FITTING_SIZE_SELECTED']);
                 }
             }
 
-            // Step 5: 갯수 -> 재질 선택
+            // Step 4: Fitting Count Selected -> Ask Material
             else if (quoteState.step === 'FITTING_SIZE_SELECTED') {
                 nextState.step = 'FITTING_COUNT_SELECTED';
                 nextState.fittingCount = parseInt(value);
-                responseText = `${value}개로 준비하겠습니다.\n\n피팅 재질을 선택해주세요.\n청동(신주)은 내구성이 우수하고, PE는 부식에 강해 약품·식품용에 적합합니다.`;
+                responseText = `${value}개로 준비하겠습니다.\n\n피팅 재질을 선택해주세요.`;
                 nextOptions = [
-                    { label: '청동(신주) — 내구성 우수, 일반용', value: 'bronze' },
-                    { label: 'PE제작 — 부식없음, 약품·식품용', value: 'pe' },
+                    { label: '청동(신주)', value: 'bronze' },
+                    { label: 'PE제작', value: 'pe' }
                 ];
                 nextType = 'options';
+                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['FITTING_COUNT_SELECTED']);
             }
 
-            // Step 6: 재질 -> 피팅 추가 + 번들 확인
+            // Step 5: Material Selected -> Ask Bundle (Nipple + Valve)
             else if (quoteState.step === 'FITTING_COUNT_SELECTED') {
                 nextState.step = 'FITTING_SELECTED';
                 nextState.fittingType = value as 'bronze' | 'pe';
                 const fCount = nextState.fittingCount || 1;
                 const fitUnitPrice = (PRICING_DB.fittings as any)[value]?.[nextState.fittingSize!] || 0;
                 if (fitUnitPrice) {
-                    nextState.items.push({
-                        name: `${value === 'bronze' ? '청동' : 'PE'} 피팅 ${nextState.fittingSize}mm`,
-                        price: fitUnitPrice,
-                        quantity: fCount
-                    });
+                    nextState.items.push({ name: `${value === 'bronze' ? '청동' : 'PE'} 피팅 ${nextState.fittingSize}mm`, price: fitUnitPrice, quantity: fCount });
                     nextState.totalPrice += fitUnitPrice * fCount;
                 }
-
-                // 번들 예상금액 계산
-                const nipplePriceMap: Record<string, number> = { '15': 1100, '20': 1870, '25': 2970, '32': 5610, '40': 7040, '50': 10890 };
-                const valvePriceMap: Record<string, number> = { '15': 4620, '20': 6270, '25': 11110, '32': 16830, '40': 24750, '50': 36630 };
-                const nippleUnit = nipplePriceMap[nextState.fittingSize!] || 0;
-                const valveUnit = valvePriceMap[nextState.fittingSize!] || 0;
-                const bundleTotal = (nippleUnit + valveUnit) * fCount;
-
-                responseText = `${value === 'bronze' ? '청동(신주)' : 'PE'} 피팅 ${nextState.fittingSize}mm × ${fCount}개 추가 완료!\n\n단니플(${nextState.fittingSize}mm) + 볼밸브(${nextState.fittingSize}mm) ${fCount}세트를 함께 담으시겠어요?\n(${fCount}세트 연결 합계: ${bundleTotal.toLocaleString()}원, 부가세 포함)`;
+                responseText = `${value === 'bronze' ? '청동(신주)' : 'PE'} 피팅 ${nextState.fittingSize}mm × ${fCount}개 추가 완료!\n\n단니플(${nextState.fittingSize}mm) + 볼밸브(${nextState.fittingSize}mm) ${fCount}세트를 함께 담으시겠어요?`;
                 nextOptions = [
                     { label: `${fCount}세트 함께 담기 (추천)`, value: 'auto' },
-                    { label: '아니요, 직접 선택할게요', value: 'manual' },
+                    { label: '아니요, 직접 선택할게요', value: 'manual' }
                 ];
                 nextType = 'options';
+                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['FITTING_SELECTED']);
             }
 
-            // Step 7 (번들/개별): 단니플+볼밸브 처리
+            // Step 6: Bundle Choice -> Jump to Balltop
             else if (quoteState.step === 'FITTING_SELECTED') {
                 if (value === 'auto') {
-                    // 자동 번들 담기
                     const fSize = quoteState.fittingSize!;
                     const fCount = quoteState.fittingCount || 1;
                     const nipplePriceMap: Record<string, number> = { '15': 1100, '20': 1870, '25': 2970, '32': 5610, '40': 7040, '50': 10890 };
                     const valvePriceMap: Record<string, number> = { '15': 4620, '20': 6270, '25': 11110, '32': 16830, '40': 24750, '50': 36630 };
                     const nippleUnit = nipplePriceMap[fSize] || 0;
                     const valveUnit = valvePriceMap[fSize] || 0;
-                    if (nippleUnit) {
-                        nextState.items.push({ name: `신주단니플 ${fSize}mm`, price: nippleUnit, quantity: fCount });
-                        nextState.totalPrice += nippleUnit * fCount;
-                    }
-                    if (valveUnit) {
-                        nextState.items.push({ name: `황동볼밸브 ${fSize}mm`, price: valveUnit, quantity: fCount });
-                        nextState.totalPrice += valveUnit * fCount;
-                    }
-                    nextState.step = 'BALLTOP_SELECTED'; // 중복 질문 방지를 위해 볼탑 선택 완료 단계로 바로 이동 (이미 볼탑 질문을 출력함)
-                    responseText = `단니플 + 볼밸브 ${fCount}세트 자동 추가!\n\n볼탑(수위조절 밸브)이 필요하신가요?\n볼탑은 탱크 안에 부구(플로트)를 달아 일정 수위가 되면 자동으로 물 공급을 차단합니다.`;
-                    nextOptions = [
-                        { label: '15mm', value: 'balltop_15' },
-                        { label: '20mm', value: 'balltop_20' },
-                        { label: '25mm', value: 'balltop_25' },
-                        { label: '32mm', value: 'balltop_32' },
-                        { label: '40mm', value: 'balltop_40' },
-                        { label: '50mm', value: 'balltop_50' },
-                        { label: '볼탑 필요없음', value: 'none' }
-                    ];
-                    nextType = 'options';
-                } else if (value === 'manual') {
-                    // 직접 선택 -> 단니플부터
-                    nextState.step = 'NIPPLE_SELECTED';
-                    const tip = quoteState.fittingSize ? `\n\n💡 팁: 피팅 ${quoteState.fittingSize}mm에 맞춰 ${quoteState.fittingSize}mm를 추천합니다.` : '';
-                    responseText = `단니플 규격을 선택해주세요.\n단니플은 배관과 밸브 사이를 짧게 이어주는 연결 부속입니다.${tip}`;
-                    nextOptions = [
-                        { label: '15mm', value: 'nipple_15' },
-                        { label: '20mm', value: 'nipple_20' },
-                        { label: '25mm', value: 'nipple_25' },
-                        { label: '32mm', value: 'nipple_32' },
-                        { label: '40mm', value: 'nipple_40' },
-                        { label: '50mm', value: 'nipple_50' },
-                        { label: '단니플 필요없음', value: 'none' }
-                    ];
-                    nextType = 'options';
-                } else {
-                    // 피팅 없음 경로: 단니플부터 시작
-                    nextState.step = 'NIPPLE_SELECTED';
-                    responseText = `단니플 규격을 선택해주세요.\n단니플은 배관과 밸브 사이를 짧게 이어주는 연결 부속입니다.`;
-                    nextOptions = [
-                        { label: '15mm', value: 'nipple_15' },
-                        { label: '20mm', value: 'nipple_20' },
-                        { label: '25mm', value: 'nipple_25' },
-                        { label: '32mm', value: 'nipple_32' },
-                        { label: '40mm', value: 'nipple_40' },
-                        { label: '50mm', value: 'nipple_50' },
-                        { label: '단니플 필요없음', value: 'none' }
-                    ];
-                    nextType = 'options';
+                    if (nippleUnit) { nextState.items.push({ name: `신주단니플 ${fSize}mm`, price: nippleUnit, quantity: fCount }); nextState.totalPrice += nippleUnit * fCount; }
+                    if (valveUnit) { nextState.items.push({ name: `황동볼밸브 ${fSize}mm`, price: valveUnit, quantity: fCount }); nextState.totalPrice += valveUnit * fCount; }
                 }
-            }
-
-            // Step 8 (수동): 단니플 선택 -> 볼밸브 묻기
-            else if (quoteState.step === 'NIPPLE_SELECTED') {
-                nextState.step = 'BALLVALVE_SELECTED';
-                if (value !== 'none') {
-                    const sizeMap: Record<string, number> = {
-                        'nipple_15': 1100, 'nipple_20': 1870, 'nipple_25': 2970,
-                        'nipple_32': 5610, 'nipple_40': 7040, 'nipple_50': 10890
-                    };
-                    const sizeLabel = value.replace('nipple_', '');
-                    const np = sizeMap[value] || 0;
-                    const fCount = quoteState.fittingCount || 1; // 갯수 유지
-                    nextState.items.push({ name: `신주단니플 ${sizeLabel}mm`, price: np, quantity: fCount });
-                    nextState.totalPrice += np * fCount;
-                    nextState.nippleSize = sizeLabel;
-                }
-
-                const valveTip = quoteState.fittingSize && quoteState.fittingSize !== 'none' ? `\n\n💡 팁: 피팅이 ${quoteState.fittingSize}mm이므로, 볼밸브도 ${quoteState.fittingSize}mm를 추천합니다.` : '';
-                responseText = `황동볼밸브 규격을 선택해주세요.\n볼밸브는 물 흐름을 제어하는 개폐 밸브입니다.${valveTip}`;
-                nextOptions = [
-                    { label: '15mm', value: 'valve_15' },
-                    { label: '20mm', value: 'valve_20' },
-                    { label: '25mm', value: 'valve_25' },
-                    { label: '32mm', value: 'valve_32' },
-                    { label: '40mm', value: 'valve_40' },
-                    { label: '50mm', value: 'valve_50' },
-                    { label: '볼밸브 필요없음', value: 'none' }
-                ];
-                nextType = 'options';
-            }
-
-            // Step 8: 볼밸브 선택 -> 볼탑
-            else if (quoteState.step === 'BALLVALVE_SELECTED') {
                 nextState.step = 'BALLTOP_SELECTED';
-
-                // 직전 단계(단니플 선택 후)에서 넘어온 value가 볼밸브(valve_xx)인지 확인하여 장바구니에 담기
-                if (value !== 'none' && value.startsWith('valve_')) {
-                    const valvePriceMap: Record<string, number> = {
-                        'valve_15': 4620, 'valve_20': 6270, 'valve_25': 11110,
-                        'valve_32': 16830, 'valve_40': 24750, 'valve_50': 36630
-                    };
-                    const sizeLabel = value.replace('valve_', '');
-                    const valvePrice = valvePriceMap[value] || 0;
-                    const fCount = quoteState.fittingCount || 1; // 갯수 유지
-                    nextState.items.push({ name: `황동볼밸브 ${sizeLabel}mm`, price: valvePrice, quantity: fCount });
-                    nextState.totalPrice += valvePrice * fCount;
-                    nextState.ballvalveSize = sizeLabel;
-                }
-
-                responseText = `볼탑(수위조절 밸브)이 필요하신가요?\n볼탑은 탱크 안에 부구(플로트)를 달아 일정 수위가 되면 자동으로 물 공급을 차단합니다.`;
+                responseText = `볼탑(자동밸브)이 필요하신가요?`;
                 nextOptions = [
-                    { label: '15mm', value: 'balltop_15' },
-                    { label: '20mm', value: 'balltop_20' },
-                    { label: '25mm', value: 'balltop_25' },
-                    { label: '32mm', value: 'balltop_32' },
-                    { label: '40mm', value: 'balltop_40' },
-                    { label: '50mm', value: 'balltop_50' },
+                    { label: '15mm', value: 'balltop_15' }, { label: '20mm', value: 'balltop_20' },
+                    { label: '25mm', value: 'balltop_25' }, { label: '32mm', value: 'balltop_32' },
+                    { label: '40mm', value: 'balltop_40' }, { label: '50mm', value: 'balltop_50' },
                     { label: '볼탑 필요없음', value: 'none' }
                 ];
                 nextType = 'options';
+                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['BALLTOP_SELECTED']);
             }
 
-            // Step 9: 볼탑 선택 -> 레벨게이지
+            // Step 7: Balltop Selected -> Ask Gauge
             else if (quoteState.step === 'BALLTOP_SELECTED') {
                 nextState.step = 'GAUGE_SELECTED';
                 if (value !== 'none') {
-                    const balltopPriceMap: Record<string, number> = {
-                        'balltop_15': 7600, 'balltop_20': 11700, 'balltop_25': 13600,
-                        'balltop_32': 34700, 'balltop_40': 44100, 'balltop_50': 67800
-                    };
+                    const balltopPriceMap: Record<string, number> = { 'balltop_15': 7600, 'balltop_20': 11700, 'balltop_25': 13600, 'balltop_32': 34700, 'balltop_40': 44100, 'balltop_50': 67800 };
                     const sizeLabel = value.replace('balltop_', '');
                     const balltopPrice = balltopPriceMap[value] || 0;
                     nextState.items.push({ name: `볼탑 ${sizeLabel}mm`, price: balltopPrice, quantity: 1 });
                     nextState.totalPrice += balltopPrice;
-                    nextState.balltopSize = sizeLabel;
                 }
-
-                responseText = `레벨게이지(수위계)가 필요하신가요?\n투명 튜브를 탱크 외부에 연결하여 내부 수위를 눈으로 바로 확인할 수 있습니다. 별도 전원 없이 사용 가능합니다.`;
+                responseText = `레벨게이지(수위계)가 필요하신가요?`;
                 nextOptions = [
-                    { label: '레벨게이지 추가 (33,000원, 부가세 포함)', value: 'yes' },
+                    { label: '레벨게이지 추가 (+33,000원)', value: 'yes' },
                     { label: '필요없음', value: 'none' }
                 ];
                 nextType = 'options';
+                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['GAUGE_SELECTED']);
             }
 
-            // Step 10: 레벨게이지 -> 추가 뚜껑
+            // Step 8: Gauge Selected -> Ask Lid
             else if (quoteState.step === 'GAUGE_SELECTED') {
                 nextState.step = 'LID_SELECTED';
                 if (value !== 'none') {
                     nextState.hasGauge = true;
-                    nextState.items.push({ name: '레벨게이지(수위계)', price: 30000, quantity: 1 });
-                    nextState.totalPrice += 30000;
+                    nextState.items.push({ name: '레벨게이지(수위계)', price: 33000, quantity: 1 });
+                    nextState.totalPrice += 33000;
                 }
-
-                responseText = `물탱크 뚜껑은 기본 1개 포함입니다.\n뚜껑이 추가로 더 필요하신가요? (특수 설치 시 필요)`;
-                // 용량에 따라 뚜껑 규격 자동 매칭
+                responseText = `물탱크 뚜껑은 기본 1개 포함입니다.\n추가 예비용 뚜껑이 더 필요하신가요?`;
                 const capacityNum = parseFloat(quoteState.capacity || '1');
                 if (capacityNum <= 2) {
                     nextOptions = [
-                        { label: '추가 뚜껑 필요없음 (기본 포함)', value: 'none' },
-                        { label: '소형 추가 (Ø380mm, 11,000원 부가세 포함)', value: 'small' },
+                        { label: '추가 필요없음 (기본 포함)', value: 'none' },
+                        { label: '소형 추가 (+11,000원)', value: 'small' }
                     ];
                 } else {
                     nextOptions = [
-                        { label: '추가 뚜껑 필요없음 (기본 포함)', value: 'none' },
-                        { label: '대형 추가 (Ø470mm, 22,000원 부가세 포함)', value: 'large' },
+                        { label: '추가 필요없음 (기본 포함)', value: 'none' },
+                        { label: '대형 추가 (+22,000원)', value: 'large' }
                     ];
                 }
                 nextType = 'options';
+                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['LID_SELECTED']);
             }
 
-            // Step 11: 뚜껑 -> 배송 방법
+            // Step 9: Lid Selected -> Delivery Method
             else if (quoteState.step === 'LID_SELECTED') {
                 nextState.step = 'DELIVERY_METHOD_CHOSEN';
-
-                // 직전 단계 뚜껑 선택 저장
-                nextState.lid = value as 'small' | 'large' | 'none';
+                nextState.lid = value as any;
                 if (value !== 'none') {
                     const isSmall = value === 'small';
                     const lidPrice = PRICING_DB.lids[value as 'small' | 'large'];
-                    const label = isSmall ? '소형 Ø380mm' : '대형 Ø470mm';
-                    nextState.items.push({ name: `물탱크 뚜껑 추가 (${label})`, price: lidPrice, quantity: 1 });
+                    nextState.items.push({ name: `물탱크 뚜껑 추가 (${isSmall ? '소형' : '대형'})`, price: lidPrice, quantity: 1 });
                     nextState.totalPrice += lidPrice;
                 }
-
-                responseText = `마지막으로 수령 방법을 선택해주세요.\n\n💡 타공 위치는 걱정 마세요! 주문 확인 후 진양건재 전문가가 직접 전화(해피콜)를 드려 꼼꼼히 체크해 드립니다.`;
+                responseText = `마지막으로 수령 방법을 선택해주세요.`;
                 nextOptions = [
                     { label: '화물 배송 (착불)', value: 'delivery' },
-                    { label: '방문 수령 (수원 팔달구 효원로 / 운임 0원)', value: 'pickup' }
+                    { label: '방문 수령 (수원 / 운임 0원)', value: 'pickup' }
                 ];
                 nextType = 'options';
+                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['DELIVERY_METHOD_CHOSEN']);
             }
 
-            // Step 12: 배송 수단(DELIVERY_METHOD_CHOSEN) -> 주소 입력 또는 방문수령 완료
-            else if (quoteState.step === 'DELIVERY_METHOD_CHOSEN' && !quoteState.deliveryMethod) {
-                nextState.deliveryMethod = value as 'delivery' | 'pickup';
+            // Step 10: Delivery Method -> Done or Address
+            else if (quoteState.step === 'DELIVERY_METHOD_CHOSEN') {
+                nextState.deliveryMethod = value as any;
                 if (value === 'pickup') {
-                    // 방문 수령일 경우엔 주소입력 생략하고 바로 DONE
                     calculateFinalQuote('pickup', '방문 수령');
                 } else {
-                    // 화물 배송은 주소를 입력받기 위해 text 타입으로 전환
-                    nextState.step = 'DELIVERY_METHOD_CHOSEN'; // 상태 유지하며 텍스트 응답 기다림
                     responseText = `배송받으실 주소(동/읍/면 단위)를 입력해주세요.\n(예: 경기도 화성시 남양읍)`;
                     nextType = 'text';
+                    addMessage('assistant', responseText, nextType);
                 }
-            }
-
-            // Step 13: 주소 입력 (텍스트) -> 완료
-            else if (quoteState.step === 'DELIVERY_METHOD_CHOSEN' && quoteState.deliveryMethod === 'delivery' && value) {
-                calculateFinalQuote('delivery', value);
-                return; // 상태 업데이트는 calculateFinalQuote 안에서 이루어짐
             }
 
             setQuoteState(nextState);
-            addMessage('assistant', responseText, nextType, nextOptions);
 
         }, 600);
     };
@@ -873,8 +736,16 @@ export default function FloatingChatWidget() {
 
                                     <div className="space-y-2 w-full">
                                         {msg.content && (
-                                            <div className={`px-3.5 py-2.5 rounded-xl text-sm whitespace-pre-wrap leading-relaxed shadow-sm ${msg.role === 'user' ? 'bg-industrial-600 text-white rounded-tr-none' : 'bg-white text-gray-900 border border-gray-200 rounded-tl-none font-medium'}`}>
-                                                {msg.content}
+                                            <div className="relative group/msg max-w-full">
+                                                <div className={`px-3.5 py-2.5 rounded-xl text-sm whitespace-pre-wrap leading-relaxed shadow-sm ${msg.role === 'user' ? 'bg-industrial-600 text-white rounded-tr-none' : 'bg-white text-gray-900 border border-gray-200 rounded-tl-none font-medium'}`}>
+                                                    {msg.content}
+                                                </div>
+                                                {msg.helpText && (
+                                                    <div className="mt-1.5 flex items-center gap-1.5 px-2 py-1 bg-blue-50 border border-blue-100 rounded-lg text-[11px] text-blue-700 animate-in fade-in slide-in-from-top-1">
+                                                        <Info className="w-3.5 h-3.5 shrink-0" />
+                                                        <span>{msg.helpText}</span>
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
 
@@ -929,6 +800,20 @@ export default function FloatingChatWidget() {
                         )}
                     </div>
 
+                    {/* Live Total Amount Floating Bar */}
+                    {quoteState.step !== 'INIT' && quoteState.step !== 'DONE' && (
+                        <div className="px-4 py-2 bg-industrial-50 border-t border-industrial-100 flex justify-between items-center shrink-0 animate-in slide-in-from-bottom-2">
+                            <div className="flex items-center gap-2">
+                                <ShoppingCart className="w-4 h-4 text-industrial-500" />
+                                <span className="text-xs font-bold text-industrial-700">현재 예상 합계</span>
+                            </div>
+                            <div className="text-right">
+                                <span className="text-sm font-black text-industrial-900">{quoteState.totalPrice.toLocaleString()}원</span>
+                                <p className="text-[10px] text-industrial-400 -mt-0.5">(배송비 제외)</p>
+                            </div>
+                        </div>
+                    )}
+
                     {!showQuoteModal && (
                         <div className="p-4 bg-white border-t border-gray-100 shrink-0">
                             <div className="relative flex items-center">
@@ -956,14 +841,24 @@ export default function FloatingChatWidget() {
                         <div className="absolute inset-0 z-[60] bg-white flex flex-col animate-in slide-in-from-bottom-10 duration-200">
                             <div className="flex justify-between items-center p-4 border-b border-gray-100">
                                 <h3 className="font-bold text-lg text-gray-900">
-                                    견적서 요약
+                                    최종 견적서 요약
                                 </h3>
                                 <button onClick={() => setShowQuoteModal(false)} className="text-gray-400 hover:text-gray-600">
                                     <X className="w-6 h-6" />
                                 </button>
                             </div>
 
-                            <div className="flex-1 p-6 overflow-y-auto bg-gray-50 flex flex-col gap-6">
+                            <div className="flex-1 p-6 overflow-y-auto bg-gray-50 flex flex-col gap-4">
+                                {/* Reassurance Message */}
+                                <div className="bg-green-50 border border-green-100 p-4 rounded-xl flex items-start gap-3 animate-in fade-in slide-in-from-top-2">
+                                    <div className="bg-green-100 p-1.5 rounded-full text-green-600 shrink-0">
+                                        <Phone className="w-4 h-4" />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-sm font-black text-green-900">걱정 마세요!</p>
+                                        <p className="text-xs text-green-800 leading-tight">결제 전 전문가가 직접 전화를 드려 규격과 타공 위치를 한 번 더 꼼꼼히 확인해 드립니다.</p>
+                                    </div>
+                                </div>
 
                                 {/* 1. QUOTE SUMMARY VIEW */}
                                 <div className="bg-white border border-gray-200 p-5 rounded-xl shadow-sm space-y-3">
@@ -1039,7 +934,7 @@ export default function FloatingChatWidget() {
                                         className="w-full bg-[#FF4500] hover:bg-[#E63E00] text-white font-bold py-4 px-4 rounded-xl shadow-md transition-colors flex justify-center items-center gap-2 text-lg"
                                     >
                                         <CreditCard className="w-5 h-5" />
-                                        바로 결제하기 (카드/무통장입금)
+                                        무통장 입금으로 주문하기
                                     </button>
 
                                     <button

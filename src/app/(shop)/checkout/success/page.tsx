@@ -9,6 +9,7 @@ function SuccessContent() {
     const searchParams = useSearchParams();
     const orderId = searchParams.get('orderId');
     const amount = searchParams.get('amount') || '0';
+    const type = searchParams.get('type') || 'delivery';
 
     // 결제 성공 (무통장 입금 안내)
     return (
@@ -20,10 +21,12 @@ function SuccessContent() {
                         <CheckCircle className="w-10 h-10 text-[#0ea5e9]" />
                     </div>
                     <h1 className="text-3xl font-bold text-gray-900 mb-4">주문이 완료되었습니다!</h1>
-                    <div className="bg-orange-50 border border-orange-100 rounded-xl p-5 inline-block text-left mb-2 max-w-lg">
-                        <p className="text-orange-900 font-bold mb-2 break-keep text-lg">건자재 특성상 지역별 운임비 확인이 필요합니다.</p>
+                    <div className="bg-orange-50 border border-orange-100 rounded-xl p-5 inline-block text-left mb-2 max-w-lg w-full">
+                        <p className="text-orange-900 font-bold mb-2 break-keep text-lg">
+                            {type === 'delivery' ? '건자재 특성상 지역별 운임비 확인이 필요합니다.' : '방문 수령 전 피팅(타공) 위치 확인 등 상담이 필요합니다.'}
+                        </p>
                         <p className="text-orange-800 text-sm leading-relaxed break-keep font-medium">
-                            담당자가 기재하신 번호로 곧 연락드려 최종 금액을 안내해 드리겠습니다.<br/>
+                            담당자가 기재하신 번호로 곧 연락드려 {type === 'delivery' ? '최종 금액을 안내해' : '수령 일정과 피팅 위치를 확인해'} 드리겠습니다.<br/>
                             <strong className="text-red-500 font-extrabold text-base bg-red-50 px-1 py-0.5 rounded mt-1 inline-block">전화 상담 전에는 입금을 잠시 기다려 주세요.</strong>
                         </p>
                     </div>
@@ -53,7 +56,7 @@ function SuccessContent() {
                                 <span className="text-gray-600 font-medium">배송 예정일</span>
                                 <div className="text-right">
                                     <span className="bg-[#f97316] text-white text-xs font-bold px-2 py-0.5 rounded-full mb-1 inline-block">확인 예정</span>
-                                    <p className="text-gray-900 font-semibold">주문일로부터 3~5일 이내</p>
+                                    <p className="text-gray-900 font-semibold">주문일로부터 1~2일 이내</p>
                                     <p className="text-gray-500 text-sm">(개별 해피콜 예정)</p>
                                 </div>
                             </div>
@@ -106,7 +109,7 @@ function SuccessContent() {
                         <div className="mt-8 pt-6 border-t border-gray-100">
                             <p className="text-sm text-center text-gray-600 font-medium leading-relaxed break-keep">
                                 <span className="text-industrial-600 font-black">잠시만 기다려주세요!</span> 담당 전문가가 주문 내역을 확인한 후, <br />
-                                24시간 이내에 직접 전화를 드려 <strong className="text-orange-600 font-black text-base italic">최저가 운임비</strong>를 맞춰드리겠습니다.
+                                바로 직접 전화를 드려 <strong className="text-orange-600 font-black text-base italic">{type === 'delivery' ? '최저가 운임비' : '피팅(타공) 위치 등'}</strong>를 맞춰드리겠습니다.
                             </p>
                         </div>
                     </div>

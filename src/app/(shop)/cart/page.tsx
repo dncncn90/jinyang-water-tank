@@ -288,10 +288,7 @@ export default function CartPage() {
                                                     <div className="w-1.5 h-1.5 rounded-full bg-gray-500"></div>
                                                     세금계산서 및 현금영수증 발행 가능
                                                 </div>
-                                                <div className="flex items-center gap-3 text-sm text-orange-400 font-black">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-orange-600"></div>
-                                                    배송비 미포함 (현장 착불 결제)
-                                                </div>
+
                                             </div>
                                         </div>
                                     </div>

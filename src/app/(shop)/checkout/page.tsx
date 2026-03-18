@@ -141,7 +141,7 @@ export default function CheckoutPage() {
 
             if (response.ok && data.success) {
                 // clearCart(); // 결제 완료된 후(/checkout/success 등)에서 비우도록 변경합니다. 
-                router.push(`/checkout/success?orderId=${data.orderId}&amount=${totalAmount}`);
+                router.push(`/checkout/success?orderId=${data.orderId}&amount=${totalAmount}&type=${shippingType}`);
             } else {
                 alert(data.error || '주문 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
             }
@@ -231,11 +231,11 @@ export default function CheckoutPage() {
                                     ))}
                                 </div>
 
-                                <div className="flex justify-between border-t border-gray-100 pt-6">
+                                <div className="flex justify-between border-t border-gray-100 pt-6 lg:hidden">
                                     <span className="text-lg font-bold text-gray-900">결제 예정 금액</span>
                                     <span className="text-2xl font-bold text-industrial-600">{cartTotal.toLocaleString()}원</span>
                                 </div>
-                                <p className="text-right text-xs text-gray-400 mt-1">* VAT 포함 / 화물 운임 기사님 현장 결제 (착불)</p>
+                                <p className="text-right text-xs text-gray-400 mt-1 lg:hidden">* VAT 포함 / 화물 운임 기사님 현장 결제 (착불)</p>
 
                                 <div className="mt-8 flex justify-end">
                                     <button onClick={handleNext} className="bg-industrial-600 hover:bg-industrial-700 text-white font-bold py-4 px-8 rounded-xl flex items-center gap-2 transition-colors shadow-lg shadow-industrial-100">
@@ -366,7 +366,7 @@ export default function CheckoutPage() {
                                             onChange={handleInputChange}
                                             rows={2}
                                             className="w-full bg-gray-50 border border-gray-200 rounded-lg p-3.5 focus:ring-2 focus:ring-industrial-500 focus:border-transparent font-medium"
-                                            placeholder="예: 도착 전 전화주세요, 부재 시 경비실에 맡겨주세요"
+                                            placeholder="예: 타공 위치(바닥면으로부터 10cm 지점에 뚫어주세요), 부재 시 경비실 보관 등"
                                         />
                                     </div>
                                 </div>
@@ -409,7 +409,15 @@ export default function CheckoutPage() {
                                             <div>
                                                 <p className="text-sm font-black text-orange-900 mb-0.5 leading-tight">[진양건재 해피콜 약속]</p>
                                                 <p className="text-[13px] text-orange-700 font-medium leading-relaxed break-keep">
-                                                    주문 즉시 <strong className="text-orange-900 underline underline-offset-2">담당 전문가가 직접 전화</strong>드려 고객님께 가장 유리한 <strong className="text-orange-900">최저가 배송비</strong>를 안내해 드립니다. 안심하고 주문하세요!
+                                                    {shippingType === 'delivery' ? (
+                                                        <>
+                                                            주문 즉시 <strong className="text-orange-900 underline underline-offset-2">담당 전문가가 직접 전화</strong>드려 고객님께 가장 유리한 <strong className="text-orange-900">최저가 배송비</strong>를 안내해 드립니다. 안심하고 주문하세요!
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            주문 즉시 <strong className="text-orange-900 underline underline-offset-2">담당 전문가가 직접 전화</strong>드려 수령 일정 및 피팅(타공) 위치 확인 등 세부 사항을 안내해 드립니다. 안심하고 주문하세요!
+                                                        </>
+                                                    )}
                                                 </p>
                                             </div>
                                         </div>
@@ -493,9 +501,7 @@ export default function CheckoutPage() {
                                         <p className="text-[10px] text-gray-400 font-medium">
                                             * 세금계산서 및 현금영수증 발행 가능
                                         </p>
-                                        <p className="text-[10px] text-orange-400 font-bold">
-                                            * 배송비 미포함 (현장 착불 결제)
-                                        </p>
+
                                     </div>
                                 </div>
 
