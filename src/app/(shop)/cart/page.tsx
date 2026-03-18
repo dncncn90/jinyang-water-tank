@@ -311,7 +311,7 @@ export default function CartPage() {
                                                 : 'bg-industrial-600 hover:bg-industrial-700 shadow-industrial-200/50'
                                                 } text-white`}
                                         >
-                                            <span className="text-lg whitespace-nowrap">바로 결제하기</span>
+                                            <span className="text-lg whitespace-nowrap">무통장 입금으로 주문하기</span>
                                             <ArrowRight className="w-5 h-5 ml-2" />
                                         </Link>
                                         <a

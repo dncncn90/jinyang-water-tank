@@ -470,7 +470,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                             className="flex-1 bg-industrial-600 text-white font-bold py-4 rounded-xl hover:bg-industrial-700 transition-colors shadow-lg shadow-industrial-200 flex items-center justify-center gap-2"
                                         >
                                             <CreditCard className="w-5 h-5" />
-                                            바로 구매하기
+                                            무통장 입금 주문하기
                                         </button>
                                     </div>
 

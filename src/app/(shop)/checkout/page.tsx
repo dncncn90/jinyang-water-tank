@@ -6,7 +6,6 @@ import { ShoppingBag, ChevronRight, Check, User, AlertCircle, FileText, CreditCa
 import { useCart } from '@/context/CartContext';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import TossPayment from '@/components/checkout/TossPayment';
 import { useDaumPostcodePopup } from 'react-daum-postcode';
 import { calculateShippingCost } from '@/lib/shipping';
 
@@ -25,7 +24,6 @@ export default function CheckoutPage() {
     });
 
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [orderId, setOrderId] = useState('');
 
     // If data is loaded later from context
     useMemo(() => {
@@ -99,60 +97,6 @@ export default function CheckoutPage() {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleConsultationSubmit = async () => {
-        if (shippingType === 'delivery' && (!formData.name || !formData.phone || !formData.password || !formData.address)) {
-            alert('배송지를 포함한 필수 정보를 모두 입력해주세요. (이름, 연락처, 비밀번호, 주소)');
-            return;
-        }
-
-        if (shippingType === 'pickup' && (!formData.name || !formData.phone || !formData.password)) {
-            alert('필수 정보를 모두 입력해주세요. (이름, 연락처, 비밀번호)');
-            return;
-        }
-
-        setIsSubmitting(true);
-
-        try {
-            const finalAddress = shippingType === 'pickup'
-                ? '방문 수령 (수원시 팔달구 효원로 209-5 진양건재 본점)'
-                : `(${formData.zipcode}) ${formData.address} ${formData.detailAddress}`;
-
-            // 1. 서버에 주문 정보 저장 (결제 방식은 제외됨을 표시하기 위해 paymentMethod 미전달)
-            const response = await fetch('/api/orders', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    ...formData,
-                    address: finalAddress,
-                    totalAmount: totalAmount,
-                    items: items.map(item => ({
-                        productId: item.productId,
-                        name: item.name,
-                        price: item.totalPrice / item.quantity, // 개별 단가 계산
-                        quantity: item.quantity,
-                        options: item.options.map(opt => `${opt.name}: ${opt.value}`).join(', ')
-                    }))
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error('주문 접수 중 서버 오류가 발생했습니다.');
-            }
-
-            // 성공 시 처리
-            alert('주문서가 정상적으로 접수되었습니다!\n\n빠른 시일 내에 담당 전문가가 직접 운임비 할인 안내 전화를 드리겠습니다.');
-            clearCart();
-            setIsSubmitting(false);
-            router.push('/');
-
-        } catch (error: any) {
-            console.error('Consultation Submit Error:', error);
-            alert(error.message || '상담 요청 중 오류가 발생했습니다. 다시 시도해 주세요.');
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
     const handleSubmitOrder = async () => {
         if (shippingType === 'delivery' && (!formData.name || !formData.phone || !formData.password || !formData.address)) {
             alert('배송지를 포함한 필수 정보를 모두 입력해주세요. (이름, 연락처, 비밀번호, 주소)');
@@ -196,9 +140,8 @@ export default function CheckoutPage() {
             const data = await response.json();
 
             if (response.ok && data.success) {
-                setOrderId(data.orderId);
                 // clearCart(); // 결제 완료된 후(/checkout/success 등)에서 비우도록 변경합니다. 
-                setStep(3);
+                router.push(`/checkout/success?orderId=${data.orderId}&amount=${totalAmount}`);
             } else {
                 alert(data.error || '주문 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
             }
@@ -473,19 +416,11 @@ export default function CheckoutPage() {
 
                                         <div className="flex flex-col sm:flex-row gap-3 w-full">
                                             <button
-                                                onClick={handleConsultationSubmit}
-                                                disabled={isSubmitting}
-                                                className="bg-white border-2 border-industrial-600 text-industrial-700 hover:bg-industrial-50 font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm w-full sm:w-auto flex-1 font-black"
-                                            >
-                                                <PhoneCall className="w-5 h-5" />
-                                                운임비 상담 후 결제하기
-                                            </button>
-                                            <button
                                                 onClick={handleSubmitOrder}
                                                 disabled={isSubmitting}
                                                 className="bg-industrial-600 hover:bg-industrial-700 text-white font-bold py-4 px-8 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto flex-1 font-black"
                                             >
-                                                {isSubmitting ? '처리중...' : '지금 바로 결제하기'}
+                                                {isSubmitting ? '처리중...' : '무통장 입금으로 주문하기'}
                                                 <CreditCard className="w-5 h-5" />
                                             </button>
                                         </div>
@@ -495,28 +430,7 @@ export default function CheckoutPage() {
                         )}
 
 
-                        {step === 3 && (
-                            <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 animate-in fade-in slide-in-from-right-4 duration-300">
-                                <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                                    <CreditCard className="w-6 h-6 text-industrial-600" />
-                                    결제하기
-                                </h2>
-                                <p className="text-gray-500 mb-6">원하시는 결제 수단을 선택해주세요.</p>
 
-                                <TossPayment
-                                    amount={totalAmount}
-                                    orderId={orderId}
-                                    orderName={orderName}
-                                    customerName={formData.name}
-                                />
-
-                                <div className="mt-4 text-center">
-                                    <button onClick={() => setStep(2)} className="text-gray-400 hover:text-gray-600 text-sm">
-                                        이전으로 돌아가기
-                                    </button>
-                                </div>
-                            </div>
-                        )}
 
 
                     </div>

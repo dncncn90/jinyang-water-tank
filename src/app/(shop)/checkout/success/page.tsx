@@ -7,92 +7,10 @@ import { CheckCircle, XCircle, Loader2, PhoneCall } from 'lucide-react';
 
 function SuccessContent() {
     const searchParams = useSearchParams();
-    const paymentKey = searchParams.get('paymentKey');
     const orderId = searchParams.get('orderId');
-    const amount = searchParams.get('amount');
+    const amount = searchParams.get('amount') || '0';
 
-    const [status, setStatus] = useState<'loading' | 'success' | 'fail'>('loading');
-    const [errorMessage, setErrorMessage] = useState('');
-
-    useEffect(() => {
-        if (!paymentKey || !orderId || !amount) {
-            setErrorMessage('결제 정보가 올바르지 않습니다.');
-            setStatus('fail');
-            return;
-        }
-
-        // 서버에 결제 승인 요청
-        const confirmPayment = async () => {
-            try {
-                const response = await fetch('/api/payments/confirm', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        paymentKey,
-                        orderId,
-                        amount: Number(amount),
-                    }),
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    setStatus('success');
-                } else {
-                    setErrorMessage(data.error || '결제 승인에 실패했습니다.');
-                    setStatus('fail');
-                }
-            } catch (err) {
-                setErrorMessage('서버와 통신 중 오류가 발생했습니다.');
-                setStatus('fail');
-            }
-        };
-
-        confirmPayment();
-    }, [paymentKey, orderId, amount]);
-
-    // 로딩 중
-    if (status === 'loading') {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 px-4">
-                <div className="bg-white p-10 rounded-2xl shadow-sm border border-gray-200 max-w-md w-full text-center">
-                    <Loader2 className="w-16 h-16 text-blue-500 animate-spin mx-auto mb-6" />
-                    <h1 className="text-xl font-bold text-gray-900">결제를 처리하고 있습니다...</h1>
-                    <p className="text-gray-400 mt-2 text-sm">잠시만 기다려주세요. 페이지를 닫지 마세요.</p>
-                </div>
-            </div>
-        );
-    }
-
-    // 결제 실패
-    if (status === 'fail') {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 px-4">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-red-100 max-w-md w-full text-center">
-                    <XCircle className="w-16 h-16 text-red-500 mx-auto mb-6" />
-                    <h1 className="text-2xl font-bold text-gray-900 mb-2">결제에 실패했습니다</h1>
-                    <p className="text-gray-500 mb-2">{errorMessage}</p>
-                    <p className="text-xs text-gray-400 mb-8">문제가 지속되면 고객센터로 문의해주세요.</p>
-                    <div className="flex flex-col gap-3">
-                        <Link
-                            href="/checkout"
-                            className="bg-industrial-600 hover:bg-industrial-700 text-white font-bold py-3 px-6 rounded-xl transition-colors"
-                        >
-                            다시 시도하기
-                        </Link>
-                        <Link
-                            href="/"
-                            className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-xl transition-colors"
-                        >
-                            홈으로 돌아가기
-                        </Link>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // 결제 성공
+    // 결제 성공 (무통장 입금 안내)
     return (
         <div className="min-h-screen bg-[#f5f7f8] py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center">
             <div className="max-w-2xl w-full bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
@@ -101,8 +19,14 @@ function SuccessContent() {
                     <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#0ea5e9]/10 mb-6">
                         <CheckCircle className="w-10 h-10 text-[#0ea5e9]" />
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">주문이 정상적으로 완료되었습니다.</h1>
-                    <p className="text-gray-500">진양 PVC를 이용해 주셔서 감사합니다. 정성을 다해 준비하겠습니다.</p>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-4">주문이 완료되었습니다!</h1>
+                    <div className="bg-orange-50 border border-orange-100 rounded-xl p-5 inline-block text-left mb-2 max-w-lg">
+                        <p className="text-orange-900 font-bold mb-2 break-keep text-lg">건자재 특성상 지역별 운임비 확인이 필요합니다.</p>
+                        <p className="text-orange-800 text-sm leading-relaxed break-keep font-medium">
+                            담당자가 기재하신 번호로 곧 연락드려 최종 금액을 안내해 드리겠습니다.<br/>
+                            <strong className="text-red-500 font-extrabold text-base bg-red-50 px-1 py-0.5 rounded mt-1 inline-block">전화 상담 전에는 입금을 잠시 기다려 주세요.</strong>
+                        </p>
+                    </div>
                 </div>
 
                 {/* Order Details Box */}
@@ -116,6 +40,14 @@ function SuccessContent() {
                             <div className="flex justify-between items-center py-2 border-b border-[#0ea5e9]/10">
                                 <span className="text-gray-600 font-medium">결제 금액</span>
                                 <span className="text-[#0c4a6e] text-2xl font-bold">{Number(amount).toLocaleString()} 원</span>
+                            </div>
+                            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 my-2 opacity-80 mix-blend-multiply">
+                                <div className="text-sm text-blue-800 font-bold mb-1">입금 계좌 안내 (상담 후 입금 요망)</div>
+                                <div className="text-xl font-bold tracking-tight text-blue-900">
+                                    <span className="text-blue-600 mr-2">KB국민</span>
+                                    9-63608227-53 (진양건재)
+                                </div>
+                                <p className="text-xs text-blue-600/80 mt-2 font-bold">* 담당자 통화 종료 후, 안내받으신 최종 금액을 위 계좌로 입금해 주세요.</p>
                             </div>
                             <div className="flex justify-between items-start py-2">
                                 <span className="text-gray-600 font-medium">배송 예정일</span>
