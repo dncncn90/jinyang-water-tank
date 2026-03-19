@@ -16,28 +16,17 @@ const SQUARE_PRODUCTS = [
 
 export default function PESquareMarketing() {
     const { addToCart } = useCart();
-    const [quantities, setQuantities] = useState<Record<string, number>>(
-        SQUARE_PRODUCTS.reduce((acc, p) => ({ ...acc, [p.id]: 1 }), {})
-    );
-
-    const handleQuantityChange = (id: string, delta: number) => {
-        setQuantities(prev => ({
-            ...prev,
-            [id]: Math.max(1, prev[id] + delta)
-        }));
-    };
-
     const handleAddToCart = (product: typeof SQUARE_PRODUCTS[0]) => {
         addToCart({
             productId: product.id,
             name: product.name,
             basePrice: product.price,
             options: [],
-            requirements: '상세 페이지에서 추가됨',
-            quantity: quantities[product.id],
+            requirements: '메인 페이지 바로 구매하기 섹션에서 추가됨',
+            quantity: 1,
             image: '/images/products/tank-square-real.jpg'
         });
-        alert(`${product.name} ${quantities[product.id]}개가 장바구니에 담겼습니다.`);
+        alert(`${product.name} 1개가 장바구니에 담겼습니다.`);
     };
 
     return (
@@ -56,7 +45,7 @@ export default function PESquareMarketing() {
             <section className="w-full max-w-6xl mx-auto mt-20 px-4">
                 <div className="text-center mb-12">
                     <h2 className="text-3xl font-black text-industrial-900 mb-4 tracking-tight">바로 구매하기</h2>
-                    <p className="text-gray-500 font-medium">원하시는 용량과 수량을 선택해 장바구니에 담으세요.</p>
+                    <p className="text-gray-500 font-medium">원하시는 용량을 선택해 장바구니에 바로 담으세요.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -78,25 +67,7 @@ export default function PESquareMarketing() {
                                     <span className="text-industrial-600 text-lg font-black">{product.price.toLocaleString()}원</span>
                                 </div>
 
-                                <div className="flex items-center justify-between border-t border-gray-50 pt-4">
-                                    <span className="text-sm font-bold text-gray-400 uppercase tracking-tighter">QUANTITY</span>
-                                    <div className="flex items-center gap-2">
-                                        <button 
-                                            onClick={() => handleQuantityChange(product.id, -1)}
-                                            className="w-8 h-8 flex items-center justify-center border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-500 font-black transition-colors"
-                                        >-</button>
-                                        <input 
-                                            type="number" 
-                                            value={quantities[product.id]}
-                                            readOnly
-                                            className="w-10 text-center font-black text-industrial-900 text-sm focus:outline-none"
-                                        />
-                                        <button 
-                                            onClick={() => handleQuantityChange(product.id, 1)}
-                                            className="w-8 h-8 flex items-center justify-center border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-500 font-black transition-colors"
-                                        >+</button>
-                                    </div>
-                                </div>
+
 
                                 <button 
                                     onClick={() => handleAddToCart(product)}

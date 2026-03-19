@@ -632,13 +632,11 @@ export default function FloatingChatWidget() {
                 value: quoteState.fittingType === 'bronze' ? '청동(신주) 피팅' : 'PE 제작 피팅',
                 priceChange: 0
             });
-            // Look up exact price for the main tank's fitting option from PRICING_DB
-            const fittingCost = quoteState.fittingType === 'bronze' ? ((PRICING_DB.fittings as any).bronze?.[quoteState.fittingSize!] || 0) : ((PRICING_DB.fittings as any).pe?.[quoteState.fittingSize!] || 0);
 
             tankOptions.push({
                 name: quoteState.fittingType === 'bronze' ? '피팅 규격 (청동 선택 시)' : '피팅 규격 (PE 선택 시)',
                 value: quoteState.fittingSize + 'mm',
-                priceChange: fittingCost
+                priceChange: 0 // 분리해서 담으므로 본체에서는 0원으로 처리
             });
         }
 

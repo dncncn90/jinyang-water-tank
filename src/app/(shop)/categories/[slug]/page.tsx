@@ -114,20 +114,6 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                                     <p className="text-lg font-black text-industrial-900 mb-4">{Number(product.price).toLocaleString()}원</p>
                                     
                                     <div className="mt-auto space-y-3">
-                                        <div className="flex items-center justify-between bg-gray-50 rounded-lg p-2">
-                                            <span className="text-xs font-bold text-gray-400">수량</span>
-                                            <div className="flex items-center gap-2">
-                                                <button 
-                                                    onClick={() => handleQuantityChange(product.id, -1)}
-                                                    className="w-7 h-7 flex items-center justify-center bg-white border border-gray-200 rounded text-gray-500 hover:bg-gray-100"
-                                                >-</button>
-                                                <span className="text-sm font-bold w-6 text-center">{quantities[product.id] || 1}</span>
-                                                <button 
-                                                    onClick={() => handleQuantityChange(product.id, 1)}
-                                                    className="w-7 h-7 flex items-center justify-center bg-white border border-gray-200 rounded text-gray-500 hover:bg-gray-100"
-                                                >+</button>
-                                            </div>
-                                        </div>
                                         <button 
                                             onClick={() => handleAddToCart(product)}
                                             className="w-full bg-industrial-900 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-industrial-800 transition-colors flex items-center justify-center gap-2"

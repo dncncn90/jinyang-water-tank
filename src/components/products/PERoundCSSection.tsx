@@ -69,7 +69,7 @@ export default function PERoundCSSection() {
                                 </li>
                                 <li className="flex items-start gap-2.5 text-gray-600 text-sm leading-relaxed font-medium">
                                     <CheckCircle2 className="w-4 h-4 text-orange-500 shrink-0 mt-0.5" />
-                                    <div><strong className="text-gray-900">직배송:</strong> 수원 및 인근(화성, 용인 등) 직배송으로 운임 절제 가능</div>
+                                    <div><strong className="text-gray-900">직배송:</strong> 수원 및 인근(화성, 용인 등) 직배송으로 운임 절감 가능</div>
                                 </li>
                                 <li className="flex items-start gap-2.5 text-gray-600 text-sm leading-relaxed font-medium">
                                     <CheckCircle2 className="w-4 h-4 text-industrial-400 shrink-0 mt-0.5" />

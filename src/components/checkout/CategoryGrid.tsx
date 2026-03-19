@@ -202,31 +202,11 @@ export default function CategoryGrid() {
                                     )}
 
                                     <div className="mt-auto pt-4 border-t border-slate-100">
-                                        <div className="flex items-end justify-between mb-4">
-                                            <div className="flex flex-col">
-                                                <span className="text-[10px] text-slate-400 font-semibold mb-0.5 uppercase tracking-wider">판매가 (VAT 포함)</span>
-                                                <span className="font-bold text-xl tracking-tight text-slate-900">
-                                                    {item.price.toLocaleString()}원{isOverview && <span className="text-sm font-normal text-slate-500 ml-0.5">~</span>}
-                                                </span>
-                                            </div>
-                                            
-                                            {!isOverview && (
-                                                <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden h-9 bg-gray-50/50">
-                                                    <button 
-                                                        onClick={() => handleQuantityChange(item.id, -1)}
-                                                        className="w-8 h-full flex items-center justify-center hover:bg-white transition-colors text-gray-400 hover:text-gray-900"
-                                                    >
-                                                        <Minus className="w-3 h-3" />
-                                                    </button>
-                                                    <span className="w-6 text-center text-xs font-bold text-gray-900">{getQuantity(item.id)}</span>
-                                                    <button 
-                                                        onClick={() => handleQuantityChange(item.id, 1)}
-                                                        className="w-8 h-full flex items-center justify-center hover:bg-white transition-colors text-gray-400 hover:text-gray-900"
-                                                    >
-                                                        <Plus className="w-3 h-3" />
-                                                    </button>
-                                                </div>
-                                            )}
+                                        <div className="flex flex-col mb-4">
+                                            <span className="text-[10px] text-slate-400 font-semibold mb-0.5 uppercase tracking-wider">판매가 (VAT 포함)</span>
+                                            <span className="font-bold text-xl tracking-tight text-slate-900">
+                                                {item.price.toLocaleString()}원{isOverview && <span className="text-sm font-normal text-slate-500 ml-0.5">~</span>}
+                                            </span>
                                         </div>
 
                                         <div className="grid grid-cols-2 gap-2">
