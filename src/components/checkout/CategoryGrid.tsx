@@ -52,46 +52,6 @@ export default function CategoryGrid() {
     const { addToCart } = useCart();
     const router = useRouter();
 
-    // Local quantity state for each product
-    const [quantities, setQuantities] = useState<Record<string, number>>({});
-
-    const getQuantity = (id: string) => quantities[id] || 1;
-
-    const handleQuantityChange = (id: string, delta: number) => {
-        setQuantities(prev => ({
-            ...prev,
-            [id]: Math.max(1, (prev[id] || 1) + delta)
-        }));
-    };
-
-    const handleDirectAddToCart = (item: any) => {
-        const qty = getQuantity(item.id);
-        addToCart({
-            productId: item.id,
-            name: item.name,
-            basePrice: item.price,
-            options: [], // Simple add to cart from list
-            requirements: '상품 목록에서 직접 추가',
-            quantity: qty,
-            image: item.images?.[0] || ''
-        });
-        alert(`${item.name} ${qty}개가 장바구니에 담겼습니다.`);
-    };
-
-    const handleDirectBuyNow = (item: any) => {
-        const qty = getQuantity(item.id);
-        addToCart({
-            productId: item.id,
-            name: item.name,
-            basePrice: item.price,
-            options: [],
-            requirements: '상품 목록에서 바로 구매',
-            quantity: qty,
-            image: item.images?.[0] || ''
-        });
-        router.push('/checkout');
-    };
-
     // Get items to display based on active tab
     const getDisplayItems = () => {
         if (activeTab === '전체 보기') {
@@ -209,29 +169,20 @@ export default function CategoryGrid() {
                                             </span>
                                         </div>
 
-                                        <div className="grid grid-cols-2 gap-2">
+                                        <div className="mt-4">
                                             {isOverview ? (
-                                                <button className="col-span-2 flex items-center justify-center gap-1 text-xs font-bold text-[#003399] bg-blue-50 py-2.5 rounded-xl hover:bg-blue-100 transition-colors">
+                                                <button className="w-full flex items-center justify-center gap-1.5 text-xs font-bold text-[#003399] bg-blue-50 py-3 rounded-xl hover:bg-blue-100 transition-colors">
                                                     용량별 목록 보기
                                                     <ArrowRight className="w-3 h-3 ml-1" />
                                                 </button>
                                             ) : (
-                                                <>
-                                                    <button 
-                                                        onClick={() => handleDirectAddToCart(item)}
-                                                        className="flex items-center justify-center gap-1.5 text-[11px] font-bold text-industrial-600 bg-industrial-50 py-2.5 rounded-xl hover:bg-industrial-100 transition-colors"
-                                                    >
-                                                        <ShoppingCart className="w-3.5 h-3.5" />
-                                                        담기
-                                                    </button>
-                                                    <button 
-                                                        onClick={() => handleDirectBuyNow(item)}
-                                                        className="flex items-center justify-center gap-1.5 text-[11px] font-bold text-white bg-industrial-900 py-2.5 rounded-xl hover:bg-industrial-800 transition-colors shadow-sm shadow-industrial-200"
-                                                    >
-                                                        <CreditCard className="w-3.5 h-3.5" />
-                                                        구매
-                                                    </button>
-                                                </>
+                                                <Link
+                                                    href={`/products/${item.id}`}
+                                                    className="flex items-center justify-center gap-1.5 text-xs font-bold text-white bg-industrial-900 py-3 rounded-xl hover:bg-industrial-800 transition-colors shadow-sm"
+                                                >
+                                                    상세 정보 보기
+                                                    <ArrowRight className="w-3 h-3 ml-1" />
+                                                </Link>
                                             )}
                                         </div>
                                     </div>

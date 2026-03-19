@@ -646,7 +646,7 @@ export default function FloatingChatWidget() {
             name: `${quoteState.capacity}톤 ${shapeName} 물탱크`,
             basePrice: tankItem.price,
             options: tankOptions,
-            requirements: `챗봇 간편 견적으로 추가됨`,
+            requirements: '',
             quantity: 1,
             image: quoteState.type === 'm_series' ? '/images/products/tank-square-real.jpg' : '/images/products/tank-round-real.png'
         });
@@ -679,7 +679,7 @@ export default function FloatingChatWidget() {
                 basePrice: item.price,
                 // Passing a unique option to ensure the cartItemId is unique and prevents merging bugs!
                 options: [{ name: '품목', value: item.name, priceChange: 0 }],
-                requirements: '스마트 견적 부속품',
+                requirements: '',
                 quantity: item.quantity || 1,
                 image: subImage
             });

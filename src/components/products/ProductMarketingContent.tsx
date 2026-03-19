@@ -17,12 +17,12 @@ export default function ProductMarketingContent({ category }: ProductMarketingCo
     }
 
     if (isSquare) {
-        return <PESquareMarketing />;
+        return <PESquareMarketing hidePurchaseGrid={true} />;
     }
 
     // 새롭게 디자인된 PE 원형 물탱크 상세페이지 컴포넌트 출력
     if (isRound) {
-        return <PERoundMarketing />;
+        return <PERoundMarketing hidePurchaseGrid={true} />;
     }
 
     return (

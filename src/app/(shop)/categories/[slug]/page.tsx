@@ -33,42 +33,12 @@ const CATEGORY_INFO: Record<string, { title: string; description: string; emoji:
 export default function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = use(params);
     const [allProducts, setAllProducts] = useState<Product[]>([]);
-    const { addToCart } = useCart();
-    const [quantities, setQuantities] = useState<Record<string, number>>({});
-
     const categoryInfo = CATEGORY_INFO[slug] || { title: '제품 목록', description: '전체 제품 목록입니다.', emoji: '📦' };
 
     useEffect(() => {
         const categoryProducts = PRODUCTS.filter(p => p.category === slug);
         setAllProducts(categoryProducts);
-        // Initialize quantities
-        const initialQuantities: Record<string, number> = {};
-        categoryProducts.forEach(p => {
-            initialQuantities[p.id] = 1;
-        });
-        setQuantities(initialQuantities);
     }, [slug]);
-
-    const handleQuantityChange = (id: string, delta: number) => {
-        setQuantities(prev => ({
-            ...prev,
-            [id]: Math.max(1, (prev[id] || 1) + delta)
-        }));
-    };
-
-    const handleAddToCart = (product: Product) => {
-        const q = quantities[product.id] || 1;
-        addToCart({
-            productId: product.id,
-            name: product.name,
-            basePrice: product.price,
-            options: [],
-            requirements: '카테고리 목록에서 추가됨',
-            quantity: q,
-            image: product.images[0] || ''
-        });
-        alert(`${product.name} ${q}개가 장바구니에 담겼습니다.`);
-    };
 
     return (
         <div className="bg-white min-h-screen pt-24 pb-20">
@@ -113,13 +83,13 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                                     <p className="text-xs text-gray-400 mb-2">{product.specs.capacity}</p>
                                     <p className="text-lg font-black text-industrial-900 mb-4">{Number(product.price).toLocaleString()}원</p>
                                     
-                                    <div className="mt-auto space-y-3">
-                                        <button 
-                                            onClick={() => handleAddToCart(product)}
+                                    <div className="mt-auto">
+                                        <Link 
+                                            href={`/products/${product.id}`}
                                             className="w-full bg-industrial-900 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-industrial-800 transition-colors flex items-center justify-center gap-2"
                                         >
-                                            담기
-                                        </button>
+                                            상세 정보 보기
+                                        </Link>
                                     </div>
                                 </div>
                             </div>

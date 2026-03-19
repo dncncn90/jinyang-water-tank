@@ -170,7 +170,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     name: `${name}: ${label}`,
                     basePrice: priceChange, // 옵션의 개별 단가
                     options: [],
-                    requirements: `메인 상품(${product.name})의 옵션`,
+                    requirements: '',
                     quantity: (optQty || 1) * quantity, // 물탱크 수량만큼 곱해줌
                     image: subImage
                 });
