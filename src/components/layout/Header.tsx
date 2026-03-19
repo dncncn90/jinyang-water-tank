@@ -15,17 +15,14 @@ const NAVIGATION = [
 ];
 
 import { usePathname } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
-    const [hasSession, setHasSession] = useState(false);
     const pathname = usePathname();
     const isMainPage = pathname === '/';
     const { getCartItemCount } = useCart();
-    const supabase = createClient();
 
     useEffect(() => {
         setIsMounted(true);
@@ -34,21 +31,8 @@ export default function Header() {
         };
         window.addEventListener('scroll', handleScroll);
 
-        // Check Auth Profile
-        const checkAuth = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            setHasSession(!!session);
-        };
-        checkAuth();
-
-        // Listen for auth changes
-        const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-            setHasSession(!!session);
-        });
-
         return () => {
             window.removeEventListener('scroll', handleScroll);
-            authListener?.subscription.unsubscribe();
         };
     }, []);
 
@@ -144,13 +128,6 @@ export default function Header() {
                         <div className={`shrink-0 h-4 w-px ${isSolid ? 'bg-gray-300' : 'bg-slate-300'} lg:mx-1 xl:mx-2`}></div>
 
                         <Link
-                            href="/guest/order-lookup"
-                            className={`whitespace-nowrap shrink-0 text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'} flex items-center gap-1`}
-                        >
-                            주문조회
-                        </Link>
-
-                        <Link
                             href="/cart"
                             className={`whitespace-nowrap shrink-0 relative text-sm font-semibold leading-6 transition-colors hover:text-industrial-400 ${isSolid ? 'text-gray-900' : 'text-slate-800'} flex items-center gap-1`}
                         >
@@ -220,13 +197,6 @@ export default function Header() {
                                             {getCartItemCount()}
                                         </span>
                                     )}
-                                </Link>
-                                <Link
-                                    href="/guest/order-lookup"
-                                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50 flex items-center gap-2"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                >
-                                    주문조회
                                 </Link>
                                 
                                 <a

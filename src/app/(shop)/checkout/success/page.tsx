@@ -116,13 +116,7 @@ function SuccessContent() {
                 </div>
 
                 {/* Actions */}
-                <div className="px-8 pb-12 flex flex-col sm:flex-row gap-4">
-                    <Link
-                        href="/guest/order-lookup"
-                        className="flex-1 py-4 px-6 rounded-lg border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-all text-center"
-                    >
-                        주문 내역 상세 보기
-                    </Link>
+                <div className="px-8 pb-12 flex flex-col sm:flex-row justify-center gap-4">
                     <Link
                         href="/"
                         className="flex-1 py-4 px-6 rounded-lg bg-[#0ea5e9] text-white font-bold hover:bg-[#0ea5e9]/90 shadow-lg shadow-[#0ea5e9]/20 transition-all text-center"

@@ -33,14 +33,15 @@ function SpecRow({ label, value, highlight = false }: { label: string, value: st
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const product = PRODUCTS.find(p => p.id === id); // Changed from getProductById
-    const [selectedOptions, setSelectedOptions] = useState<Record<string, { label: string; priceChange: number }>>(() => {
-        const initial: Record<string, { label: string; priceChange: number }> = {};
+    const [selectedOptions, setSelectedOptions] = useState<Record<string, { label: string; priceChange: number; quantity?: number }>>(() => {
+        const initial: Record<string, { label: string; priceChange: number; quantity?: number }> = {};
         if (product?.options) {
             product.options.forEach(opt => {
                 if (opt.required && opt.choices.length > 0) {
                     initial[opt.name] = {
                         label: opt.choices[0].label,
-                        priceChange: opt.choices[0].priceChange
+                        priceChange: opt.choices[0].priceChange,
+                        quantity: 1
                     };
                 }
             });
@@ -48,24 +49,34 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         return initial;
     });
     const [requirements, setRequirements] = useState('');
+    const [quantity, setQuantity] = useState(1);
     const [isZoomed, setIsZoomed] = useState(false);
     const { addToCart } = useCart();
     const router = useRouter();
 
-    const [showAuthModal, setShowAuthModal] = useState(false);
-    const [pendingAction, setPendingAction] = useState<'cart' | 'buy' | null>(null);
-
     if (!product) return notFound();
 
     // Price Calculation
-    const optionsTotal = Object.values(selectedOptions).reduce((acc, curr) => acc + curr.priceChange, 0);
+    const optionsTotal = Object.values(selectedOptions).reduce((acc, curr) => acc + (curr.priceChange * (curr.quantity || 1)), 0);
     const totalPrice = product.price + optionsTotal;
 
     const handleOptionChange = (optionName: string, choiceLabel: string, priceChange: number) => {
         setSelectedOptions((prev) => ({
             ...prev,
-            [optionName]: { label: choiceLabel, priceChange },
+            [optionName]: { label: choiceLabel, priceChange, quantity: prev[optionName]?.quantity || 1 },
         }));
+    };
+
+    const handleOptionQuantityChange = (optionName: string, delta: number) => {
+        setSelectedOptions((prev) => {
+            const current = prev[optionName];
+            if (!current) return prev;
+            const newQuantity = Math.max(1, (current.quantity || 1) + delta);
+            return {
+                ...prev,
+                [optionName]: { ...current, quantity: newQuantity }
+            };
+        });
     };
 
     const getCartItemName = () => {
@@ -102,17 +113,16 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
     const handleActionIntent = (action: 'cart' | 'buy') => {
         if (!validateOptions()) return;
-        setPendingAction(action);
-        setShowAuthModal(true);
+        executeAction(action);
     };
 
-    const executePendingAction = () => {
-        if (!product || !pendingAction) return;
+    const executeAction = (action: 'cart' | 'buy') => {
+        if (!product) return;
 
-        const formattedOptions = Object.entries(selectedOptions).map(([name, { label, priceChange }]) => ({
+        const formattedOptions = Object.entries(selectedOptions).map(([name, { label, priceChange, quantity }]) => ({
             name,
-            value: label,
-            priceChange
+            value: (quantity && quantity > 1) ? `${label} (x${quantity})` : label,
+            priceChange: priceChange * (quantity || 1)
         }));
 
         addToCart({
@@ -121,20 +131,17 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             basePrice: product.price,
             options: formattedOptions,
             requirements: requirements,
-            quantity: 1,
+            quantity: quantity,
             image: product.images[0] || ''
         });
 
-        setShowAuthModal(false);
-
-        if (pendingAction === 'cart') {
+        if (action === 'cart') {
             if (confirm('상품이 장바구니에 담겼습니다. 장바구니로 이동하시겠습니까?')) {
                 router.push('/cart');
             }
         } else {
             router.push('/cart'); // Route through cart or checkout directly
         }
-        setPendingAction(null);
     };
 
     const handleOpenChat = () => {
@@ -147,7 +154,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             const date = new Date().toLocaleDateString();
             const items: { name: string; price: number; quantity: number }[] = [
                 { name: product.name, price: product.price, quantity: 1 },
-                ...Object.entries(selectedOptions).map(([key, val]) => ({ name: `${key}: ${val.label}`, price: val.priceChange, quantity: 1 }))
+                ...Object.entries(selectedOptions)
+                    .filter(([_, val]) => val.priceChange > 0)
+                    .map(([key, val]) => ({ name: `${key}: ${val.label}`, price: val.priceChange, quantity: val.quantity || 1 }))
             ];
 
             printWindow.document.write(`
@@ -382,62 +391,101 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                                     <label className={`text-sm font-bold mb-1.5 flex items-center gap-1 ${isDisabled ? 'text-gray-400' : 'text-gray-800'}`}>
                                                         {opt.name} {opt.required && <span className="text-red-500">*</span>}
                                                     </label>
-                                                    <div className="relative">
-                                                        <select
-                                                            className={`w-full appearance-none bg-white border border-gray-300 py-3 px-4 pr-10 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-medium transition-shadow hover:shadow-sm ${isDisabled ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'text-gray-700'}`}
-                                                            value={selectedOptions[opt.name]?.label || ''}
-                                                            disabled={isDisabled}
-                                                            onChange={(e) => {
-                                                                const selectedChoice = opt.choices.find(c => c.label === e.target.value);
-                                                                if (selectedChoice) {
-                                                                    handleOptionChange(opt.name, selectedChoice.label, selectedChoice.priceChange);
+                                                    <div className="flex gap-2">
+                                                        <div className="relative flex-1">
+                                                            <select
+                                                                className={`w-full appearance-none bg-white border border-gray-300 py-3 px-4 pr-10 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-medium transition-shadow hover:shadow-sm ${isDisabled ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'text-gray-700'}`}
+                                                                value={selectedOptions[opt.name]?.label || ''}
+                                                                disabled={isDisabled}
+                                                                onChange={(e) => {
+                                                                    const selectedChoice = opt.choices.find(c => c.label === e.target.value);
+                                                                    if (selectedChoice) {
+                                                                        handleOptionChange(opt.name, selectedChoice.label, selectedChoice.priceChange);
 
-                                                                    // Special logic: If '피팅 재질' changes, clear the other size selection
-                                                                    if (opt.name === '피팅 재질') {
-                                                                        if (selectedChoice.label === '청동(신주) 피팅') {
-                                                                            handleOptionChange('피팅 규격 (PE 선택 시)', '', 0);
-                                                                        } else if (selectedChoice.label === 'PE 제작 피팅') {
-                                                                            handleOptionChange('피팅 규격 (청동 선택 시)', '', 0);
-                                                                        } else {
-                                                                            handleOptionChange('피팅 규격 (PE 선택 시)', '', 0);
-                                                                            handleOptionChange('피팅 규격 (청동 선택 시)', '', 0);
-                                                                        }
-                                                                    }
-                                                                } else {
-                                                                    // Handle unselection
-                                                                    setSelectedOptions(prev => {
-                                                                        const next = { ...prev };
-                                                                        delete next[opt.name];
-
+                                                                        // Special logic: If '피팅 재질' changes, clear the other size selection
                                                                         if (opt.name === '피팅 재질') {
-                                                                            delete next['피팅 규격 (청동 선택 시)'];
-                                                                            delete next['피팅 규격 (PE 선택 시)'];
+                                                                            if (selectedChoice.label === '청동(신주) 피팅') {
+                                                                                handleOptionChange('피팅 규격 (PE 선택 시)', '', 0);
+                                                                            } else if (selectedChoice.label === 'PE 제작 피팅') {
+                                                                                handleOptionChange('피팅 규격 (청동 선택 시)', '', 0);
+                                                                            } else {
+                                                                                handleOptionChange('피팅 규격 (PE 선택 시)', '', 0);
+                                                                                handleOptionChange('피팅 규격 (청동 선택 시)', '', 0);
+                                                                            }
                                                                         }
-                                                                        return next;
-                                                                    });
-                                                                }
-                                                            }}
-                                                        >
-                                                            {!opt.required && (
-                                                                <option value="">
-                                                                    {isDisabled ? '해당 재질 선택 시 활성화' : '선택 안함'}
-                                                                </option>
-                                                            )}
-                                                            {opt.choices.map(choice => (
-                                                                <option key={choice.label} value={choice.label}>
-                                                                    {choice.label} {choice.priceChange > 0 ? `(+${choice.priceChange.toLocaleString()}원)` : ''}
-                                                                </option>
-                                                            ))}
-                                                        </select>
-                                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-                                                            <ChevronDown className={`w-5 h-5 ${isDisabled ? 'opacity-50' : ''}`} />
+                                                                    } else {
+                                                                        // Handle unselection
+                                                                        setSelectedOptions(prev => {
+                                                                            const next = { ...prev };
+                                                                            delete next[opt.name];
+
+                                                                            if (opt.name === '피팅 재질') {
+                                                                                delete next['피팅 규격 (청동 선택 시)'];
+                                                                                delete next['피팅 규격 (PE 선택 시)'];
+                                                                            }
+                                                                            return next;
+                                                                        });
+                                                                    }
+                                                                }}
+                                                            >
+                                                                {!opt.required && (
+                                                                    <option value="">
+                                                                        {isDisabled ? '해당 재질 선택 시 활성화' : '선택 안함'}
+                                                                    </option>
+                                                                )}
+                                                                {opt.choices.map(choice => (
+                                                                    <option key={choice.label} value={choice.label}>
+                                                                        {choice.label} {choice.priceChange > 0 ? `(+${choice.priceChange.toLocaleString()}원)` : ''}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
+                                                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                                                <ChevronDown className={`w-5 h-5 ${isDisabled ? 'opacity-50' : ''}`} />
+                                                            </div>
                                                         </div>
+                                                        {(!isDisabled && selectedOptions[opt.name]?.priceChange > 0) && (
+                                                            <div className="flex items-center border border-gray-300 rounded-xl overflow-hidden bg-white shrink-0">
+                                                                <button
+                                                                    onClick={() => handleOptionQuantityChange(opt.name, -1)}
+                                                                    className="w-10 h-[46px] text-gray-500 hover:text-gray-900 hover:bg-gray-50 flex items-center justify-center transition-colors"
+                                                                >-</button>
+                                                                <span className="w-8 text-center text-sm font-bold text-gray-900">{selectedOptions[opt.name]?.quantity || 1}</span>
+                                                                <button
+                                                                    onClick={() => handleOptionQuantityChange(opt.name, 1)}
+                                                                    className="w-10 h-[46px] text-gray-500 hover:text-gray-900 hover:bg-gray-50 flex items-center justify-center transition-colors"
+                                                                >+</button>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </div>
                                             )
                                         })}
                                     </div>
                                 )}
+
+                                 {/* Quantity Selector */}
+                                <div className="mb-6 flex flex-col">
+                                    <label className="text-sm font-bold text-gray-800 mb-1.5 flex items-center gap-1">
+                                        수량
+                                    </label>
+                                    <div className="flex items-center gap-2">
+                                        <button 
+                                            onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                                            className="w-10 h-10 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-100 transition-colors"
+                                        >-</button>
+                                        <input 
+                                            type="number" 
+                                            min="1" 
+                                            value={quantity}
+                                            onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                                            className="w-16 h-10 border border-gray-300 rounded-lg text-center font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
+                                        <button 
+                                            onClick={() => setQuantity(quantity + 1)}
+                                            className="w-10 h-10 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-100 transition-colors"
+                                        >+</button>
+                                    </div>
+                                </div>
 
                                 {/* Requirements Field */}
                                 <div className="mb-6 flex flex-col">
@@ -507,64 +555,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                 <ProductMarketingContent category={product.category} />
             </div>
 
-            {/* Auth / Guest Intercept Modal */}
-            {showAuthModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-                    <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
-                        <div className="p-6 text-center shadow-sm relative border-b border-gray-100">
-                            <button
-                                onClick={() => setShowAuthModal(false)}
-                                className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 p-2"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                            </button>
-                            <h3 className="text-xl font-bold text-gray-900 mb-1">안전하고 빠른 결제</h3>
-                            <p className="text-sm text-gray-500">원하시는 구매 방식을 선택해주세요</p>
-                        </div>
-                        <div className="p-6 flex flex-col gap-4 bg-gray-50">
-
-                            {/* Priority Guest Checkout Layout */}
-                            <button
-                                onClick={executePendingAction}
-                                className="w-full relative group overflow-hidden rounded-2xl bg-industrial-600 text-white font-bold p-6 transition-all shadow-lg hover:shadow-xl hover:bg-industrial-700"
-                            >
-                                <div className="relative z-10 flex flex-col items-center gap-1">
-                                    <span className="text-xl tracking-tight">비회원 구매하기</span>
-                                    <span className="text-sm font-normal text-industrial-200">가입 없이 이름/연락처만으로 1분 완성</span>
-                                </div>
-                                <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
-                            </button>
-
-                            <div className="flex items-center gap-4 py-2">
-                                <div className="h-px bg-gray-200 flex-1"></div>
-                                <span className="text-xs font-bold text-gray-400">간편 로그인</span>
-                                <div className="h-px bg-gray-200 flex-1"></div>
-                            </div>
-
-                            {/* Kakao Login */}
-                            <button
-                                onClick={() => {
-                                    alert('카카오 로그인 연동 준비중입니다.');
-                                    // Later will redirect to /auth/login or perform OAuth
-                                }}
-                                className="w-full flex items-center justify-center gap-2 bg-[#FEE500] text-[#000000] font-bold p-4 rounded-xl hover:bg-[#FDD800] transition-colors"
-                            >
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 3C6.477 3 2 6.545 2 10.916c0 2.822 1.83 5.3 4.618 6.702-.15.539-.539 2.016-.615 2.327-.098.398.14.39.297.288.121-.078 1.94-1.33 2.73-1.895A10.669 10.669 10.669 0 0012 18.832c5.522 0 10-3.545 10-7.916S17.522 3 12 3z" />
-                                </svg>
-                                카카오로 1초 로그인
-                            </button>
-
-                        </div>
-                        <div className="bg-white p-4 border-t border-gray-100 text-center" onClick={(e) => e.stopPropagation()}>
-                            <span className="text-sm text-gray-500 mr-2">이미 회원이신가요?</span>
-                            <Link href="/auth/login" className="text-sm font-bold text-industrial-600 hover:underline">
-                                아이디로 로그인
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </div >
+        </div>
     );
 }

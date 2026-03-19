@@ -4,6 +4,7 @@ import { use, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { PRODUCTS, Product } from '@/lib/products';
+import { useCart } from '@/context/CartContext';
 
 // Map slugs to display titles and details
 const CATEGORY_INFO: Record<string, { title: string; description: string; emoji: string }> = {
@@ -32,28 +33,43 @@ const CATEGORY_INFO: Record<string, { title: string; description: string; emoji:
 export default function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = use(params);
     const [allProducts, setAllProducts] = useState<Product[]>([]);
-    const [selectedProductId, setSelectedProductId] = useState<string>('');
-    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+    const { addToCart } = useCart();
+    const [quantities, setQuantities] = useState<Record<string, number>>({});
 
     const categoryInfo = CATEGORY_INFO[slug] || { title: '제품 목록', description: '전체 제품 목록입니다.', emoji: '📦' };
 
     useEffect(() => {
         const categoryProducts = PRODUCTS.filter(p => p.category === slug);
         setAllProducts(categoryProducts);
-        setSelectedProductId('');
-        setSelectedProduct(null);
+        // Initialize quantities
+        const initialQuantities: Record<string, number> = {};
+        categoryProducts.forEach(p => {
+            initialQuantities[p.id] = 1;
+        });
+        setQuantities(initialQuantities);
     }, [slug]);
 
-    // When dropdown selection changes
-    const handleProductSelect = (productId: string) => {
-        setSelectedProductId(productId);
-        const found = allProducts.find(p => p.id === productId) || null;
-        setSelectedProduct(found);
+    const handleQuantityChange = (id: string, delta: number) => {
+        setQuantities(prev => ({
+            ...prev,
+            [id]: Math.max(1, (prev[id] || 1) + delta)
+        }));
     };
 
-    // --- GRID UI ---
+    const handleAddToCart = (product: Product) => {
+        const q = quantities[product.id] || 1;
+        addToCart({
+            productId: product.id,
+            name: product.name,
+            basePrice: product.price,
+            options: [],
+            requirements: '카테고리 목록에서 추가됨',
+            quantity: q,
+            image: product.images[0] || ''
+        });
+        alert(`${product.name} ${q}개가 장바구니에 담겼습니다.`);
+    };
 
-    // --- GRID UI (fittings, chemical-tank 등 - 기존 방식 유지) ---
     return (
         <div className="bg-white min-h-screen pt-24 pb-20">
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -75,12 +91,11 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                 {allProducts.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {allProducts.map((product) => (
-                            <Link
+                            <div
                                 key={product.id}
-                                href={`/products/${product.id}`}
-                                className="group bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                                className="group bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col"
                             >
-                                <div className="aspect-square bg-gray-50 flex items-center justify-center p-6">
+                                <Link href={`/products/${product.id}`} className="aspect-square bg-gray-50 flex items-center justify-center p-6 shrink-0">
                                     {product.images[0] ? (
                                         <img
                                             src={product.images[0]}
@@ -90,13 +105,38 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                                     ) : (
                                         <div className="w-16 h-16 bg-gray-200 rounded-lg" />
                                     )}
+                                </Link>
+                                <div className="p-4 flex-1 flex flex-col">
+                                    <Link href={`/products/${product.id}`}>
+                                        <h3 className="font-bold text-gray-900 mb-1 group-hover:text-industrial-600 transition-colors line-clamp-2 min-h-[3rem]">{product.name}</h3>
+                                    </Link>
+                                    <p className="text-xs text-gray-400 mb-2">{product.specs.capacity}</p>
+                                    <p className="text-lg font-black text-industrial-900 mb-4">{Number(product.price).toLocaleString()}원</p>
+                                    
+                                    <div className="mt-auto space-y-3">
+                                        <div className="flex items-center justify-between bg-gray-50 rounded-lg p-2">
+                                            <span className="text-xs font-bold text-gray-400">수량</span>
+                                            <div className="flex items-center gap-2">
+                                                <button 
+                                                    onClick={() => handleQuantityChange(product.id, -1)}
+                                                    className="w-7 h-7 flex items-center justify-center bg-white border border-gray-200 rounded text-gray-500 hover:bg-gray-100"
+                                                >-</button>
+                                                <span className="text-sm font-bold w-6 text-center">{quantities[product.id] || 1}</span>
+                                                <button 
+                                                    onClick={() => handleQuantityChange(product.id, 1)}
+                                                    className="w-7 h-7 flex items-center justify-center bg-white border border-gray-200 rounded text-gray-500 hover:bg-gray-100"
+                                                >+</button>
+                                            </div>
+                                        </div>
+                                        <button 
+                                            onClick={() => handleAddToCart(product)}
+                                            className="w-full bg-industrial-900 text-white text-sm font-bold py-2.5 rounded-lg hover:bg-industrial-800 transition-colors flex items-center justify-center gap-2"
+                                        >
+                                            담기
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="p-4">
-                                    <h3 className="font-bold text-gray-900 mb-1 group-hover:text-industrial-600 transition-colors line-clamp-2">{product.name}</h3>
-                                    <p className="text-xs text-gray-400 mb-3">{product.specs.capacity}</p>
-                                    <p className="text-lg font-black text-red-600">{Number(product.price).toLocaleString()}원~</p>
-                                </div>
-                            </Link>
+                            </div>
                         ))}
                     </div>
                 ) : (

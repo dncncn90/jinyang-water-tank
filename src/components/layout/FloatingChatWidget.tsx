@@ -47,7 +47,7 @@ const HELP_TEXTS: Record<string, string> = {
     'INIT': "좁은 공간엔 사각, 가성비와 안정성은 원형을 추천해요.",
     'RECOMMENDATION_SHOWN': "0.5톤은 가정용, 2톤 이상은 농공업용으로 가장 많이 써요.",
     'CAPACITY_SELECTED': "탱크에 구멍을 뚫고 배관을 연결하는 입구예요. 20mm가 표준입니다.",
-    'FITTING_SIZE_SELECTED': "물이 들어오고(입수), 나가고(출수), 청소하는(퇴수) 용도로 3개를 권장해요.",
+    'FITTING_SIZE_SELECTED': "배관 연결을 위해 보통 1~2개 정도의 구멍(피팅)을 가장 많이 뚫어 사용합니다.",
     'FITTING_COUNT_SELECTED': "신주(청동)는 금속이라 튼튼하고, PE는 약품이나 식품 탱크에 녹슬지 않아 좋아요.",
     'FITTING_SELECTED': "밸브가 없으면 물을 잠글 수 없어요! 단니플(연결부)과 볼밸브(스위치) 세트를 추천해요.",
     'BALLTOP_SELECTED': "물이 꽉 차면 화장실 변기처럼 자동으로 공급을 끊어주는 스마트 부속이에요.",
@@ -63,7 +63,7 @@ export default function FloatingChatWidget() {
     const [isLoading, setIsLoading] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
     const [showQuoteModal, setShowQuoteModal] = useState(false);
-    const { addToCart } = useCart();
+    const { addToCart, setShippingAddress, setShippingType } = useCart();
 
     // Quote State
     const [quoteState, setQuoteState] = useState<QuoteState>({
@@ -82,7 +82,8 @@ export default function FloatingChatWidget() {
             options: [
                 { label: '원형 물탱크', value: 'standard' },
                 { label: '사각 물탱크', value: 'm_series' }
-            ]
+            ],
+            helpText: HELP_TEXTS['INIT']
         }
     ]);
 
@@ -222,15 +223,20 @@ export default function FloatingChatWidget() {
                 nextState.recType = shape;
                 responseText = `${shape === 'standard' ? '원형' : '사각'} 선택하셨군요!\n필요한 용량을 선택해주세요.`;
                 nextOptions = [
-                    { label: '0.2톤', value: '0.2' }, { label: '0.4톤', value: '0.4' },
-                    { label: '0.6톤', value: '0.6' }, { label: '1톤', value: '1' },
-                    { label: '2톤', value: '2' }
+                    { label: '0.2톤 (소형/가정용)', value: '0.2' }, 
+                    { label: '0.4톤 (가정용)', value: '0.4' },
+                    { label: '0.6톤 (베스트)', value: '0.6' }, 
+                    { label: '1톤 (가장 많이 씀)', value: '1' },
+                    { label: '2톤 (농공업용)', value: '2' }
                 ];
                 if (shape === 'standard') {
                     nextOptions.push(
-                        { label: '3톤', value: '3' }, { label: '4톤', value: '4' },
-                        { label: '5톤', value: '5' }, { label: '6톤', value: '6' },
-                        { label: '8톤', value: '8' }, { label: '10톤', value: '10' }
+                        { label: '3톤 (중형)', value: '3' }, 
+                        { label: '4톤', value: '4' },
+                        { label: '5톤 (대용량)', value: '5' }, 
+                        { label: '6톤', value: '6' },
+                        { label: '8톤', value: '8' }, 
+                        { label: '10톤', value: '10' }
                     );
                 }
                 nextType = 'options';
@@ -609,66 +615,85 @@ export default function FloatingChatWidget() {
     };
 
     const executeAddToCart = () => {
-        let productIdStr = 'pe-round-series';
-        if (quoteState.type === 'm_series') {
-            productIdStr = 'pe-square-series';
-        }
+        if (!quoteState.items || quoteState.items.length === 0) return;
 
-        const formattedOptions = [];
-        const mapSize = (s: string) => {
-            const num = parseInt(s);
-            if (!isNaN(num)) return `${num}mm`;
-            return `${s}mm`;
-        };
+        // 1. Add Tank (Main Item)
+        const tankItem = quoteState.items[0];
+        const shapeName = quoteState.type === 'm_series' ? '사각' : '원형';
+        const productIdStr = quoteState.type === 'm_series' 
+            ? `pe-square-${quoteState.capacity?.replace('.', '')}t` 
+            : `pe-round-${quoteState.capacity?.replace('.', '')}t`;
 
+        // Create options for the tank based on selected features
+        const tankOptions: any[] = [];
         if (quoteState.fittingSize && quoteState.fittingSize !== 'none') {
-            formattedOptions.push({
+            tankOptions.push({
                 name: '피팅 재질',
                 value: quoteState.fittingType === 'bronze' ? '청동(신주) 피팅' : 'PE 제작 피팅',
                 priceChange: 0
             });
-            formattedOptions.push({
+            // Look up exact price for the main tank's fitting option from PRICING_DB
+            const fittingCost = quoteState.fittingType === 'bronze' ? ((PRICING_DB.fittings as any).bronze?.[quoteState.fittingSize!] || 0) : ((PRICING_DB.fittings as any).pe?.[quoteState.fittingSize!] || 0);
+
+            tankOptions.push({
                 name: quoteState.fittingType === 'bronze' ? '피팅 규격 (청동 선택 시)' : '피팅 규격 (PE 선택 시)',
-                value: mapSize(quoteState.fittingSize),
-                priceChange: quoteState.items.find(i => i.name.includes('피팅'))?.price || 0
-            });
-        }
-        // Assuming valveSize and hasGauge are not part of current quoteState,
-        // but if they were, they would be added here.
-        // For now, removing them as they are not defined in the current quoteState type.
-        // if (quoteState.valveSize && quoteState.valveSize !== 'none') {
-        //     formattedOptions.push({
-        //         name: '볼밸브',
-        //         value: `${quoteState.valveSize}mm`,
-        //         priceChange: quoteState.items.find(i => i.name.includes('밸브'))?.price || 0
-        //     });
-        // }
-        // if (quoteState.hasGauge) {
-        //     formattedOptions.push({
-        //         name: '레벨 게이지',
-        //         value: '추가함',
-        //         priceChange: quoteState.items.find(i => i.name.includes('게이지'))?.price || 0
-        //     });
-        // }
-        if (quoteState.lid && quoteState.lid !== 'none') {
-            formattedOptions.push({
-                name: '물탱크 뚜껑',
-                value: quoteState.lid === 'small' ? '소형' : '대형',
-                priceChange: quoteState.items.find(i => i.name.includes('뚜껑'))?.price || 0
+                value: quoteState.fittingSize + 'mm',
+                priceChange: fittingCost
             });
         }
 
-        const shapeName = quoteState.type === 'm_series' ? '사각' : '원형';
-
+        // Add Tank
         addToCart({
             productId: productIdStr,
             name: `${quoteState.capacity}톤 ${shapeName} 물탱크`,
-            basePrice: quoteState.items[0]?.price || 0, // Assumption: First item is the tank
-            options: formattedOptions,
+            basePrice: tankItem.price,
+            options: tankOptions,
             requirements: `챗봇 간편 견적으로 추가됨`,
             quantity: 1,
             image: quoteState.type === 'm_series' ? '/images/products/tank-square-real.jpg' : '/images/products/tank-round-real.png'
         });
+
+        // 2. Add extra items (Fittings, Valves, Balltops, Lids, Gauge) separately
+        quoteState.items.slice(1).forEach(item => {
+            let subProductId = 'fittings';
+            let subImage = '/images/products/fit-bronze-real.png';
+            
+            if (item.name.includes('밸브')) {
+                subProductId = 'fit-ballvalve-brass';
+                subImage = '/images/products/fit-ballvalve-brass.jpg';
+            } else if (item.name.includes('볼탑')) {
+                subProductId = 'fit-ball-tap';
+                subImage = '/images/products/fit-ball-tap-real.png';
+            } else if (item.name.includes('뚜껑')) {
+                subProductId = 'fit-lid-series';
+                subImage = '/images/products/tank-lid-real.jpg';
+            } else if (item.name.includes('게이지')) {
+                subProductId = 'fit-level-gauge';
+                subImage = '/images/products/fit-level-gauge.png';
+            } else if (item.name.includes('니플') || item.name.includes('피팅')) {
+                subProductId = (item.name.includes('청동') || item.name.includes('신주')) ? 'fit-bronze-series' : 'fit-pe-series';
+                subImage = (item.name.includes('청동') || item.name.includes('신주')) ? '/images/products/fit-bronze-real.png' : '/images/products/fit-pe-real.jpg';
+            }
+
+            addToCart({
+                productId: subProductId,
+                name: item.name,
+                basePrice: item.price,
+                // Passing a unique option to ensure the cartItemId is unique and prevents merging bugs!
+                options: [{ name: '품목', value: item.name, priceChange: 0 }],
+                requirements: '스마트 견적 부속품',
+                quantity: item.quantity || 1,
+                image: subImage
+            });
+        });
+
+        // 3. Persist Shipping Info
+        if (quoteState.deliveryMethod) {
+            setShippingType(quoteState.deliveryMethod);
+        }
+        if (quoteState.location) {
+            setShippingAddress(quoteState.location);
+        }
     };
 
     const handleAddToCart = () => {

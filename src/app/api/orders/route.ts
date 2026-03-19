@@ -40,19 +40,22 @@ export async function POST(request: Request) {
         // 2. 디스코드 알림 전송 (상담 신청인 경우에만 즉시 알림, 결제 시도는 성공 후에 알림)
         try {
             const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
+            console.log(`[OrderAPI] Attempting Discord notification. Webhook URL exists: ${!!discordWebhookUrl}`);
+            
             if (discordWebhookUrl) { // 모든 주문 건에 대해 디스코드 알림 발송
                 const itemText = items.map((i: any) => `- ${i.name} (${i.options || '기본'}) : ${i.quantity}개`).join('\n');
                 const discordMessage = {
                     username: "진양건재 실시간 알리미 🚨",
                     embeds: [{
-                        title: "🚨 [운임비 상담 필요] 새 주문이 접수되었습니다!",
-                        color: 15105570, // 주황색 계열
+                        title: paymentMethod === 'BANK_TRANSFER' ? "🏦 [무통장 주문] 새 주문이 접수되었습니다!" : "🚨 [운임비 상담 필요] 새 주문이 접수되었습니다!",
+                        color: paymentMethod === 'BANK_TRANSFER' ? 3447003 : 15105570, // 무통장은 파란색, 상담필요는 주황색
                         fields: [
-                            { name: "📍 배송지 (지도/화물 조회용)", value: address },
+                            { name: "📍 배송지 (지도/화물 조회용)", value: address || '정보 없음' },
                             { name: "📞 고객명 / 연락처", value: `${name} (${phone})` },
-                            { name: "📦 주문상품", value: itemText },
+                            { name: "📦 주문상품", value: itemText || '정보 없음' },
                             { name: "💰 주문총액 (상품대금)", value: `${totalAmount.toLocaleString()}원`, inline: true },
                             { name: "🧾 주문번호", value: orderUuid, inline: true },
+                            { name: "💳 결제수단", value: paymentMethod === 'BANK_TRANSFER' ? '무통장 입금' : '기타/상담', inline: true },
                             { name: "📝 기타 요청사항", value: requirements || '없음' }
                         ],
                         footer: { text: "조속히 확인하여 고객님께 배송비 및 일정을 안내해 주세요." },
@@ -60,14 +63,23 @@ export async function POST(request: Request) {
                     }]
                 };
 
-                await fetch(discordWebhookUrl, {
+                const res = await fetch(discordWebhookUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(discordMessage)
                 });
+                
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    console.error(`[OrderAPI] Discord Webhook failed with status ${res.status}: ${errorText}`);
+                } else {
+                    console.log(`[OrderAPI] Discord notification sent successfully for order: ${orderUuid}`);
+                }
+            } else {
+                console.warn("[OrderAPI] DISCORD_WEBHOOK_URL is not defined in environment variables.");
             }
         } catch (discordError) {
-            console.error("디스코드 알림 발송 실패:", discordError);
+            console.error("[OrderAPI] 디스코드 알림 발송 중 예외 발생:", discordError);
         }
 
         try {

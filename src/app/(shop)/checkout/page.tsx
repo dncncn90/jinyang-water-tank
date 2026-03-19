@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { ShoppingBag, ChevronRight, Check, User, AlertCircle, FileText, CreditCard, HelpCircle, PhoneCall, Truck, Store } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
@@ -26,7 +26,7 @@ export default function CheckoutPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // If data is loaded later from context
-    useMemo(() => {
+    useEffect(() => {
         setFormData(prev => ({
             ...prev,
             address: prev.address || shippingAddress,
