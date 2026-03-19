@@ -11,22 +11,26 @@ export async function GET() {
     }
 
     try {
+        console.log(`[TestDiscord] Sending to: ${webhookUrl.substring(0, 20)}...`);
         const response = await fetch(webhookUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 username: "진양건재 테스트 봇",
-                content: "🚀 디스코드 알림 테스트 메시지입니다! 이 메시지가 보인다면 설징이 완료된 것입니다."
+                content: "🚀 디스코드 알림 테스트 메시지입니다! 이 메시지가 보인다면 설정이 완료된 것입니다."
             })
         });
 
         if (response.ok) {
+            console.log(`[TestDiscord] Success! Status: ${response.status}`);
             return NextResponse.json({ success: true, message: "테스트 메시지가 발송되었습니다. 디스코드를 확인하세요!" });
         } else {
             const errorText = await response.text();
+            console.error(`[TestDiscord] Discord Error. Status: ${response.status}, Body: ${errorText}`);
             return NextResponse.json({ success: false, message: `웹훅 발송 실패: ${response.status}`, details: errorText }, { status: 500 });
         }
     } catch (error: any) {
+        console.error(`[TestDiscord] Network Error:`, error);
         return NextResponse.json({ success: false, message: "네트워크 오류 발생", error: error.message }, { status: 500 });
     }
 }

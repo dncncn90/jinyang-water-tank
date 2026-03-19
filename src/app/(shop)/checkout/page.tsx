@@ -98,19 +98,23 @@ export default function CheckoutPage() {
     };
 
     const handleSubmitOrder = async () => {
+        console.log('[Checkout] handleSubmitOrder started');
         if (shippingType === 'delivery' && (!formData.name || !formData.phone || !formData.password || !formData.address)) {
+            console.warn('[Checkout] Validation failed: missing fields');
             alert('배송지를 포함한 필수 정보를 모두 입력해주세요. (이름, 연락처, 비밀번호, 주소)');
             return;
         }
 
         if (shippingType === 'pickup' && (!formData.name || !formData.phone || !formData.password)) {
+            console.warn('[Checkout] Validation failed: missing fields for pickup');
             alert('필수 정보를 모두 입력해주세요. (이름, 연락처, 비밀번호)');
             return;
         }
 
-        setIsSubmitting(true);
-
         try {
+            setIsSubmitting(true);
+            console.log('[Checkout] Submitting order payload...');
+
             const finalAddress = shippingType === 'pickup'
                 ? '방문 수령 (수원시 팔달구 효원로 209-5 진양건재 본점)'
                 : `(${formData.zipcode}) ${formData.address} ${formData.detailAddress}`;
@@ -124,11 +128,12 @@ export default function CheckoutPage() {
                 totalAmount: totalAmount,
                 items: items.map(item => ({
                     name: item.name,
-                    options: item.options.map(opt => `${opt.name}: ${opt.value}`).join(', '),
-                    requirements: item.requirements,
+                    options: item.options?.map(opt => `${opt.name}: ${opt.value}`).join(', ') || '기본',
+                    requirements: item.requirements || '',
                     quantity: item.quantity,
                     price: item.totalPrice
-                }))
+                })),
+                paymentMethod: 'BANK_TRANSFER'
             };
 
             const response = await fetch('/api/orders', {
@@ -140,14 +145,13 @@ export default function CheckoutPage() {
             const data = await response.json();
 
             if (response.ok && data.success) {
-                // clearCart(); // 결제 완료된 후(/checkout/success 등)에서 비우도록 변경합니다. 
                 router.push(`/checkout/success?orderId=${data.orderId}&amount=${totalAmount}&type=${shippingType}`);
             } else {
                 alert(data.error || '주문 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('Order Submit Error:', error);
-            alert('서버 통신 오류가 발생했습니다.');
+            alert(`오류가 발생했습니다: ${error.message || '알 수 없는 서버 오류'}`);
         } finally {
             setIsSubmitting(false);
         }

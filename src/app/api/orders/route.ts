@@ -10,10 +10,12 @@ const messageService = new SolapiMessageService(
 );
 
 export async function POST(request: Request) {
+    console.log('[OrderAPI] Received POST request');
     const supabase = await createClient();
 
     try {
         const body = await request.json();
+        console.log('[OrderAPI] Request body:', JSON.stringify(body).substring(0, 100) + '...');
         const {
             name,
             phone,
@@ -39,7 +41,7 @@ export async function POST(request: Request) {
 
         // 2. 디스코드 알림 전송
         try {
-            const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
+            const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL?.trim();
             const currentPaymentMethod = paymentMethod || 'BANK_TRANSFER';
             
             console.log(`[OrderAPI] Discord Webhook URL: ${discordWebhookUrl ? discordWebhookUrl.substring(0, 15) + '...' : 'MISSING'}`);
