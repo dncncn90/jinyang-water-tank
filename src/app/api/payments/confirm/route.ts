@@ -77,7 +77,9 @@ export async function POST(request: Request) {
         // 3. 결제 완료 후 디스코드 알림 전송 (항상 발송 시도)
         try {
             const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
-            if (discordWebhookUrl) {
+            console.log(`[PaymentConfirm] Discord Webhook URL: ${discordWebhookUrl ? discordWebhookUrl.substring(0, 15) + '...' : 'MISSING'}`);
+
+            if (discordWebhookUrl && discordWebhookUrl.startsWith('http')) {
                 // 주문 상세 정보(상품 목록 등)를 가져오기 위해 DB 조회
                 // orderId(order_uuid)를 통해 orders 테이블의 id를 검색
                 const { data: orderDetails } = await supabase

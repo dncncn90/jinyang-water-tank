@@ -32,31 +32,31 @@ export const calculateShippingCost = (items: { name: string, quantity: number }[
     items.forEach(item => {
         const name = item.name;
 
-        // Robust tonnage extraction (handles "10", "10톤", "0.2톤", etc.)
-        const tonnageMatch = name.match(/(\d+(\.\d+)?)/);
+        // Extract tonnage only if "톤" or "T" (case-insensitive) follows the number
+        // This prevents "15mm" from being treated as "15 Tons"
+        const tonnageMatch = name.match(/(\d+(\.\d+)?)\s*[톤tT]/);
         const tonnageValue = tonnageMatch ? parseFloat(tonnageMatch[1]) : 0;
         const isSquare = name.includes('사각') || name.includes('Square');
 
-        let unitsPerItem = 1;
+        let unitsPerItem = 0.05; // Default for small items (fittings, etc.)
 
-        if (tonnageValue >= 8) {
-            // 8톤, 10톤 -> 5톤 축차 이상 (3.5x multiplier)
-            unitsPerItem = 3.5;
-        } else if (tonnageValue >= 5) {
-            // 5톤, 6톤 -> 3.5톤~5톤 차량 (2.5x multiplier)
-            unitsPerItem = 2.5;
-        } else if (tonnageValue >= 2) {
-            // 2톤, 3톤 -> 1톤 전전차 또는 1.4톤 (1.2x)
-            unitsPerItem = 1.2;
-        } else if (tonnageValue >= 1) {
-            // 1톤
-            unitsPerItem = isSquare ? 0.125 : 0.25;
-        } else if (tonnageValue > 0) {
-            // 0.2톤 ~ 0.8톤 (Treat as small items)
-            unitsPerItem = 0.125;
-        } else {
-            // Smaller tanks/fittings
-            unitsPerItem = 0.1;
+        if (tonnageValue > 0) {
+            if (tonnageValue >= 8) {
+                // 8톤, 10톤 -> 5톤 축차 이상 (3.5x multiplier)
+                unitsPerItem = 3.5;
+            } else if (tonnageValue >= 5) {
+                // 5톤, 6톤 -> 3.5톤~5톤 차량 (2.5x multiplier)
+                unitsPerItem = 2.5;
+            } else if (tonnageValue >= 2) {
+                // 2톤, 3톤 -> 1톤 전전차 또는 1.4톤 (1.2x)
+                unitsPerItem = 1.2;
+            } else if (tonnageValue >= 1) {
+                // 1톤
+                unitsPerItem = isSquare ? 0.35 : 0.5; // 1톤 원형은 절반 차지
+            } else {
+                // 0.2톤 ~ 0.8톤
+                unitsPerItem = 0.2;
+            }
         }
 
         totalTruckUnitsNeeded += (unitsPerItem * item.quantity);

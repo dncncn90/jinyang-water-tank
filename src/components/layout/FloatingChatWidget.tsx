@@ -14,6 +14,7 @@ type Message = {
     options?: { label: string; value: string }[];
     productData?: any;
     helpText?: string;
+    step?: QuoteState['step'];
 };
 
 type QuoteState = {
@@ -83,7 +84,8 @@ export default function FloatingChatWidget() {
                 { label: '원형 물탱크', value: 'standard' },
                 { label: '사각 물탱크', value: 'm_series' }
             ],
-            helpText: HELP_TEXTS['INIT']
+            helpText: HELP_TEXTS['INIT'],
+            step: 'INIT'
         }
     ]);
 
@@ -101,14 +103,15 @@ export default function FloatingChatWidget() {
         return () => window.removeEventListener('open-chat', handleOpenChat);
     }, []);
 
-    const addMessage = (role: 'user' | 'assistant', content: string, type: Message['type'] = 'text', options?: Message['options'], helpText?: string) => {
+    const addMessage = (role: 'user' | 'assistant', content: string, type: Message['type'] = 'text', options?: Message['options'], helpText?: string, step?: QuoteState['step']) => {
         setMessages(prev => [...prev, {
             id: Date.now().toString(),
             role,
             content,
             type,
             options,
-            helpText
+            helpText,
+            step
         }]);
     };
 
@@ -146,7 +149,7 @@ export default function FloatingChatWidget() {
         }
 
         setQuoteState(finalState);
-        addMessage('assistant', responseText, nextType);
+        addMessage('assistant', responseText, nextType, undefined, undefined, 'DONE');
     };
 
     const processUserInput = (text: string) => {
@@ -187,7 +190,7 @@ export default function FloatingChatWidget() {
                             { label: '15mm', value: '15' }, { label: '20mm', value: '20' },
                             { label: '25mm', value: '25' }, { label: '40mm', value: '40' },
                             { label: '50mm', value: '50' }, { label: '선택안함 (필요없음)', value: 'none' }
-                        ]);
+                        ], undefined, 'CAPACITY_SELECTED');
                     } else {
                         addMessage('assistant', `죄송합니다. 선택하신 제품(${getProductName(dbKey)})에는 ${cap}톤 모델이 없습니다. \n다른 용량을 입력해주세요.`);
                     }
@@ -205,7 +208,7 @@ export default function FloatingChatWidget() {
         }, 800);
     };
 
-    const handleOptionSelect = (value: string, label: string) => {
+    const handleOptionSelect = (value: string, label: string, buttonStep?: QuoteState['step']) => {
         addMessage('user', label);
         setIsLoading(true);
 
@@ -216,8 +219,10 @@ export default function FloatingChatWidget() {
             let nextOptions: Message['options'] = undefined;
             let nextType: Message['type'] = 'text';
 
+            const evaluationStep = buttonStep || quoteState.step;
+
             // Step 1: Shape Selected -> Ask Capacity
-            if (quoteState.step === 'INIT') {
+            if (evaluationStep === 'INIT') {
                 const shape = value;
                 nextState.step = 'RECOMMENDATION_SHOWN' as any;
                 nextState.recType = shape;
@@ -240,11 +245,11 @@ export default function FloatingChatWidget() {
                     );
                 }
                 nextType = 'options';
-                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['RECOMMENDATION_SHOWN']);
+                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['RECOMMENDATION_SHOWN'], 'RECOMMENDATION_SHOWN');
             }
 
             // Step 2: Capacity Selected -> Ask Fitting Size
-            else if (quoteState.step === 'RECOMMENDATION_SHOWN') {
+            else if (evaluationStep === 'RECOMMENDATION_SHOWN') {
                 const cap = value;
                 const dbKey = (quoteState.recType || 'standard') as keyof typeof PRICING_DB.tanks;
                 const basePrice = (PRICING_DB.tanks[dbKey] as any)[cap];
@@ -263,12 +268,12 @@ export default function FloatingChatWidget() {
                         { label: '50mm', value: '50' }, { label: '피팅 필요없음', value: 'none' }
                     ];
                     nextType = 'options';
-                    addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['CAPACITY_SELECTED']);
+                    addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['CAPACITY_SELECTED'], 'CAPACITY_SELECTED');
                 }
             }
 
             // Step 3: Fitting Size Selected -> If None Jump to Balltop, else Fitting Count
-            else if (quoteState.step === 'CAPACITY_SELECTED') {
+            else if (evaluationStep === 'CAPACITY_SELECTED') {
                 if (value === 'none') {
                     nextState.step = 'BALLTOP_SELECTED'; // Jump to Balltop
                     responseText = `피팅 없이 진행합니다.\n\n볼탑(자동밸브)이 필요하신가요?`;
@@ -279,22 +284,22 @@ export default function FloatingChatWidget() {
                         { label: '볼탑 필요없음', value: 'none' }
                     ];
                     nextType = 'options';
-                    addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['BALLTOP_SELECTED']);
+                    addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['BALLTOP_SELECTED'], 'BALLTOP_SELECTED');
                 } else {
                     nextState.step = 'FITTING_SIZE_SELECTED';
                     nextState.fittingSize = value;
                     responseText = `${value}mm 피팅 선택!\n\n몇 개가 필요하신가요?`;
                     nextOptions = [
                         { label: '1개', value: '1' }, { label: '2개', value: '2' },
-                        { label: '3개 (권장)', value: '3' }, { label: '4개', value: '4' }
+                        { label: '3개', value: '3' }, { label: '4개', value: '4' }
                     ];
                     nextType = 'options';
-                    addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['FITTING_SIZE_SELECTED']);
+                    addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['FITTING_SIZE_SELECTED'], 'FITTING_SIZE_SELECTED');
                 }
             }
 
             // Step 4: Fitting Count Selected -> Ask Material
-            else if (quoteState.step === 'FITTING_SIZE_SELECTED') {
+            else if (evaluationStep === 'FITTING_SIZE_SELECTED') {
                 nextState.step = 'FITTING_COUNT_SELECTED';
                 nextState.fittingCount = parseInt(value);
                 responseText = `${value}개로 준비하겠습니다.\n\n피팅 재질을 선택해주세요.`;
@@ -303,11 +308,11 @@ export default function FloatingChatWidget() {
                     { label: 'PE제작', value: 'pe' }
                 ];
                 nextType = 'options';
-                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['FITTING_COUNT_SELECTED']);
+                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['FITTING_COUNT_SELECTED'], 'FITTING_COUNT_SELECTED');
             }
 
             // Step 5: Material Selected -> Ask Bundle (Nipple + Valve)
-            else if (quoteState.step === 'FITTING_COUNT_SELECTED') {
+            else if (evaluationStep === 'FITTING_COUNT_SELECTED') {
                 nextState.step = 'FITTING_SELECTED';
                 nextState.fittingType = value as 'bronze' | 'pe';
                 const fCount = nextState.fittingCount || 1;
@@ -322,11 +327,11 @@ export default function FloatingChatWidget() {
                     { label: '아니요, 직접 선택할게요', value: 'manual' }
                 ];
                 nextType = 'options';
-                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['FITTING_SELECTED']);
+                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['FITTING_SELECTED'], 'FITTING_SELECTED');
             }
 
-            // Step 6: Bundle Choice -> Jump to Balltop
-            else if (quoteState.step === 'FITTING_SELECTED') {
+            // Step 6: Bundle Choice -> Jump to Balltop or Manual
+            else if (evaluationStep === 'FITTING_SELECTED') {
                 if (value === 'auto') {
                     const fSize = quoteState.fittingSize!;
                     const fCount = quoteState.fittingCount || 1;
@@ -336,7 +341,67 @@ export default function FloatingChatWidget() {
                     const valveUnit = valvePriceMap[fSize] || 0;
                     if (nippleUnit) { nextState.items.push({ name: `신주단니플 ${fSize}mm`, price: nippleUnit, quantity: fCount }); nextState.totalPrice += nippleUnit * fCount; }
                     if (valveUnit) { nextState.items.push({ name: `황동볼밸브 ${fSize}mm`, price: valveUnit, quantity: fCount }); nextState.totalPrice += valveUnit * fCount; }
+
+                    nextState.step = 'BALLTOP_SELECTED';
+                    responseText = `볼탑(자동밸브)이 필요하신가요?`;
+                    nextOptions = [
+                        { label: '15mm', value: 'balltop_15' }, { label: '20mm', value: 'balltop_20' },
+                        { label: '25mm', value: 'balltop_25' }, { label: '32mm', value: 'balltop_32' },
+                        { label: '40mm', value: 'balltop_40' }, { label: '50mm', value: 'balltop_50' },
+                        { label: '볼탑 필요없음', value: 'none' }
+                    ];
+                    nextType = 'options';
+                    addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['BALLTOP_SELECTED'], 'BALLTOP_SELECTED');
+                } else if (value === 'manual') {
+                    nextState.step = 'NIPPLE_SELECTED';
+                    responseText = `${quoteState.fittingSize}mm 단니플을 몇 개 추가하시겠어요?`;
+                    nextOptions = [
+                        { label: '1개', value: '1' }, { label: '2개', value: '2' },
+                        { label: '3개', value: '3' }, { label: '4개', value: '4' },
+                        { label: '단니플 필요없음', value: '0' }
+                    ];
+                    nextType = 'options';
+                    addMessage('assistant', responseText, nextType, nextOptions, undefined, 'NIPPLE_SELECTED');
                 }
+            }
+
+            // Step 6-A: Manual Nipple Selection
+            else if (evaluationStep === 'NIPPLE_SELECTED') {
+                const count = parseInt(value);
+                if (count > 0) {
+                    const fSize = quoteState.fittingSize!;
+                    const nipplePriceMap: Record<string, number> = { '15': 1100, '20': 1870, '25': 2970, '32': 5610, '40': 7040, '50': 10890 };
+                    const nippleUnit = nipplePriceMap[fSize] || 0;
+                    if (nippleUnit) {
+                        nextState.items.push({ name: `신주단니플 ${fSize}mm`, price: nippleUnit, quantity: count });
+                        nextState.totalPrice += nippleUnit * count;
+                    }
+                }
+                
+                nextState.step = 'BALLVALVE_SELECTED';
+                responseText = `${quoteState.fittingSize}mm 볼밸브를 몇 개 추가하시겠어요?`;
+                nextOptions = [
+                    { label: '1개', value: '1' }, { label: '2개', value: '2' },
+                    { label: '3개', value: '3' }, { label: '4개', value: '4' },
+                    { label: '볼밸브 필요없음', value: '0' }
+                ];
+                nextType = 'options';
+                addMessage('assistant', responseText, nextType, nextOptions, undefined, 'BALLVALVE_SELECTED');
+            }
+
+            // Step 6-B: Manual Ballvalve Selection
+            else if (evaluationStep === 'BALLVALVE_SELECTED') {
+                const count = parseInt(value);
+                if (count > 0) {
+                    const fSize = quoteState.fittingSize!;
+                    const valvePriceMap: Record<string, number> = { '15': 4620, '20': 6270, '25': 11110, '32': 16830, '40': 24750, '50': 36630 };
+                    const valveUnit = valvePriceMap[fSize] || 0;
+                    if (valveUnit) {
+                        nextState.items.push({ name: `황동볼밸브 ${fSize}mm`, price: valveUnit, quantity: count });
+                        nextState.totalPrice += valveUnit * count;
+                    }
+                }
+
                 nextState.step = 'BALLTOP_SELECTED';
                 responseText = `볼탑(자동밸브)이 필요하신가요?`;
                 nextOptions = [
@@ -346,11 +411,11 @@ export default function FloatingChatWidget() {
                     { label: '볼탑 필요없음', value: 'none' }
                 ];
                 nextType = 'options';
-                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['BALLTOP_SELECTED']);
+                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['BALLTOP_SELECTED'], 'BALLTOP_SELECTED');
             }
 
             // Step 7: Balltop Selected -> Ask Gauge
-            else if (quoteState.step === 'BALLTOP_SELECTED') {
+            else if (evaluationStep === 'BALLTOP_SELECTED') {
                 nextState.step = 'GAUGE_SELECTED';
                 if (value !== 'none') {
                     const balltopPriceMap: Record<string, number> = { 'balltop_15': 7600, 'balltop_20': 11700, 'balltop_25': 13600, 'balltop_32': 34700, 'balltop_40': 44100, 'balltop_50': 67800 };
@@ -365,11 +430,11 @@ export default function FloatingChatWidget() {
                     { label: '필요없음', value: 'none' }
                 ];
                 nextType = 'options';
-                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['GAUGE_SELECTED']);
+                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['GAUGE_SELECTED'], 'GAUGE_SELECTED');
             }
 
             // Step 8: Gauge Selected -> Ask Lid
-            else if (quoteState.step === 'GAUGE_SELECTED') {
+            else if (evaluationStep === 'GAUGE_SELECTED') {
                 nextState.step = 'LID_SELECTED';
                 if (value !== 'none') {
                     nextState.hasGauge = true;
@@ -390,11 +455,11 @@ export default function FloatingChatWidget() {
                     ];
                 }
                 nextType = 'options';
-                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['LID_SELECTED']);
+                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['LID_SELECTED'], 'LID_SELECTED');
             }
 
             // Step 9: Lid Selected -> Delivery Method
-            else if (quoteState.step === 'LID_SELECTED') {
+            else if (evaluationStep === 'LID_SELECTED') {
                 nextState.step = 'DELIVERY_METHOD_CHOSEN';
                 nextState.lid = value as any;
                 if (value !== 'none') {
@@ -409,11 +474,11 @@ export default function FloatingChatWidget() {
                     { label: '방문 수령 (수원 / 운임 0원)', value: 'pickup' }
                 ];
                 nextType = 'options';
-                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['DELIVERY_METHOD_CHOSEN']);
+                addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['DELIVERY_METHOD_CHOSEN'], 'DELIVERY_METHOD_CHOSEN');
             }
 
             // Step 10: Delivery Method -> Done or Address
-            else if (quoteState.step === 'DELIVERY_METHOD_CHOSEN') {
+            else if (evaluationStep === 'DELIVERY_METHOD_CHOSEN') {
                 nextState.deliveryMethod = value as any;
                 if (value === 'pickup') {
                     calculateFinalQuote('pickup', '방문 수령');
@@ -777,7 +842,7 @@ export default function FloatingChatWidget() {
                                                 {msg.options.map((opt) => (
                                                     <button
                                                         key={opt.value}
-                                                        onClick={() => handleOptionSelect(opt.value, opt.label)}
+                                                        onClick={() => handleOptionSelect(opt.value, opt.label, msg.step)}
                                                         className="bg-white border-2 border-industrial-100 hover:border-industrial-500 text-gray-800 hover:text-industrial-600 font-semibold py-2.5 px-4 rounded-xl transition-all text-left flex justify-between items-center group text-sm active:bg-industrial-50 shadow-sm"
                                                     >
                                                         <span>{opt.label}</span>

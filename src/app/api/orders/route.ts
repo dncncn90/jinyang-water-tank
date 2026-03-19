@@ -42,9 +42,9 @@ export async function POST(request: Request) {
             const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
             const currentPaymentMethod = paymentMethod || 'BANK_TRANSFER';
             
-            console.log(`[OrderAPI] Attempting Discord notification. Webhook URL exists: ${!!discordWebhookUrl}, PaymentMethod: ${currentPaymentMethod}`);
+            console.log(`[OrderAPI] Discord Webhook URL: ${discordWebhookUrl ? discordWebhookUrl.substring(0, 15) + '...' : 'MISSING'}`);
             
-            if (discordWebhookUrl) {
+            if (discordWebhookUrl && discordWebhookUrl.startsWith('http')) {
                 const itemText = items.map((i: any) => {
                     const optionText = i.options ? ` [${i.options}]` : '';
                     return `- ${i.name}${optionText} : ${i.quantity}개`;
