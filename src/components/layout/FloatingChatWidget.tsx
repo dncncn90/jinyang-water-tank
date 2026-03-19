@@ -214,7 +214,8 @@ export default function FloatingChatWidget() {
 
         setTimeout(() => {
             setIsLoading(false);
-            let nextState = { ...quoteState };
+            // Crucial: Deep copy items array to avoid mutation bugs!
+            let nextState = { ...quoteState, items: [...quoteState.items] };
             let responseText = '';
             let nextOptions: Message['options'] = undefined;
             let nextType: Message['type'] = 'text';
@@ -760,6 +761,7 @@ export default function FloatingChatWidget() {
     };
 
     const handleAddToCart = () => {
+        if (isLoading) return; // Prevent double click
         executeAddToCart();
         alert('장바구니에 담겼습니다!');
         setShowQuoteModal(false);
@@ -767,6 +769,7 @@ export default function FloatingChatWidget() {
     };
 
     const handleDirectCheckout = () => {
+        if (isLoading) return; // Prevent double click
         executeAddToCart();
         setShowQuoteModal(false);
         setIsOpen(false);
@@ -955,7 +958,7 @@ export default function FloatingChatWidget() {
                                         <span className="font-bold text-gray-900">{quoteState.capacity || '-'}톤 물탱크 ({getProductName(quoteState.type || 'standard')})</span>
                                     </div>
 
-                                    {quoteState.items.map((item, idx) => (
+                                    {quoteState.items.slice(1).map((item, idx) => (
                                         <div key={idx} className="flex justify-between text-sm py-1">
                                             <span className="text-gray-600">- {item.name} {item.quantity > 1 ? `x${item.quantity}` : ''}</span>
                                             <span className="font-medium text-gray-800">{(item.price * item.quantity).toLocaleString()}원</span>
