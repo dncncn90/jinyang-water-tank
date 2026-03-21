@@ -95,7 +95,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             const cartItemId = `${newItem.productId}-${optionsString}-${newItem.requirements}`;
 
             const optionsPriceTotal = newItem.options.reduce((sum, opt) => sum + opt.priceChange, 0);
-            const unitPrice = Math.round((newItem.basePrice + optionsPriceTotal) * 1.1);
+            const unitPrice = newItem.basePrice + optionsPriceTotal;
 
             const existingItemIndex = prevItems.findIndex(item => item.cartItemId === cartItemId);
 
@@ -136,7 +136,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setItems(prevItems => prevItems.map(item => {
             if (item.cartItemId === cartItemId) {
                 const optionsPriceTotal = item.options.reduce((sum, opt) => sum + opt.priceChange, 0);
-                const unitPrice = Math.round((item.basePrice + optionsPriceTotal) * 1.1);
+                const unitPrice = item.basePrice + optionsPriceTotal;
                 return {
                     ...item,
                     quantity,

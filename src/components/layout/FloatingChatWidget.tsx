@@ -170,7 +170,7 @@ export default function FloatingChatWidget() {
                     const dbKey = (quoteState.recType || 'standard') as keyof typeof PRICING_DB.tanks;
 
                     if (PRICING_DB.tanks[dbKey] && (PRICING_DB.tanks[dbKey] as any)[cap]) {
-                        const basePrice = Math.round((PRICING_DB.tanks[dbKey] as any)[cap] * 1.1);
+                        const basePrice = (PRICING_DB.tanks[dbKey] as any)[cap];
 
                         setQuoteState(prev => ({
                             ...prev,
@@ -252,7 +252,7 @@ export default function FloatingChatWidget() {
             else if (evaluationStep === 'RECOMMENDATION_SHOWN') {
                 const cap = value;
                 const dbKey = (quoteState.recType || 'standard') as keyof typeof PRICING_DB.tanks;
-                const basePrice = Math.round(((PRICING_DB.tanks[dbKey] as any)[cap] || 0) * 1.1);
+                const basePrice = (PRICING_DB.tanks[dbKey] as any)[cap] || 0;
                 if (basePrice === 0) {
                     addMessage('assistant', '해당 용량의 가격 정보가 없습니다. 상담원에게 문의해주세요.');
                 } else {
@@ -316,7 +316,7 @@ export default function FloatingChatWidget() {
                 nextState.step = 'FITTING_SELECTED';
                 nextState.fittingType = value as 'bronze' | 'pe';
                 const fCount = nextState.fittingCount || 1;
-                const fitUnitPrice = Math.round(((PRICING_DB.fittings as any)[value]?.[nextState.fittingSize!] || 0) * 1.1);
+                const fitUnitPrice = (PRICING_DB.fittings as any)[value]?.[nextState.fittingSize!] || 0;
                 if (fitUnitPrice) {
                     nextState.items.push({ name: `${value === 'bronze' ? '청동' : 'PE'} 피팅 ${nextState.fittingSize}mm`, price: fitUnitPrice, quantity: fCount });
                     nextState.totalPrice += fitUnitPrice * fCount;
@@ -335,10 +335,8 @@ export default function FloatingChatWidget() {
                 if (value === 'auto') {
                     const fSize = quoteState.fittingSize!;
                     const fCount = quoteState.fittingCount || 1;
-                    const nipplePriceMap: Record<string, number> = { '15': 1100, '20': 1870, '25': 2970, '32': 5610, '40': 7040, '50': 10890 };
-                    const valvePriceMap: Record<string, number> = { '15': 4620, '20': 6270, '25': 11110, '32': 16830, '40': 24750, '50': 36630 };
-                    const nippleUnit = Math.round((nipplePriceMap[fSize] || 0) * 1.1);
-                    const valveUnit = Math.round((valvePriceMap[fSize] || 0) * 1.1);
+                    const nippleUnit = PRICING_DB.fittings.nipple[fSize as keyof typeof PRICING_DB.fittings.nipple] || 0;
+                    const valveUnit = PRICING_DB.fittings.valve[fSize as keyof typeof PRICING_DB.fittings.valve] || 0;
                     if (nippleUnit) { nextState.items.push({ name: `신주단니플 ${fSize}mm`, price: nippleUnit, quantity: fCount }); nextState.totalPrice += nippleUnit * fCount; }
                     if (valveUnit) { nextState.items.push({ name: `황동볼밸브 ${fSize}mm`, price: valveUnit, quantity: fCount }); nextState.totalPrice += valveUnit * fCount; }
 
@@ -370,8 +368,7 @@ export default function FloatingChatWidget() {
                 const count = parseInt(value);
                 if (count > 0) {
                     const fSize = quoteState.fittingSize!;
-                    const nipplePriceMap: Record<string, number> = { '15': 1100, '20': 1870, '25': 2970, '32': 5610, '40': 7040, '50': 10890 };
-                    const nippleUnit = Math.round((nipplePriceMap[fSize] || 0) * 1.1);
+                    const nippleUnit = PRICING_DB.fittings.nipple[fSize as keyof typeof PRICING_DB.fittings.nipple] || 0;
                     if (nippleUnit) {
                         nextState.items.push({ name: `신주단니플 ${fSize}mm`, price: nippleUnit, quantity: count });
                         nextState.totalPrice += nippleUnit * count;
@@ -394,8 +391,7 @@ export default function FloatingChatWidget() {
                 const count = parseInt(value);
                 if (count > 0) {
                     const fSize = quoteState.fittingSize!;
-                    const valvePriceMap: Record<string, number> = { '15': 4620, '20': 6270, '25': 11110, '32': 16830, '40': 24750, '50': 36630 };
-                    const valveUnit = Math.round((valvePriceMap[fSize] || 0) * 1.1);
+                    const valveUnit = PRICING_DB.fittings.valve[fSize as keyof typeof PRICING_DB.fittings.valve] || 0;
                     if (valveUnit) {
                         nextState.items.push({ name: `황동볼밸브 ${fSize}mm`, price: valveUnit, quantity: count });
                         nextState.totalPrice += valveUnit * count;
@@ -418,9 +414,8 @@ export default function FloatingChatWidget() {
             else if (evaluationStep === 'BALLTOP_SELECTED') {
                 nextState.step = 'GAUGE_SELECTED';
                 if (value !== 'none') {
-                    const balltopPriceMap: Record<string, number> = { 'balltop_15': 7600, 'balltop_20': 11700, 'balltop_25': 13600, 'balltop_32': 34700, 'balltop_40': 44100, 'balltop_50': 67800 };
                     const sizeLabel = value.replace('balltop_', '');
-                    const balltopPrice = Math.round((balltopPriceMap[value] || 0) * 1.1);
+                    const balltopPrice = (PRICING_DB.fittings.balltop as any)[sizeLabel] || 0;
                     nextState.items.push({ name: `볼탑 ${sizeLabel}mm`, price: balltopPrice, quantity: 1 });
                     nextState.totalPrice += balltopPrice;
                 }
@@ -438,8 +433,9 @@ export default function FloatingChatWidget() {
                 nextState.step = 'LID_SELECTED';
                 if (value !== 'none') {
                     nextState.hasGauge = true;
-                    nextState.items.push({ name: '레벨게이지(수위계)', price: 33000, quantity: 1 });
-                    nextState.totalPrice += 33000;
+                    const gaugePrice = PRICING_DB.fittings.gauge || 33000;
+                    nextState.items.push({ name: '레벨게이지(수위계)', price: gaugePrice, quantity: 1 });
+                    nextState.totalPrice += gaugePrice;
                 }
                 responseText = `물탱크 뚜껑은 기본 1개 포함입니다.\n추가 예비용 뚜껑이 더 필요하신가요?`;
                 const capacityNum = parseFloat(quoteState.capacity || '1');
@@ -464,7 +460,7 @@ export default function FloatingChatWidget() {
                 nextState.lid = value as any;
                 if (value !== 'none') {
                     const isSmall = value === 'small';
-                    const lidPrice = Math.round((PRICING_DB.lids[value as 'small' | 'large'] || 0) * 1.1);
+                    const lidPrice = PRICING_DB.lids[value as 'small' | 'large'] || 0;
                     nextState.items.push({ name: `물탱크 뚜껑 추가 (${isSmall ? '소형' : '대형'})`, price: lidPrice, quantity: 1 });
                     nextState.totalPrice += lidPrice;
                 }

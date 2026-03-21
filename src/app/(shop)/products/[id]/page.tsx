@@ -58,7 +58,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
     // Price Calculation (Apply 1.1x VAT)
     const optionsTotal = Object.values(selectedOptions).reduce((acc, curr) => acc + (curr.priceChange * (curr.quantity || 1)), 0);
-    const totalPrice = Math.round((product.price + optionsTotal) * 1.1);
+    const totalPrice = product.price + optionsTotal;
 
     const handleOptionChange = (optionName: string, choiceLabel: string, priceChange: number) => {
         setSelectedOptions((prev) => ({
