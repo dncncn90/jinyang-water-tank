@@ -46,7 +46,7 @@ type QuoteState = {
 
 const HELP_TEXTS: Record<string, string> = {
     'INIT': "좁은 공간엔 사각, 가성비와 안정성은 원형을 추천해요.",
-    'RECOMMENDATION_SHOWN': "0.5톤은 가정용, 2톤 이상은 농공업용으로 가장 많이 써요.",
+    'RECOMMENDATION_SHOWN': "0.4~0.6톤은 가정용, 1톤 이상은 농공업용이나 베스트 상품군으로 가장 많이 써요.",
     'CAPACITY_SELECTED': "탱크에 구멍을 뚫고 배관을 연결하는 입구예요. 20mm가 표준입니다.",
     'FITTING_SIZE_SELECTED': "배관 연결을 위해 보통 1~2개 정도의 구멍(피팅)을 가장 많이 뚫어 사용합니다.",
     'FITTING_COUNT_SELECTED': "신주(청동)는 금속이라 튼튼하고, PE는 약품이나 식품 탱크에 녹슬지 않아 좋아요.",
@@ -227,22 +227,37 @@ export default function FloatingChatWidget() {
                 nextState.step = 'RECOMMENDATION_SHOWN' as any;
                 nextState.recType = shape;
                 responseText = `${shape === 'standard' ? '원형' : '사각'} 선택하셨군요!\n필요한 용량을 선택해주세요.`;
-                nextOptions = [
-                    { label: '0.2톤 (소형/가정용)', value: '0.2' }, 
-                    { label: '0.4톤 (가정용)', value: '0.4' },
-                    { label: '0.6톤 (베스트)', value: '0.6' }, 
-                    { label: '1톤 (가장 많이 씀)', value: '1' },
-                    { label: '2톤 (농공업용)', value: '2' }
-                ];
-                if (shape === 'standard') {
-                    nextOptions.push(
-                        { label: '3톤 (중형)', value: '3' }, 
-                        { label: '4톤', value: '4' },
-                        { label: '5톤 (대용량)', value: '5' }, 
-                        { label: '6톤', value: '6' },
-                        { label: '8톤', value: '8' }, 
-                        { label: '10톤', value: '10' }
-                    );
+                
+                // Helper to get price and format label
+                const getLabel = (cap: string, desc: string, isBest = false) => {
+                    const price = (PRICING_DB.tanks[shape as keyof typeof PRICING_DB.tanks] as any)[cap];
+                    const priceStr = price ? ` - ${price.toLocaleString()}원` : '';
+                    const bestTag = isBest ? '★베스트 | ' : '';
+                    return { label: `${bestTag}${cap}톤 (${desc})${priceStr}`, value: cap };
+                };
+
+                if (shape === 'm_series') {
+                    nextOptions = [
+                        getLabel('0.2', '소형/가정용'),
+                        getLabel('0.4', '가정용'),
+                        getLabel('0.6', '추천/다용도'),
+                        getLabel('1', '가장 많이 씀', true),
+                        getLabel('2', '대용량 확보')
+                    ];
+                } else {
+                    nextOptions = [
+                        getLabel('0.2', '소형/가정용'),
+                        getLabel('0.4', '가정용'),
+                        getLabel('0.6', '추천/다용도'),
+                        getLabel('1', '가장 많이 씀', true),
+                        getLabel('2', '농업용/식당용'),
+                        getLabel('3', '중형/학원·상가'),
+                        getLabel('4', '빌라/소형건물'),
+                        getLabel('5', '현장/대용량'),
+                        getLabel('6', '대형'),
+                        getLabel('8', '대형'),
+                        getLabel('10', '초대형/소방용')
+                    ];
                 }
                 nextType = 'options';
                 addMessage('assistant', responseText, nextType, nextOptions, HELP_TEXTS['RECOMMENDATION_SHOWN'], 'RECOMMENDATION_SHOWN');
