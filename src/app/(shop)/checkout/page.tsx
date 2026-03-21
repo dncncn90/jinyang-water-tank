@@ -145,6 +145,7 @@ export default function CheckoutPage() {
             const data = await response.json();
 
             if (response.ok && data.success) {
+                clearCart();
                 router.push(`/checkout/success?orderId=${data.orderId}&amount=${totalAmount}&type=${shippingType}`);
             } else {
                 alert(data.error || '주문 처리 중 오류가 발생했습니다. 다시 시도해주세요.');

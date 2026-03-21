@@ -100,11 +100,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
             const existingItemIndex = prevItems.findIndex(item => item.cartItemId === cartItemId);
 
             if (existingItemIndex >= 0) {
-                // If exact same item exists, just increase quantity
-                const newItems = [...prevItems];
-                newItems[existingItemIndex].quantity += newItem.quantity;
-                newItems[existingItemIndex].totalPrice = newItems[existingItemIndex].quantity * unitPrice;
-                return newItems;
+                // If exact same item exists, just increase quantity (Immutably)
+                return prevItems.map((item, index) => {
+                    if (index === existingItemIndex) {
+                        const newQuantity = item.quantity + newItem.quantity;
+                        return {
+                            ...item,
+                            quantity: newQuantity,
+                            totalPrice: newQuantity * unitPrice
+                        };
+                    }
+                    return item;
+                });
             } else {
                 // Add new item
                 return [...prevItems, {
@@ -149,7 +156,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     };
 
     const getCartItemCount = () => {
-        return items.reduce((count, item) => count + item.quantity, 0);
+        // Return the number of unique lines in the cart (more intuitive for users)
+        return items.length;
     };
 
     return (

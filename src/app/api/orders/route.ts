@@ -47,26 +47,29 @@ export async function POST(request: Request) {
             console.log(`[OrderAPI] Discord Webhook URL: ${discordWebhookUrl ? discordWebhookUrl.substring(0, 15) + '...' : 'MISSING'}`);
             
             if (discordWebhookUrl && discordWebhookUrl.startsWith('http')) {
-                const itemText = items.map((i: any) => {
-                    const optionText = i.options ? ` [${i.options}]` : '';
-                    return `- ${i.name}${optionText} : ${i.quantity}개`;
+                const itemLines = items.map((i: any) => {
+                    const optionInfo = i.options ? `\n> └ ${i.options}` : '';
+                    const reqInfo = i.requirements ? `\n> └ 요청: ${i.requirements}` : '';
+                    return `**${i.name}** × ${i.quantity}개${optionInfo}${reqInfo}`;
                 }).join('\n');
 
+                const isBankTransfer = currentPaymentMethod === 'BANK_TRANSFER';
+                
                 const discordMessage = {
                     username: "진양건재 실시간 알리미 🚨",
                     embeds: [{
-                        title: currentPaymentMethod === 'BANK_TRANSFER' ? "🏦 [무통장 주문] 새 주문이 접수되었습니다!" : "🚨 [운임비 상담 필요] 새 주문이 접수되었습니다!",
-                        color: currentPaymentMethod === 'BANK_TRANSFER' ? 3447003 : 15105570,
+                        title: isBankTransfer ? "🏦 [무통장 주문] 새 주문이 접수되었습니다!" : "🚨 [운임비 상담 필요] 신규 주문 알림",
+                        description: `주문번호: \`${orderUuid}\`\n접수일시: ${kst.toLocaleString('ko-KR')}`,
+                        color: isBankTransfer ? 0x34a853 : 0xea4335, // Green for bank, Red for others
                         fields: [
-                            { name: "📍 배송지 (지도/화물 조회용)", value: address || '정보 없음' },
-                            { name: "📞 고객명 / 연락처", value: `${name} (${phone})` },
-                            { name: "📦 주문상품", value: itemText || '정보 없음' },
-                            { name: "💰 주문총액 (상품대금)", value: `${(totalAmount || 0).toLocaleString()}원`, inline: true },
-                            { name: "🧾 주문번호", value: orderUuid, inline: true },
-                            { name: "💳 결제수단", value: currentPaymentMethod === 'BANK_TRANSFER' ? '무통장 입금' : '기타/상담', inline: true },
-                            { name: "📝 기타 요청사항", value: requirements || '없음' }
+                            { name: "👤 고객 정보", value: `**이름**: ${name}\n**연락처**: ${phone}`, inline: true },
+                            { name: "💳 결제 수단", value: isBankTransfer ? "무통장 입금" : "기타/상담", inline: true },
+                            { name: "📍 배송 주소", value: address || '정보 없음', inline: false },
+                            { name: "📦 주문 내역", value: itemLines || '정보 없음', inline: false },
+                            { name: "💰 총 상품금액", value: `**${(totalAmount || 0).toLocaleString()}원** (부가세 포함 / 운임 착불)`, inline: false },
+                            { name: "📝 고객 요청사항", value: requirements || '없음', inline: false }
                         ],
-                        footer: { text: "조속히 확인하여 고객님께 배송비 및 일정을 안내해 주세요." },
+                        footer: { text: "진양건재 관리자 시스템 | 조속히 처리해 주세요." },
                         timestamp: new Date().toISOString()
                     }]
                 };
