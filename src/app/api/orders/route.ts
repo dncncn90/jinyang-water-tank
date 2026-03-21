@@ -44,7 +44,10 @@ export async function POST(request: Request) {
             const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL?.trim();
             const currentPaymentMethod = paymentMethod || 'BANK_TRANSFER';
             
-            console.log(`[OrderAPI] Discord Webhook URL: ${discordWebhookUrl ? discordWebhookUrl.substring(0, 15) + '...' : 'MISSING'}`);
+            console.log('[OrderAPI] --- Discord Debug Start ---');
+            console.log(`[OrderAPI] Webhook URL Length: ${discordWebhookUrl?.length || 0}`);
+            console.log(`[OrderAPI] Webhook URL startsWith http: ${discordWebhookUrl?.startsWith('http')}`);
+            console.log(`[OrderAPI] Items length: ${items?.length}`);
             
             if (discordWebhookUrl && discordWebhookUrl.startsWith('http')) {
                 const itemLines = items.map((i: any) => {
@@ -80,15 +83,20 @@ export async function POST(request: Request) {
                     body: JSON.stringify(discordMessage)
                 });
                 
+                console.log(`[OrderAPI] Discord Response Status: ${res.status} ${res.statusText}`);
+                
                 if (!res.ok) {
                     const errorMsg = await res.text();
-                    console.error(`[OrderAPI] Discord Webhook Error (${res.status}):`, errorMsg);
+                    console.error(`[OrderAPI] Discord Webhook Error Body:`, errorMsg);
                 } else {
                     console.log(`[OrderAPI] Discord notification success: ${orderUuid}`);
                 }
+            } else {
+                console.warn('[OrderAPI] Discord Webhook URL is missing or invalid. Check .env');
             }
-        } catch (discordError) {
-            console.error("[OrderAPI] Discord Notification Exception:", discordError);
+            console.log('[OrderAPI] --- Discord Debug End ---');
+        } catch (discordError: any) {
+            console.error("[OrderAPI] Discord Notification Exception:", discordError?.message || discordError);
         }
 
         try {

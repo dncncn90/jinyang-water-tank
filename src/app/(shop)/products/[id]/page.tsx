@@ -56,9 +56,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
     if (!product) return notFound();
 
-    // Price Calculation
+    // Price Calculation (Apply 1.1x VAT)
     const optionsTotal = Object.values(selectedOptions).reduce((acc, curr) => acc + (curr.priceChange * (curr.quantity || 1)), 0);
-    const totalPrice = product.price + optionsTotal;
+    const totalPrice = Math.round((product.price + optionsTotal) * 1.1);
 
     const handleOptionChange = (optionName: string, choiceLabel: string, priceChange: number) => {
         setSelectedOptions((prev) => ({
@@ -412,7 +412,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                             <div className="border-t border-gray-100 pt-4 sm:pt-6">
                                 <div className="flex flex-wrap items-baseline gap-2 mb-1">
                                     <span className="text-2xl sm:text-3xl font-bold text-industrial-600">{totalPrice.toLocaleString()}원</span>
-                                    <span className="text-xs sm:text-sm text-gray-400 font-medium">(부가세 포함)</span>
+                                    <span className="text-xs sm:text-sm text-blue-600 font-bold bg-blue-50 px-2 py-0.5 rounded">(부가세 10% 포함)</span>
                                 </div>
 
                                 {/* Product Options (Dropdowns) */}
