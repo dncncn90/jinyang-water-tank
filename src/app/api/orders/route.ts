@@ -50,11 +50,11 @@ export async function POST(request: Request) {
             console.log(`[OrderAPI] Items length: ${items?.length}`);
             
             if (discordWebhookUrl && discordWebhookUrl.startsWith('http')) {
-                const itemLines = items.map((i: any) => {
-                    const optionInfo = i.options ? `\n> └ ${i.options}` : '';
-                    const reqInfo = i.requirements ? `\n> └ 요청: ${i.requirements}` : '';
-                    return `**${i.name}** × ${i.quantity}개${optionInfo}${reqInfo}`;
-                }).join('\n');
+                const itemLines = items?.map((i: any) => {
+                    const priceInfo = i.price ? ` (${i.price.toLocaleString()}원)` : '';
+                    const optionInfo = i.option ? ` / ${i.option}` : '';
+                    return `- **${i.name}** × ${i.quantity}개${priceInfo}${optionInfo}`;
+                }).join('\n') || '품목 정보 없음';
 
                 const isBankTransfer = currentPaymentMethod === 'BANK_TRANSFER';
                 

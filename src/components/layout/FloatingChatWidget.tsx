@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Store, Send, X, MessageSquare, ChevronRight, CheckCircle2, RotateCcw, Box, Truck, Receipt, Check, ShoppingCart, FileText, CreditCard, Phone, Info, HelpCircle } from 'lucide-react';
 import { PRICING_DB, calculateLogistics, getProductName, PRODUCTS } from '@/lib/products';
+import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 
 type Message = {
@@ -11,7 +12,15 @@ type Message = {
     role: 'system' | 'user' | 'assistant';
     content: string;
     type?: 'text' | 'product-recommendation' | 'quote-ready' | 'options';
-    options?: { label: string; value: string }[];
+    options?: { 
+        label: string; 
+        value: string;
+        tag?: string;
+        capacity?: string;
+        description?: string;
+        price?: number;
+        isBest?: boolean;
+    }[];
     productData?: any;
     helpText?: string;
     step?: QuoteState['step'];
@@ -64,6 +73,9 @@ export default function FloatingChatWidget() {
     const [isLoading, setIsLoading] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
     const [showQuoteModal, setShowQuoteModal] = useState(false);
+    const [isConsultationMode, setIsConsultationMode] = useState(false);
+    const [consultationFormData, setConsultationFormData] = useState({ name: '', phone: '', agreed: false });
+    const [isConsultationSubmitted, setIsConsultationSubmitted] = useState(false);
     const { addToCart, setShippingAddress, setShippingType } = useCart();
 
     // Quote State
@@ -231,9 +243,15 @@ export default function FloatingChatWidget() {
                 // Helper to get price and format label
                 const getLabel = (cap: string, desc: string, isBest = false) => {
                     const price = (PRICING_DB.tanks[shape as keyof typeof PRICING_DB.tanks] as any)[cap];
-                    const priceStr = price ? ` - ${price.toLocaleString()}원` : '';
-                    const bestTag = isBest ? '★베스트 | ' : '';
-                    return { label: `${bestTag}${cap}톤 (${desc})${priceStr}`, value: cap };
+                    return { 
+                        label: `${isBest ? '★베스트 | ' : ''}${cap}톤 (${desc})${price ? ` - ${price.toLocaleString()}원` : ''}`, 
+                        value: cap,
+                        tag: isBest ? 'BEST' : undefined,
+                        capacity: `${cap}톤`,
+                        description: desc,
+                        price: price,
+                        isBest: isBest
+                    };
                 };
 
                 if (shape === 'm_series') {
@@ -786,6 +804,38 @@ export default function FloatingChatWidget() {
         router.push('/checkout');
     };
 
+    const handleConsultationSubmit = () => {
+        if (!consultationFormData.name || !consultationFormData.phone) {
+            alert('성함과 연락처를 모두 입력해주세요.');
+            return;
+        }
+        if (!consultationFormData.agreed) {
+            alert('개인정보 수집 및 이용에 동의해주세요.');
+            return;
+        }
+        setIsConsultationSubmitted(true);
+        
+        // Send to Discord via our new API
+        fetch('/api/consultation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: consultationFormData.name,
+                phone: consultationFormData.phone,
+                quoteState: quoteState,
+                items: quoteState.items,
+                totalPrice: quoteState.totalPrice
+            })
+        }).catch(err => console.error('Failed to send consultation to Discord:', err));
+
+        setTimeout(() => {
+            setIsConsultationMode(false);
+            setIsConsultationSubmitted(false);
+            setShowQuoteModal(false);
+            alert('상담 신청이 완료되었습니다! 담당자가 곧 연락드리겠습니다.');
+        }, 1500);
+    };
+
     return (
         <>
             <button
@@ -851,15 +901,47 @@ export default function FloatingChatWidget() {
                                         )}
 
                                         {msg.type === 'options' && msg.options && (
-                                            <div className="flex flex-col gap-2 mt-2">
+                                            <div className="flex flex-col gap-2.5 mt-2">
                                                 {msg.options.map((opt) => (
                                                     <button
                                                         key={opt.value}
                                                         onClick={() => handleOptionSelect(opt.value, opt.label, msg.step)}
-                                                        className="bg-white border-2 border-industrial-100 hover:border-industrial-500 text-gray-800 hover:text-industrial-600 font-semibold py-2.5 px-4 rounded-xl transition-all text-left flex justify-between items-center group text-sm active:bg-industrial-50 shadow-sm"
+                                                        className="bg-white border-[1.5px] border-gray-100 hover:border-industrial-500 hover:shadow-md text-gray-800 font-semibold py-3 px-4 rounded-xl transition-all text-left flex justify-between items-center group active:scale-[0.98] shadow-sm relative overflow-hidden"
                                                     >
-                                                        <span>{opt.label}</span>
-                                                        <div className="w-5 h-5 rounded-full border-2 border-gray-300 group-hover:border-industrial-500 shrink-0 ml-2"></div>
+                                                        <div className="flex flex-col gap-0.5">
+                                                            {opt.tag && (
+                                                                <span className="inline-block w-fit px-1.5 py-0.5 rounded-md bg-industrial-100 text-industrial-700 text-[10px] font-bold mb-1 border border-industrial-200">
+                                                                    {opt.tag}
+                                                                </span>
+                                                            )}
+                                                            <div className="flex items-center gap-1.5 flex-wrap">
+                                                                <span className="font-bold text-gray-900 text-[15px]">{opt.capacity || opt.label.split(' - ')[0].replace('★베스트 | ', '')}</span>
+                                                                {opt.description && (
+                                                                    <span className="text-[11px] text-gray-500 font-medium">({opt.description})</span>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div className="flex items-center gap-3 shrink-0">
+                                                            {opt.price && (
+                                                                <span className="font-bold text-industrial-600 text-sm">
+                                                                    {opt.price.toLocaleString()}원
+                                                                </span>
+                                                            )}
+                                                            {!opt.price && opt.label.includes('원') && (
+                                                                <span className="font-bold text-industrial-600 text-sm">
+                                                                    {opt.label.split(' - ')[1] || opt.label.split('(+')[1]?.split(')')[0]}
+                                                                </span>
+                                                            )}
+                                                            <div className="w-5 h-5 rounded-full border-2 border-gray-200 group-hover:border-industrial-500 group-hover:bg-industrial-50 transition-colors shrink-0 flex items-center justify-center">
+                                                                <div className="w-2.5 h-2.5 rounded-full bg-industrial-500 opacity-0 group-active:opacity-100 transition-opacity"></div>
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Subtle highlight for best items */}
+                                                        {opt.isBest && (
+                                                            <div className="absolute top-0 right-0 w-12 h-12 bg-industrial-500/5 rounded-full -mr-6 -mt-6"></div>
+                                                        )}
                                                     </button>
                                                 ))}
                                             </div>
@@ -1022,56 +1104,104 @@ export default function FloatingChatWidget() {
                                         <li>과도한 운임이 발생하지 않도록 가장 효율적인 배송 방식을 담당 전문가가 직접 조율해 드립니다.</li>
                                     </ul>
                                 </div>
-
-                                <div className="flex flex-col gap-3 mt-auto pt-2">
-                                    <div className="bg-blue-50 text-blue-900 p-3 rounded-lg text-xs text-center border border-blue-100 mb-1">
-                                        <b>"물탱크는 규격과 부속 선택이 중요합니다."</b><br />
-                                        스마트견적으로 뽑으신 내용을 토대로 전문가가 직접 재검토해 드립니다.<br />
-                                        지금 바로 상담 버튼을 눌러 확정 견적을 받으세요!
+ 
+                                {isConsultationMode ? (
+                                    <div className="bg-white border-2 border-industrial-100 p-5 rounded-xl shadow-md space-y-4 animate-in zoom-in-95 duration-200">
+                                        <h4 className="font-bold text-gray-900 border-b border-gray-100 pb-2">전문가 상담 신청</h4>
+                                        <div className="space-y-3">
+                                            <div>
+                                                <label className="block text-xs font-bold text-gray-500 mb-1">성함</label>
+                                                <input
+                                                    type="text"
+                                                    value={consultationFormData.name}
+                                                    onChange={(e) => setConsultationFormData(prev => ({ ...prev, name: e.target.value }))}
+                                                    placeholder="홍길동"
+                                                    className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-industrial-500"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-bold text-gray-500 mb-1">연락처</label>
+                                                <input
+                                                    type="tel"
+                                                    value={consultationFormData.phone}
+                                                    onChange={(e) => setConsultationFormData(prev => ({ ...prev, phone: e.target.value }))}
+                                                    placeholder="010-1234-5678"
+                                                    className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-industrial-500"
+                                                />
+                                            </div>
+                                            <div className="pt-2">
+                                                <label className="flex items-start gap-2 cursor-pointer group">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={consultationFormData.agreed}
+                                                        onChange={(e) => setConsultationFormData(prev => ({ ...prev, agreed: e.target.checked }))}
+                                                        className="mt-0.5 h-4 w-4 rounded border-gray-300 text-industrial-600 focus:ring-industrial-500"
+                                                    />
+                                                    <div className="text-[11px] leading-tight text-gray-600">
+                                                        <span className="font-bold text-gray-900">[필수] 개인정보 수집 및 이용 동의</span>
+                                                        <p className="mt-0.5">상담 및 해피콜을 위해 정보를 수집합니다. 자세한 내용은 <Link href="/privacy" target="_blank" className="underline font-bold text-industrial-600">개인정보처리방침</Link>을 확인하세요.</p>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-2 pt-2">
+                                            <button
+                                                onClick={() => setIsConsultationMode(false)}
+                                                className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold py-3 rounded-lg text-sm transition-colors"
+                                            >
+                                                취소
+                                            </button>
+                                            <button
+                                                onClick={handleConsultationSubmit}
+                                                disabled={isConsultationSubmitted}
+                                                className="flex-[2] bg-industrial-600 hover:bg-industrial-700 text-white font-bold py-3 rounded-lg text-sm shadow-md transition-colors disabled:opacity-50"
+                                            >
+                                                {isConsultationSubmitted ? '신청 중...' : '상담 신청 완료'}
+                                            </button>
+                                        </div>
                                     </div>
-
-                                    <button
-                                        onClick={handleDirectCheckout}
-                                        className="w-full bg-[#FF4500] hover:bg-[#E63E00] text-white font-bold py-4 px-4 rounded-xl shadow-md transition-colors flex justify-center items-center gap-2 text-lg"
-                                    >
-                                        <CreditCard className="w-5 h-5" />
-                                        무통장 입금으로 주문하기
-                                    </button>
-
-                                    <button
-                                        onClick={handleAddToCart}
-                                        className="w-full bg-industrial-600 hover:bg-industrial-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-colors flex justify-center items-center gap-2"
-                                    >
-                                        <ShoppingCart className="w-5 h-5" />
-                                        장바구니 담기
-                                    </button>
-
-                                    <a
-                                        href="tel:031-236-8227"
-                                        className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-colors flex justify-center items-center gap-2"
-                                    >
-                                        <Phone className="w-5 h-5" />
-                                        결제 전 전화상담
-                                    </a>
-
-                                    <div className="grid grid-cols-2 gap-3 mt-1 pt-3 border-t border-gray-100">
+                                ) : (
+                                    <div className="flex flex-col gap-3 mt-auto pt-2">
+                                        <div className="bg-blue-50 text-blue-900 p-3 rounded-lg text-xs text-center border border-blue-100 mb-1">
+                                            <b>"물탱크는 규격과 부속 선택이 중요합니다."</b><br />
+                                            스마트견적으로 뽑으신 내용을 토대로 전문가가 직접 재검토해 드립니다.<br />
+                                            지금 바로 상담 버튼을 눌러 확정 견적을 받으세요!
+                                        </div>
+ 
                                         <button
-                                            onClick={handlePrint}
-                                            className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-bold py-3 px-4 rounded-xl shadow-sm transition-colors flex justify-center items-center gap-2 text-sm"
+                                            onClick={() => setIsConsultationMode(true)}
+                                            className="w-full bg-industrial-600 hover:bg-industrial-700 text-white font-bold py-4 px-4 rounded-xl shadow-md transition-all flex justify-center items-center gap-2 text-lg animate-bounce-subtle"
                                         >
-                                            <FileText className="w-4 h-4" />
-                                            견적서 인쇄
+                                            <Phone className="w-5 h-5" />
+                                            실시간 전문가 상담 신청
                                         </button>
-
+ 
                                         <button
-                                            onClick={handleReset}
-                                            className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-bold py-3 px-4 rounded-xl shadow-sm transition-colors flex justify-center items-center gap-2 text-sm"
+                                            onClick={handleDirectCheckout}
+                                            className="w-full bg-[#FF4500] hover:bg-[#E63E00] text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-colors flex justify-center items-center gap-2"
                                         >
-                                            <RotateCcw className="w-4 h-4" />
-                                            다시 견적받기
+                                            <CreditCard className="w-5 h-5" />
+                                            무통장 입금으로 바로 주문
                                         </button>
+ 
+                                        <div className="grid grid-cols-2 gap-3 mt-1 pt-3 border-t border-gray-100">
+                                            <button
+                                                onClick={handleAddToCart}
+                                                className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-bold py-3 px-4 rounded-xl shadow-sm transition-colors flex justify-center items-center gap-2 text-sm"
+                                            >
+                                                <ShoppingCart className="w-4 h-4" />
+                                                장바구니 담기
+                                            </button>
+                                            <a
+                                                href="tel:031-236-8227"
+                                                className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-bold py-3 px-4 rounded-xl shadow-sm transition-colors flex justify-center items-center gap-2 text-sm"
+                                            >
+                                                <Phone className="w-4 h-4" />
+                                                전화걸기
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </div>
                     )}

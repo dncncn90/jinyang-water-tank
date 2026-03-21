@@ -22,6 +22,7 @@ export default function CheckoutPage() {
         detailAddress: '',
         requirements: ''
     });
+    const [isPrivacyAgreed, setIsPrivacyAgreed] = useState(false);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -102,6 +103,11 @@ export default function CheckoutPage() {
         if (shippingType === 'delivery' && (!formData.name || !formData.phone || !formData.password || !formData.address)) {
             console.warn('[Checkout] Validation failed: missing fields');
             alert('배송지를 포함한 필수 정보를 모두 입력해주세요. (이름, 연락처, 비밀번호, 주소)');
+            return;
+        }
+
+        if (!isPrivacyAgreed) {
+            alert('개인정보 수집 및 이용에 동의해주세요.');
             return;
         }
 
@@ -427,6 +433,29 @@ export default function CheckoutPage() {
                                             </div>
                                         </div>
 
+                                        {/* Privacy Consent Checkbox */}
+                                        <div className="w-full mt-4 p-4 bg-gray-50 border border-gray-200 rounded-xl">
+                                            <label className="flex items-start gap-3 cursor-pointer group">
+                                                <div className="relative flex items-center mt-0.5">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={isPrivacyAgreed}
+                                                        onChange={(e) => setIsPrivacyAgreed(e.target.checked)}
+                                                        className="peer h-5 w-5 cursor-pointer appearance-none rounded border border-slate-300 checked:bg-industrial-600 checked:border-industrial-600 transition-all"
+                                                    />
+                                                    <span className="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                                                        <Check className="w-3.5 h-3.5" />
+                                                    </span>
+                                                </div>
+                                                <div className="text-sm">
+                                                    <span className="font-bold text-gray-900 group-hover:text-industrial-600 transition-colors">[필수] 개인정보 수집 및 이용 동의</span>
+                                                    <p className="text-gray-500 mt-1 leading-relaxed">
+                                                        주문 처리 및 해피콜 상담을 위해 이름, 연락처, 주소 정보를 수집합니다. 자세한 내용은 <Link href="/privacy" target="_blank" className="text-industrial-600 underline font-bold hover:text-industrial-800">개인정보처리방침</Link>을 확인해주세요.
+                                                    </p>
+                                                </div>
+                                            </label>
+                                        </div>
+ 
                                         <div className="flex flex-col sm:flex-row gap-3 w-full">
                                             <button
                                                 onClick={handleSubmitOrder}
