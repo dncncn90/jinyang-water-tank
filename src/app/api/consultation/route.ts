@@ -17,20 +17,24 @@ export async function POST(req: Request) {
         
         const itemLines = items?.map((i: any) => `- **${i.name}** (${i.price.toLocaleString()}원)`).join('\n') || '정보 없음';
 
+        const location = quoteState?.location || '주소 미입력';
+        const shippingCost = quoteState?.shippingCost ? `${quoteState.shippingCost.toLocaleString()}원` : '미정 (상담 필요)';
+        const deliveryMethod = quoteState?.deliveryMethod === 'pickup' ? '방문 수령' : '화물 배송';
+
         const discordMessage = {
-            username: "진양건재 실시간 상담 알리미 💬",
+            username: "진양건재 실시간 알림",
             embeds: [{
-                title: "💬 [전문가 상담 신청] 새로운 상담 요청이 접수되었습니다!",
-                description: `접수일시: ${kst.toLocaleString('ko-KR')}\n\n**고객님께서 견적 확인 후 상담을 요청하셨습니다.**`,
+                title: "[상담 요청] 스마트견적 챗봇 상담 접수",
+                description: `고객님께서 견적 확인 후 상담을 요청하셨습니다.\n빠른 확인 및 해피콜을 진행해 주세요.`,
                 color: 0x3498db, // Blue
                 fields: [
-                    { name: "👤 고객 정보", value: `**이름**: ${name}\n**연락처**: ${phone}`, inline: true },
-                    { name: "🏗️ 탱크 유형", value: quoteState?.recType === 'standard' ? '원형' : '사각', inline: true },
-                    { name: "📦 상세 견적 내역", value: itemLines, inline: false },
-                    { name: "💰 총 견적 금액", value: `**${(totalPrice || 0).toLocaleString()}원** (부가세 포함 / 운임 착불)`, inline: false }
+                    { name: "고객 정보", value: `${name}\n${phone}`, inline: true },
+                    { name: "수령 정보", value: `${deliveryMethod}\n${location}`, inline: true },
+                    { name: "견적품목", value: itemLines, inline: false },
+                    { name: "결제예상액", value: `${(totalPrice || 0).toLocaleString()}원 (VAT포함)`, inline: true },
+                    { name: "예상 운임비", value: `${shippingCost} (착불)`, inline: true }
                 ],
-                footer: { text: "진양건재 관리자 시스템 | 빠른 연락 부탁드립니다." },
-                timestamp: new Date().toISOString()
+                footer: { text: `접수일시: ${kst.toLocaleString('ko-KR')} | 진양건재 관리자 시스템` }
             }]
         };
 

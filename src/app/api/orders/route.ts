@@ -59,21 +59,20 @@ export async function POST(request: Request) {
                 const isBankTransfer = currentPaymentMethod === 'BANK_TRANSFER';
                 
                 const discordMessage = {
-                    username: "진양건재 실시간 알리미 🚨",
+                    username: "진양건재 실시간 알림",
                     embeds: [{
-                        title: isBankTransfer ? "🏦 [무통장 주문] 새 주문이 접수되었습니다!" : "🚨 [운임비 상담 필요] 신규 주문 알림",
-                        description: `주문번호: \`${orderUuid}\`\n접수일시: ${kst.toLocaleString('ko-KR')}`,
+                        title: isBankTransfer ? "[새로운 주문] 무통장 입금 대기" : "[운임비 상담 요망] 신규 주문 알림",
+                        description: `**주문 접수 완료**\n주문번호: \`${orderUuid}\``,
                         color: isBankTransfer ? 0x34a853 : 0xea4335, // Green for bank, Red for others
                         fields: [
-                            { name: "👤 고객 정보", value: `**이름**: ${name}\n**연락처**: ${phone}`, inline: true },
-                            { name: "💳 결제 수단", value: isBankTransfer ? "무통장 입금" : "기타/상담", inline: true },
-                            { name: "📍 배송 주소", value: address || '정보 없음', inline: false },
-                            { name: "📦 주문 내역", value: itemLines || '정보 없음', inline: false },
-                            { name: "💰 총 상품금액", value: `**${(totalAmount || 0).toLocaleString()}원** (부가세 포함 / 운임 착불)`, inline: false },
-                            { name: "📝 고객 요청사항", value: requirements || '없음', inline: false }
+                            { name: "고객 정보", value: `${name}\n${phone}`, inline: true },
+                            { name: "결제 수단", value: isBankTransfer ? "무통장 입금" : "기타/상담", inline: true },
+                            { name: "배송 주소", value: address || '정보 없음', inline: false },
+                            { name: "주문 내역", value: itemLines || '정보 없음', inline: false },
+                            { name: "결제예상액", value: `${(totalAmount || 0).toLocaleString()}원 (VAT포함/착불)`, inline: true },
+                            { name: "요청사항", value: requirements || '없음', inline: false }
                         ],
-                        footer: { text: "진양건재 관리자 시스템 | 조속히 처리해 주세요." },
-                        timestamp: new Date().toISOString()
+                        footer: { text: `접수일시: ${kst.toLocaleString('ko-KR')} | 진양건재 관리자 시스템` }
                     }]
                 };
 
