@@ -21,8 +21,9 @@ export default function AboutPage() {
                             <History className="w-4 h-4" />
                             <span>Since 1989</span>
                         </div>
-                        <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
-                            37년 신뢰의 <span className="text-industrial-400">건축자재 전문 유통</span> 파트너, 진양건재
+                        <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight break-keep">
+                            37년 신뢰의<br />
+                            <span className="text-industrial-400">건축자재 전문 유통 파트너</span>, 진양건재
                         </h1>
                         <div className="text-lg text-gray-300 leading-relaxed mb-8 space-y-4">
                             <p>
