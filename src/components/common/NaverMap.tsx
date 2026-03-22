@@ -3,6 +3,7 @@
 import { MapPin, ExternalLink } from 'lucide-react';
 import { Container as MapDiv, NaverMap as ReactNaverMap, Marker, NavermapsProvider } from 'react-naver-maps';
 import { useEffect, useState } from 'react';
+import { MapErrorBoundary } from './MapErrorBoundary';
 
 export default function NaverMap() {
     const [clientId, setClientId] = useState<string | null>(null);
@@ -20,17 +21,25 @@ export default function NaverMap() {
     return (
         <div className="w-full h-full relative group overflow-hidden bg-gray-100 flex items-center justify-center">
             {clientId ? (
-                <NavermapsProvider ncpClientId={clientId === 'test' ? 'r7f78tntd3' : clientId}>
-                    <MapDiv style={{ width: '100%', height: '100%' }}>
-                        <ReactNaverMap
-                            defaultCenter={{ lat, lng }}
-                            defaultZoom={16}
-                            disableKineticPan={false}
-                        >
-                            <Marker position={{ lat, lng }} />
-                        </ReactNaverMap>
-                    </MapDiv>
-                </NavermapsProvider>
+                <MapErrorBoundary fallback={
+                    <div className="flex flex-col items-center justify-center p-6 text-center text-gray-500 w-full h-full bg-slate-100">
+                        <MapPin className="w-12 h-12 mb-4 text-gray-400" />
+                        <p className="mb-2 font-bold text-gray-700">인증을 대기 중입니다 (최대 10분 소요)</p>
+                        <p className="text-sm">지도 서버 동기화가 완료되면 자동으로 나타납니다.</p>
+                    </div>
+                }>
+                    <NavermapsProvider ncpClientId={clientId === 'test' ? 'r7f78tntd3' : clientId}>
+                        <MapDiv style={{ width: '100%', height: '100%' }}>
+                            <ReactNaverMap
+                                defaultCenter={{ lat, lng }}
+                                defaultZoom={16}
+                                disableKineticPan={false}
+                            >
+                                <Marker position={{ lat, lng }} />
+                            </ReactNaverMap>
+                        </MapDiv>
+                    </NavermapsProvider>
+                </MapErrorBoundary>
             ) : null}
 
             {/* Overlay for "View on Naver Map" (Visible on Hover) */}
