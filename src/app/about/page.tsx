@@ -19,18 +19,19 @@ export default function AboutPage() {
                     <div className="max-w-3xl">
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-industrial-800 border border-industrial-700 text-industrial-300 text-sm font-medium mb-6">
                             <History className="w-4 h-4" />
-                            <span>Since 1987</span>
+                            <span>Since 1989</span>
                         </div>
-                        <h1 className="text-4xl lg:text-6xl font-bold mb-6 leading-tight">
-                            37년 신뢰의<br />
-                            <span className="text-industrial-400">건축자재 전문 유통</span> 파트너
+                        <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+                            37년 신뢰의 <span className="text-industrial-400">건축자재 전문 유통</span> 파트너, 진양건재
                         </h1>
-                        <p className="text-lg text-gray-300 leading-relaxed mb-8">
-                            진양건재는 1987년 설립 이래 37년간 수원시 중심에서
-                            수도권 전역과 전국 건설 현장에 최고 품질의 자재를 공급해왔습니다.
-                            <br className="hidden sm:block" />
-                            3세대에 걸친 신뢰와 3만여 현장의 성공적인 시공 경험이 우리의 자부심입니다.
-                        </p>
+                        <div className="text-lg text-gray-300 leading-relaxed mb-8 space-y-4">
+                            <p>
+                                1989년 '진양PVC건재총판'으로 첫걸음을 내디딘 이래, 37년간 수원시를 중심으로 수도권 전역과 전국 건설 현장에 최고 품질의 자재를 정직하게 공급해 왔습니다.
+                            </p>
+                            <p>
+                                3세대에 걸친 신뢰와 3만여 현장의 성공적인 시공 경험이라는 든든한 뿌리를 바탕으로, 이제 '진양건재'라는 부르기 쉬운 이름과 'AI 스마트 견적' 시스템을 통해 오프라인의 전문성을 온라인에서도 가장 빠르고 편리하게 제공하겠습니다.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </section>

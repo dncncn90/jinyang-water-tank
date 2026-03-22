@@ -30,11 +30,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.진양건재.com'),
   title: {
-    template: '%s | 진양건재 - 수원 물탱크 전문',
-    default: '진양건재 - 수원 PE 물탱크 전문 판매 | AI 스마트 견적',
+    template: '%s | 진양건재 - 수원·화성·용인 물탱크 도매 전문',
+    default: '수원·화성·용인 물탱크 도매 전문 진양건재 | PE 단가 스마트 견적',
   },
-  description: '수원 30년 경력 진양건재의 PE 원형·사각 물탱크 전문 쇼핑몰. 1톤~30톤 다양한 규격, 당일 출고 가능, 전국 화물 배송. 무료 AI 견적 시스템으로 내 물탱크 가격을 바로 확인하세요.',
-  keywords: ['물탱크', 'PE 물탱크', '원형 물탱크', '사각 물탱크', '물탱크 가격', '물탱크 판매', '수원 물탱크', '물탱크 견적', '물탱크 피팅', '농업용 물탱크', '공업용 물탱크', '진양건재', '물탱크 교체', 'FRP 물탱크', 'SMC 물탱크'],
+  description: '수원, 화성, 용인, 평택, 오산, 안산 등 경기 남부 지역 PE 물탱크, 정화조 전문 유통 진양건재입니다. 복잡한 전화 상담 없이 AI 스마트 견적으로 1분 만에 최저가 단가와 화물 배송비를 확인해 보세요.',
+  keywords: ['수원 물탱크', '화성 물탱크', '용인 물탱크', '평택 물탱크', '오산 물탱크', '안산 물탱크', '진양건재', '진양PVC건재총판', '진양PVC', 'PE물탱크', '사각물탱크', '원형물탱크', '물탱크가격', '정화조도매'],
   authors: [{ name: '진양건재', url: 'https://www.진양건재.com' }],
   creator: '진양건재',
   publisher: '진양건재',
@@ -44,8 +44,8 @@ export const metadata: Metadata = {
     locale: 'ko_KR',
     url: 'https://www.진양건재.com',
     siteName: '진양건재 물탱크',
-    title: '진양건재 - 수원 PE 물탱크 전문 판매',
-    description: '30년 전통 수원 물탱크 전문점. 1톤~30톤 다양한 규격, 당일 출고, 전국 배송 가능. AI 견적 시스템으로 최저가 확인!',
+    title: '수원·화성·용인 물탱크 도매 전문 진양건재 | PE 단가 스마트 견적',
+    description: '수원, 화성, 용인, 평택, 오산, 안산 등 경기 남부 지역 PE 물탱크, 정화조 전문 유통 진양건재입니다. 복잡한 전화 상담 없이 AI 스마트 견적으로 1분 만에 최저가 단가와 화물 배송비를 확인해 보세요.',
     images: [
       {
         url: '/images/hero-tanks.jpg',
@@ -57,8 +57,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: '진양건재 - 수원 PE 물탱크 전문 판매',
-    description: '30년 전통 수원 물탱크 전문점. AI 견적으로 최저가 바로 확인!',
+    title: '수원·화성·용인 물탱크 도매 전문 진양건재 | PE 단가 스마트 견적',
+    description: '수원, 화성, 용인, 평택, 오산, 안산 등 경기 남부 지역 PE 물탱크, 정화조 전문 유통 진양건재입니다. 복잡한 전화 상담 없이 AI 스마트 견적으로 1분 만에 최저가 단가와 화물 배송비를 확인해 보세요.',
     images: ['/images/hero-tanks.jpg'],
   },
   robots: {
