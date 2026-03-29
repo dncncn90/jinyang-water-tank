@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Truck, ArrowRight, Minus, Plus, ShoppingCart, CreditCard } from 'lucide-react';
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
-import { PRODUCTS } from '@/lib/products';
+import { PRODUCTS, PRICING_DB } from '@/lib/products';
 
 const TABS = ['전체 보기', '원형물탱크', '사각물탱크', '부속자재'];
 
@@ -17,7 +17,7 @@ const overviewCategories = [
         tag: '인기상품',
         tagColor: 'bg-red-600',
         capacityBadge: '0.2~10톤',
-        price: 64900,
+        price: PRICING_DB.tanks.standard['0.2'],
         description: '0.2톤부터 10톤까지 · 용량별 옵션 선택',
         features: ['KS인증'],
         images: ['/images/products/tank-round-real.png'],
@@ -28,7 +28,7 @@ const overviewCategories = [
         name: 'PE 사각 물탱크',
         tag: '공간활용',
         capacityBadge: '0.2~2톤',
-        price: 70400,
+        price: PRICING_DB.tanks.m_series['0.2'],
         description: '좁은 코너, 실내 전용 · 용량별 옵션 선택',
         features: ['좁은공간'],
         images: ['/images/products/tank-square-real.jpg'],

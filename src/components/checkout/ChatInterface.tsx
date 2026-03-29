@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Loader2, FileText, X } from 'lucide-react';
 import ProductCard from './ProductCard';
+import { PRICING_DB } from '@/lib/products';
 
 type Message = {
     id: string;
@@ -17,7 +18,7 @@ const MOCK_PRODUCT = {
     name: '3톤 PE 물탱크 (원형)',
     capacity: '3,000L',
     material: 'PE (Polyehtylene)',
-    price: '450,000',
+    price: PRICING_DB.tanks.standard['3'].toLocaleString(),
     features: ['3중층 구조로 녹조 방지', 'KS인증 정품 (두께 6mm)', '전국 화물 배송 가능'],
     isRecommended: true,
 };
@@ -147,11 +148,21 @@ export default function ChatInterface() {
 
                 // Calculate Final Logic
                 const qty = 1;
-                let productPrice = 450000;
-                // Simple Price Modifier based on selection
-                if (selection.shape === 'Square') productPrice = 500000;
-                if (selection.shape === 'Chemical') productPrice = 600000;
-                if (selection.shape === 'Underground') productPrice = 550000;
+                let productPrice = 0;
+                const tonnageKey = selection.tonnage as keyof typeof PRICING_DB.tanks.standard;
+                
+                if (selection.shape === 'Square') {
+                    productPrice = PRICING_DB.tanks.m_series[tonnageKey as keyof typeof PRICING_DB.tanks.m_series] || 0;
+                } else if (selection.shape === 'Chemical') {
+                    productPrice = PRICING_DB.tanks.white[tonnageKey as keyof typeof PRICING_DB.tanks.white] || 0;
+                } else if (selection.shape === 'Underground') {
+                    productPrice = PRICING_DB.tanks.u_series[tonnageKey as keyof typeof PRICING_DB.tanks.u_series] || 0;
+                } else {
+                    productPrice = PRICING_DB.tanks.standard[tonnageKey] || 0;
+                }
+
+                // If no price found (fallback to a default or keep 0)
+                if (productPrice === 0) productPrice = 190300; // Default 1T price
 
                 const shipping = calculateShipping(qty, selection.tonnage, selection.shape === 'Square' ? '사각' : '원형', userInput);
                 const total = productPrice;
