@@ -39,7 +39,7 @@ const overviewCategories = [
         name: '각종 부속자재 및 밸브',
         tag: '부속품',
         capacityBadge: '15A ~ 100A',
-        price: 3300,
+        price: PRICING_DB.fittings.bronze['15'],
         description: '황동 피팅, 밸브, 뚜껑 등 규격별 선택',
         features: ['신주/PE'],
         images: ['/images/products/fit-bronze-real.png'],

@@ -346,6 +346,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     };
 
     const isSquare = product.category === 'pe-square';
+    const isFittingCategory = product.category === 'fittings';
 
     return (
         <div className="bg-white min-h-screen pt-28 pb-24">
@@ -484,7 +485,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                                                 <ChevronDown className={`w-5 h-5 ${isDisabled ? 'opacity-50' : ''}`} />
                                                             </div>
                                                         </div>
-                                                        {(!isDisabled && selectedOptions[opt.name]?.priceChange > 0) && (
+                                                        {(!isDisabled && !isFittingCategory && selectedOptions[opt.name]?.priceChange > 0) && (
                                                             <div className="flex items-center border border-gray-300 rounded-xl overflow-hidden bg-white shrink-0">
                                                                 <button
                                                                     onClick={() => handleOptionQuantityChange(opt.name, -1)}
