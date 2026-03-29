@@ -55,6 +55,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     const router = useRouter();
 
     if (!product) return notFound();
+    
+    const isSquare = product.category === 'pe-square';
+    const isFittingCategory = product.category === 'fittings';
 
     // Price Calculation (Apply 1.1x VAT)
     const optionsTotal = Object.values(selectedOptions).reduce((acc, curr) => acc + (curr.priceChange * (curr.quantity || 1)), 0);
@@ -119,62 +122,87 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     const executeAction = (action: 'cart' | 'buy') => {
         if (!product) return;
 
-        // 1. 물탱크 본체 추가 (유료 옵션 제외)
-        const baseOptions = Object.entries(selectedOptions)
-            .filter(([_, { priceChange }]) => priceChange === 0)
-            .map(([name, { label }]) => ({
-                name,
-                value: label,
-                priceChange: 0
-            }));
+        if (isFittingCategory) {
+            // 부속자재(피팅)의 경우 모든 옵션을 하나의 품목으로 합산하여 처리
+            const totalOptionPrice = Object.values(selectedOptions).reduce((acc, curr) => acc + curr.priceChange, 0);
+            
+            // 옵션명을 상품 이름에 포함 (예: "청동니플 (100mm)")
+            const selectedLabels = Object.values(selectedOptions)
+                .map(opt => opt.label.split(' - ')[0]) // 가격 표시 제거
+                .filter(label => label && !label.includes('선택 안함'));
+            
+            const combinedName = selectedLabels.length > 0 
+                ? `${product.name} (${selectedLabels.join(', ')})`
+                : product.name;
 
-        addToCart({
-            productId: product.id,
-            name: getCartItemName(),
-            basePrice: product.price,
-            options: baseOptions,
-            requirements: requirements,
-            quantity: quantity,
-            image: product.images[0] || ''
-        });
-
-        // 2. 유료 옵션들을 별도 품목으로 추가
-        Object.entries(selectedOptions)
-            .filter(([_, { priceChange }]) => priceChange > 0)
-            .forEach(([name, { label, priceChange, quantity: optQty }]) => {
-                let subProductId = 'fittings';
-                let subImage = '/images/products/fit-bronze-real.png';
-                
-                if (name.includes('볼밸브')) {
-                    subProductId = 'fit-ballvalve-brass';
-                    subImage = '/images/products/fit-ballvalve-brass.jpg';
-                } else if (name.includes('볼탑')) {
-                    subProductId = 'fit-ball-tap';
-                    subImage = '/images/products/fit-ball-tap-real.png';
-                } else if (name.includes('뚜껑')) {
-                    subProductId = 'fit-lid-series';
-                    subImage = '/images/products/tank-lid-real.jpg';
-                } else if (name.includes('게이지')) {
-                    subProductId = 'fit-level-gauge';
-                    subImage = '/images/products/fit-level-gauge.png';
-                } else if (name.includes('청동') || name.includes('신주')) {
-                    subProductId = 'fit-bronze-series';
-                    subImage = '/images/products/fit-bronze-real.png';
-                } else if (name.includes('PE')) {
-                    subProductId = 'fit-pe-series';
-                    subImage = '/images/products/fit-pe-real.jpg';
-                }
-
-                addToCart({
-                    productId: subProductId,
-                    name: `${name}: ${label}`,
-                    basePrice: priceChange, // 옵션의 개별 단가
-                    options: [],
-                    requirements: '',
-                    quantity: (optQty || 1) * quantity, // 물탱크 수량만큼 곱해줌
-                    image: subImage
-                });
+            addToCart({
+                productId: product.id,
+                name: combinedName,
+                basePrice: product.price + totalOptionPrice,
+                options: [],
+                requirements: requirements,
+                quantity: quantity,
+                image: product.images[0] || ''
             });
+        } else {
+            // 물탱크 등의 경우 기존처럼 유료 옵션을 별도 품목으로 분리
+            // 1. 물탱크 본체 추가 (유료 옵션 제외)
+            const baseOptions = Object.entries(selectedOptions)
+                .filter(([_, { priceChange }]) => priceChange === 0)
+                .map(([name, { label }]) => ({
+                    name,
+                    value: label,
+                    priceChange: 0
+                }));
+
+            addToCart({
+                productId: product.id,
+                name: getCartItemName(),
+                basePrice: product.price,
+                options: baseOptions,
+                requirements: requirements,
+                quantity: quantity,
+                image: product.images[0] || ''
+            });
+
+            // 2. 유료 옵션들을 별도 품목으로 추가
+            Object.entries(selectedOptions)
+                .filter(([_, { priceChange }]) => priceChange > 0)
+                .forEach(([name, { label, priceChange, quantity: optQty }]) => {
+                    let subProductId = 'fittings';
+                    let subImage = '/images/products/fit-bronze-real.png';
+                    
+                    if (name.includes('볼밸브')) {
+                        subProductId = 'fit-ballvalve-brass';
+                        subImage = '/images/products/fit-ballvalve-brass.jpg';
+                    } else if (name.includes('볼탑')) {
+                        subProductId = 'fit-ball-tap';
+                        subImage = '/images/products/fit-ball-tap-real.png';
+                    } else if (name.includes('뚜껑')) {
+                        subProductId = 'fit-lid-series';
+                        subImage = '/images/products/tank-lid-real.jpg';
+                    } else if (name.includes('게이지')) {
+                        subProductId = 'fit-level-gauge';
+                        subImage = '/images/products/fit-level-gauge.png';
+                    } else if (name.includes('청동') || name.includes('신주')) {
+                        subProductId = 'fit-bronze-series';
+                        subImage = '/images/products/fit-bronze-real.png';
+                    } else if (name.includes('PE')) {
+                        subProductId = 'fit-pe-series';
+                        subImage = '/images/products/fit-pe-real.jpg';
+                    }
+
+                    addToCart({
+                        productId: subProductId,
+                        name: `${name}: ${label}`,
+                        basePrice: priceChange, // 옵션의 개별 단가
+                        options: [],
+                        requirements: '',
+                        quantity: (optQty || 1) * quantity, // 물탱크 수량만큼 곱해줌
+                        image: subImage
+                    });
+                });
+        }
 
         if (action === 'cart') {
             if (confirm('상품들이 장바구니에 개별 품목으로 담겼습니다. 장바구니로 이동하시겠습니까?')) {
@@ -344,9 +372,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             printWindow.document.close();
         }
     };
-
-    const isSquare = product.category === 'pe-square';
-    const isFittingCategory = product.category === 'fittings';
 
     return (
         <div className="bg-white min-h-screen pt-28 pb-24">
