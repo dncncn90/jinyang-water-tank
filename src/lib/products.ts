@@ -34,12 +34,12 @@ export type Product = {
 export const PRICING_DB = {
     tanks: {
         standard: {
-            '0.2': 79200, '0.4': 96800, '0.6': 128700, '1': 190300,
+            '0.2': 79200, '0.4': 96800, '0.6': 128700, '1': 178000,
             '2': 328900, '3': 443300, '4': 572000, '5': 657800,
             '6': 886600, '8': 1144000, '10': 1358500
         },
         m_series: {
-            '0.2': 85800, '0.4': 140800, '0.6': 159500, '1': 236500, '2': 408100
+            '0.2': 85800, '0.4': 140800, '0.6': 159500, '1': 220000, '2': 408100
         },
         u_series: { '2': 448800, '5': 990000 },
         white: { '0.6': 135300, '1': 200200 } // 농약용
@@ -245,7 +245,7 @@ export const PRODUCTS: Product[] = [
         id: 'pe-round-1t',
         name: '1톤 PE물탱크(원형)',
         category: 'pe-round',
-        price: 190300,
+        price: 178000,
         description: '가장 대중적으로 많이 찾는 표준 1톤 용량의 다목적 물탱크입니다.',
         features: ['KS인증 정품', '내충격성 우수'],
         isRecommended: true,
@@ -381,7 +381,7 @@ export const PRODUCTS: Product[] = [
         id: 'pe-square-1t',
         name: '1톤 PE물탱크(사각)',
         category: 'pe-square',
-        price: 236500,
+        price: 220000,
         description: '실내기계실, 지하실 등에 가장 많이 설치되는 1톤 사각 베스트셀러입니다.',
         features: ['베스트셀러', '안정적 거치'],
         isRecommended: true,
