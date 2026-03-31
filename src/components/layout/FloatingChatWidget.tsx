@@ -1050,7 +1050,7 @@ export default function FloatingChatWidget() {
                                         <span className="font-bold text-gray-900">{quoteState.capacity || '-'}톤 물탱크 ({getProductName(quoteState.type || 'standard')})</span>
                                     </div>
 
-                                    {quoteState.items.slice(1).map((item, idx) => (
+                                    {quoteState.items.map((item, idx) => (
                                         <div key={idx} className="flex justify-between text-sm py-1">
                                             <span className="text-gray-600">- {item.name} {item.quantity > 1 ? `x${item.quantity}` : ''}</span>
                                             <span className="font-medium text-gray-800">{(item.price * item.quantity).toLocaleString()}원</span>
