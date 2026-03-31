@@ -81,8 +81,40 @@ export default function Footer() {
                         <div className="w-12 h-12 bg-green-500/10 rounded-full flex items-center justify-center shrink-0">
                             <span className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></span>
                         </div>
-                        <div className="text-center md:text-left">
-                            <h4 className="text-white font-black text-base mb-1">국가 인증 안전결제 (에스크로)</h4>
+                        <div className="text-center md:text-left flex-1">
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
+                                <h4 className="text-white font-black text-base">국가 인증 안전결제 (에스크로)</h4>
+                                <div className="flex items-center gap-3 justify-center md:justify-start">
+                                    <form name="KB_AUTHMARK_FORM" method="get" style={{ display: 'none' }}>
+                                        <input type="hidden" name="page" value="C021590" />
+                                        <input type="hidden" name="cc" value="b034066:b035526" />
+                                        <input type="hidden" name="mHValue" value="c4e78c4453eaa8d582c547f4408b344b" />
+                                    </form>
+                                    <button
+                                        onClick={() => {
+                                            window.open('', 'KB_AUTHMARK', 'height=604, width=648, status=yes, toolbar=no, menubar=no, location=no');
+                                            const form = document.forms.namedItem('KB_AUTHMARK_FORM') as HTMLFormElement;
+                                            if (form) {
+                                                form.action = 'https://okbfex.kbstar.com/quics';
+                                                form.target = 'KB_AUTHMARK';
+                                                form.submit();
+                                            }
+                                        }}
+                                        className="hover:opacity-80 transition-opacity"
+                                        title="KB에스크로 이체 인증마크 확인"
+                                    >
+                                        <img src="http://img1.kbstar.com/img/escrow/escrowcmark.gif" alt="KB에스크로" className="h-10 w-auto" />
+                                    </button>
+                                    <a
+                                        href="https://okbfex.kbstar.com/quics?page=C016760&mHValue=c4e78c4453eaa8d582c547f4408b344b"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-1 rounded transition-colors font-bold"
+                                    >
+                                        이체 바로가기 →
+                                    </a>
+                                </div>
+                            </div>
                             <p className="text-xs text-industrial-400 leading-relaxed break-keep">
                                 KB국민은행과 제휴한 에스크로 시스템을 통해<br className="hidden lg:block" /> 고객님의 소중한 대금을 배송 완료 시까지 안전하게 보호합니다.
                             </p>
