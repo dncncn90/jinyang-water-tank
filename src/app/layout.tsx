@@ -4,6 +4,7 @@ import "./globals.css";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import FloatingChatWidget from "@/components/layout/FloatingChatWidget";
+import FloatingCallButton from "@/components/layout/FloatingCallButton";
 import Providers from "@/components/providers/Providers";
 import { LocalBusinessJsonLd, FaqJsonLd } from "@/components/seo/JsonLd";
 import { Analytics } from "@vercel/analytics/react";
@@ -90,12 +91,13 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
+        <link rel="stylesheet" as="style" crossOrigin="anonymous" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
         <link href="https://webfontworld.github.io/gmarket/GmarketSans.css" rel="stylesheet" />
         <LocalBusinessJsonLd />
         <FaqJsonLd />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased text-base sm:text-lg`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased text-lg font-medium`}
       >
         <Providers>
           <Header />

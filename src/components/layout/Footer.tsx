@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { Phone, MapPin, Mail, Printer } from 'lucide-react';
 
@@ -9,15 +11,14 @@ export default function Footer() {
 
                     {/* Company Info */}
                     <div className="md:col-span-2 lg:col-span-1">
-                        <h3 className="text-white text-xl font-black mb-4 tracking-tight">진양건재</h3>
+                        <h3 className="text-[#FFD400] text-3xl font-black mb-4 tracking-tight drop-shadow-md">진양건재</h3>
                         <p className="text-sm text-white/70 font-medium mb-6 leading-relaxed break-keep">
                             물탱크, 정화조, 배관자재 전문 유통기업.<br />
                             현장에 필요한 모든 자재를 정직한 가격에 공급합니다.
                         </p>
-                        <div className="text-xs text-industrial-500 space-y-1.5 font-medium leading-relaxed">
-                            <p>대표자: 김준성 | 사업자등록번호: 124-53-29653</p>
-                            <p>통신판매업신고: 제2025-수원팔달-0609호</p>
-                            <p>주소: 경기도 수원시 팔달구 효원로 209-5 (인계동)</p>
+                        <div className="flex items-start gap-2 pt-4 border-t border-industrial-900">
+                            <MapPin className="w-4 h-4 text-industrial-500 shrink-0 mt-0.5" />
+                            <span className="text-xs text-industrial-400 font-medium leading-relaxed">경기도 수원시 팔달구 효원로 209-5 (인계동)</span>
                         </div>
                     </div>
 
@@ -32,13 +33,13 @@ export default function Footer() {
                                     <span className="text-xs text-industrial-400">평일 07:00 - 18:00 | 토요일 07:00 - 15:00</span>
                                 </div>
                             </li>
-                            <li className="flex items-center gap-3 border-t border-industrial-900 pt-3">
-                                <Printer className="w-5 h-5 text-industrial-500 shrink-0" />
-                                <span className="text-industrial-400">FAX: 031-237-4435</span>
+                            <li className="flex items-center gap-3 border-t border-industrial-900 pt-3 text-industrial-400">
+                                <Printer className="w-5 h-5 shrink-0 opacity-50" />
+                                <span>FAX: 031-237-4435</span>
                             </li>
-                            <li className="flex items-center gap-3">
-                                <Mail className="w-5 h-5 text-industrial-500 shrink-0" />
-                                <span className="text-industrial-400">jy2368227@naver.com</span>
+                            <li className="flex items-center gap-3 text-industrial-400">
+                                <Mail className="w-5 h-5 shrink-0 opacity-50" />
+                                <span>jy2368227@naver.com</span>
                             </li>
                         </ul>
                     </div>
@@ -48,13 +49,13 @@ export default function Footer() {
                         <h3 className="text-white text-lg font-bold mb-4 border-b border-industrial-800 pb-2">정보 및 정책</h3>
                         <div className="flex flex-col gap-3 text-sm text-industrial-400">
                             <Link href="/about" className="hover:text-white transition-colors flex items-center gap-2">
-                                <span className="w-1 h-1 bg-industrial-700 rounded-full"></span> 회사소개
+                                <span className="w-1.5 h-1.5 bg-industrial-700 rounded-full"></span> 회사소개
                             </Link>
                             <Link href="/terms" className="hover:text-white transition-colors flex items-center gap-2">
-                                <span className="w-1 h-1 bg-industrial-700 rounded-full"></span> 이용약관
+                                <span className="w-1.5 h-1.5 bg-industrial-700 rounded-full"></span> 이용약관
                             </Link>
                             <Link href="/privacy" className="hover:text-white transition-colors flex items-center gap-2">
-                                <span className="w-1 h-1 bg-industrial-700 rounded-full"></span> 개인정보처리방침
+                                <span className="w-1.5 h-1.5 bg-industrial-700 rounded-full"></span> 개인정보처리방침
                             </Link>
                             <a href="https://blog.naver.com/jypvc-" target="_blank" rel="noopener noreferrer" className="hover:text-[#03C75A] transition-colors flex items-center gap-2 mt-2">
                                 <span className="text-[10px] bg-[#03C75A] text-white px-1.5 py-0.5 rounded-sm font-black">N</span> 공식 블로그
@@ -63,79 +64,57 @@ export default function Footer() {
                     </div>
                 </div>
 
-                {/* Trust Badges */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                    <div className="bg-white/[0.03] p-6 rounded-2xl border border-white/10 flex flex-col md:flex-row items-center md:items-start gap-4">
-                        <div className="w-12 h-12 bg-orange-500/10 rounded-full flex items-center justify-center shrink-0">
-                            <Phone className="w-6 h-6 text-orange-500" />
-                        </div>
-                        <div className="text-center md:text-left">
-                            <h4 className="text-white font-black text-base mb-1">100% 담당 전문가 해피콜</h4>
-                            <p className="text-xs text-industrial-400 leading-relaxed break-keep">
-                                주문 즉시 담당 전문가가 최적의 <span className="text-orange-500 font-bold">최저가 배송비</span>를<br className="hidden lg:block" /> 직접 조율하여 안내해 드립니다. 안심하고 주문하세요!
+                {/* Trust Badges - Balanced Layout (3-Column Style) */}
+                <div className="border-t border-industrial-900 pt-8 mt-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-8">
+                        {/* Left: Copyright */}
+                        <div className="text-center md:text-left order-3 md:order-1">
+                            <p className="text-industrial-500 text-[11px] font-medium">
+                                &copy; {new Date().getFullYear()} 진양건재. All rights reserved.
                             </p>
                         </div>
-                    </div>
 
-                    <div className="bg-white/[0.03] p-6 rounded-2xl border border-white/10 flex flex-col md:flex-row items-center md:items-start gap-4">
-                        <div className="w-12 h-12 bg-green-500/10 rounded-full flex items-center justify-center shrink-0">
-                            <span className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></span>
-                        </div>
-                        <div className="text-center md:text-left flex-1">
-                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
-                                <h4 className="text-white font-black text-base">국가 인증 안전결제 (에스크로)</h4>
-                                <div className="flex items-center gap-3 justify-center md:justify-start">
-                                    <form name="KB_AUTHMARK_FORM" method="get" style={{ display: 'none' }}>
-                                        <input type="hidden" name="page" value="C021590" />
-                                        <input type="hidden" name="cc" value="b034066:b035526" />
-                                        <input type="hidden" name="mHValue" value="c4e78c4453eaa8d582c547f4408b344b" />
-                                    </form>
-                                    <button
-                                        onClick={() => {
-                                            window.open('', 'KB_AUTHMARK', 'height=604, width=648, status=yes, toolbar=no, menubar=no, location=no');
-                                            const form = document.forms.namedItem('KB_AUTHMARK_FORM') as HTMLFormElement;
-                                            if (form) {
-                                                form.action = 'https://okbfex.kbstar.com/quics';
-                                                form.target = 'KB_AUTHMARK';
-                                                form.submit();
-                                            }
-                                        }}
-                                        className="hover:opacity-80 transition-opacity"
-                                        title="KB에스크로 이체 인증마크 확인"
-                                    >
-                                        <img src="http://img1.kbstar.com/img/escrow/escrowcmark.gif" alt="KB에스크로" className="h-10 w-auto" />
-                                    </button>
-                                    <a
-                                        href="https://okbfex.kbstar.com/quics?page=C016760&mHValue=c4e78c4453eaa8d582c547f4408b344b"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-1 rounded transition-colors font-bold"
-                                    >
-                                        이체 바로가기 →
-                                    </a>
-                                </div>
+                        {/* Center: Simplified Business Info */}
+                        <div className="text-center order-1 md:order-2">
+                            <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-[10px] text-industrial-500 font-bold opacity-80">
+                                <p>대표자: 김준성</p>
+                                <span className="hidden sm:inline text-industrial-800">|</span>
+                                <p>사업자번호: 124-53-29653</p>
+                                <span className="hidden sm:inline text-industrial-800">|</span>
+                                <p>통신판매업: 제2025-수원팔달-0609호</p>
                             </div>
-                            <p className="text-xs text-industrial-400 leading-relaxed break-keep">
-                                KB국민은행과 제휴한 에스크로 시스템을 통해<br className="hidden lg:block" /> 고객님의 소중한 대금을 배송 완료 시까지 안전하게 보호합니다.
-                            </p>
+                        </div>
+
+                        {/* Right: Escrow */}
+                        <div className="flex justify-center md:justify-end order-2 md:order-3">
+                            <div className="flex items-center gap-4 bg-white/5 px-4 py-2.5 rounded-xl border border-white/5">
+                                <div className="text-right hidden sm:block">
+                                    <span className="text-white text-[10px] font-black leading-tight block">국가인증 안전결제</span>
+                                    <span className="text-industrial-500 text-[9px] font-medium block">KB에스크로</span>
+                                </div>
+                                <form name="KB_AUTHMARK_FORM" method="get" className="hidden">
+                                    <input type="hidden" name="page" value="C021590" />
+                                    <input type="hidden" name="cc" value="b034066:b035526" />
+                                    <input type="hidden" name="mHValue" value="c4e78c4453eaa8d582c547f4408b344b" />
+                                </form>
+                                <button
+                                    onClick={() => {
+                                        window.open('', 'KB_AUTHMARK', 'height=604, width=648, status=yes, toolbar=no, menubar=no, location=no');
+                                        const form = document.forms.namedItem('KB_AUTHMARK_FORM') as HTMLFormElement;
+                                        if (form) {
+                                            form.action = 'https://okbfex.kbstar.com/quics';
+                                            form.target = 'KB_AUTHMARK';
+                                            form.submit();
+                                        }
+                                    }}
+                                    className="hover:scale-105 transition-transform"
+                                >
+                                    <img src="http://img1.kbstar.com/img/escrow/escrowcmark.gif" alt="KB에스크로" className="h-7 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all" />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <div className="border-t border-industrial-900 pt-8 text-center text-xs text-industrial-500 pb-20 md:pb-8">
-                    <p>&copy; {new Date().getFullYear()} 진양건재. All rights reserved.</p>
-                </div>
-            </div>
-
-            {/* Mobile Sticky CTA */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 p-3 bg-white/95 backdrop-blur shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] border-t border-gray-200">
-                <a
-                    href="tel:031-236-8227"
-                    className="w-full bg-[#FF4500] hover:bg-[#E63E00] text-white flex items-center justify-center gap-2 py-4 rounded-xl font-black text-lg shadow-lg active:scale-95 transition-transform"
-                >
-                    <Phone className="w-5 h-5 fill-current" />
-                    031-236-8227 전화 주문 및 도매 문의
-                </a>
             </div>
         </footer>
     );

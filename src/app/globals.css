@@ -10,8 +10,15 @@
   --color-industrial-600: #475569;
   --color-industrial-700: #334155;
   --color-industrial-800: #1e293b;
-  --color-industrial-900: #0f172a;
+  --color-industrial-900: #0f172a; /* Deep Blue base */
   --color-industrial-950: #020617;
+
+  /* B2B Primary Colors */
+  --color-b2b-primary: #003366; /* Deep Blue */
+  --color-b2b-secondary: #00509d;
+  --color-b2b-accent: #ffd400; /* Yellow for CTA buttons */
+  --color-b2b-bg: #f8fafc;
+  --color-b2b-text: #111827;
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -19,25 +26,44 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #111827;
+  --touch-target: 44px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground: #f9fafb;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'GmarketSans', var(--font-sans), Arial, Helvetica, sans-serif;
+  /* 40~60대 남성을 위한 기본 폰트 사이즈 상향 (최소 18px) */
+  font-family: 'Pretendard', 'GmarketSans', var(--font-sans), system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 500; /* 글씨 굵기를 기본적으로 중간 이상으로 설정 */
+  line-height: 1.6;
   -webkit-text-size-adjust: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700 !important;
+  color: #003366;
+}
+
+/* 터치 영역 확보를 위한 전역 클래스 */
+.touch-target {
+  min-height: var(--touch-target);
+  min-width: var(--touch-target);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (max-width: 640px) {
   body {
-    font-size: 15px;
+    font-size: 16px; /* 모바일에서도 최소 16px 유지 */
   }
 }

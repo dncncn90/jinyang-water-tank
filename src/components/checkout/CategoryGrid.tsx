@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Truck, ArrowRight, Minus, Plus, ShoppingCart, CreditCard } from 'lucide-react';
+import { ArrowRight, ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
 import { PRODUCTS, PRICING_DB } from '@/lib/products';
@@ -59,11 +59,8 @@ export default function CategoryGrid() {
         }
 
         return PRODUCTS.filter(product => {
-            // First, filter out any unwanted top-level categories explicitly
-            const excludedCategories = ['buried', 'chemical', 'septic', 'mobile-toilet', 'water-tank']; // 'water-tank' might be too generic
+            const excludedCategories = ['buried', 'chemical', 'septic', 'mobile-toilet', 'water-tank'];
             if (excludedCategories.includes(product.category)) return false;
-
-            // Hide the wrapper "-series" products except for fittings
             if (product.id.includes('-series') && product.category !== 'fittings') return false;
 
             if (activeTab === '원형물탱크') return product.category === 'pe-round';
@@ -77,40 +74,39 @@ export default function CategoryGrid() {
     const displayItems = getDisplayItems();
 
     return (
-        <section id="products" className="py-16 sm:py-24 bg-gray-50">
-            <div className="max-w-7xl mx-auto px-6 lg:px-8">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 gap-4">
-                    <div>
-                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">상품 목록</h2>
-                        <p className="mt-1 text-sm sm:text-base text-gray-500">원하시는 규격의 물탱크를 바로 확인해 보세요</p>
-                    </div>
+        <section id="products" className="py-16 sm:py-24 bg-[#F1F5F9] font-['Pretendard']">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex flex-col mb-12 text-center lg:text-left">
+                    <h2 className="text-3xl sm:text-4xl font-black text-[#003366] tracking-tight mb-2">분류별 상품 안내</h2>
+                    <p className="text-lg sm:text-xl text-gray-500 font-bold">찾으시는 제품군을 선택해 주세요</p>
                 </div>
 
-                <div className="flex gap-4 mb-10 border-b border-slate-100 pb-2 overflow-x-auto no-scrollbar scroll-smooth pr-6">
+                {/* 탭 네비게이션 (큼직한 버튼 형태) */}
+                <div className="flex gap-2 sm:gap-4 mb-10 overflow-x-auto no-scrollbar pb-2">
                     {TABS.map(tab => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
-                            className={`text-sm sm:text-base font-bold px-4 py-2 whitespace-nowrap transition-all ${activeTab === tab
-                                ? 'text-[#003399] border-b-2 border-[#003399]'
-                                : 'text-slate-400 hover:text-slate-600'}`}
+                            className={`px-6 py-3 rounded-xl text-lg font-black transition-all whitespace-nowrap shadow-sm border-2 ${
+                                activeTab === tab
+                                    ? 'bg-[#003366] text-white border-[#003366]'
+                                    : 'bg-white text-gray-600 border-gray-100 hover:border-[#003366]/30'
+                            }`}
                         >
                             {tab}
                         </button>
                     ))}
                 </div>
 
-                <div className={`grid grid-cols-1 sm:grid-cols-2 gap-6 mx-auto ${activeTab === '전체 보기' ? 'md:grid-cols-3 max-w-5xl' : 'lg:grid-cols-3 xl:grid-cols-4'}`}>
+                <div className={`grid grid-cols-1 sm:grid-cols-2 gap-8 mx-auto ${activeTab === '전체 보기' ? 'md:grid-cols-3 max-w-6xl' : 'lg:grid-cols-3 xl:grid-cols-4'}`}>
                     {displayItems.map((item: any) => {
                         const isOverview = item.isOverview;
-                        const hrefUrl = isOverview ? '#' : `/products/${item.id}`;
                         const isLevelGauge = item.id === 'fit-level-gauge';
 
                         const handleItemClick = (e: React.MouseEvent) => {
                             if (isOverview) {
                                 e.preventDefault();
                                 setActiveTab(item.targetTab);
-                                // Scroll to the tabs section
                                 document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
                             }
                         };
@@ -119,69 +115,64 @@ export default function CategoryGrid() {
                             <div
                                 key={item.id}
                                 onClick={handleItemClick}
-                                className={`group relative rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col bg-white ${isOverview ? 'cursor-pointer' : ''}`}
+                                className={`group relative rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border-2 border-white flex flex-col bg-white ${isOverview ? 'cursor-pointer' : ''}`}
                             >
-                                <div className="block relative aspect-square p-6 group-hover:bg-gray-50 transition-colors bg-white">
+                                {/* 상품 이미지 영역 */}
+                                <div className="block relative aspect-square p-8 group-hover:scale-105 transition-transform duration-500">
                                     {item.tag && (
-                                        <div className={`absolute top-0 left-0 ${item.tagColor || 'bg-industrial-900'} text-white text-xs font-bold px-3 py-1.5 rounded-br-xl shadow-sm z-10`}>
+                                        <div className={`absolute top-4 left-4 ${item.tagColor || 'bg-[#003366]'} text-white text-sm font-black px-4 py-1.5 rounded-lg shadow-md z-10`}>
                                             {item.tag}
                                         </div>
                                     )}
-                                    {!item.tag && item.features && item.features[0] && (
-                                        <div className="absolute top-0 left-0 bg-industrial-900 text-white text-xs font-bold px-3 py-1.5 rounded-br-xl shadow-sm z-10">
-                                            {item.features[0]}
-                                        </div>
-                                    )}
                                     {item.capacityBadge && (
-                                        <div className="absolute top-2 right-2 bg-yellow-400 text-gray-900 text-[11px] font-black px-2 py-0.5 rounded-md shadow-sm z-10 border border-yellow-500 whitespace-nowrap">
+                                        <div className="absolute top-4 right-4 bg-[#FFD400] text-[#003366] text-xs font-black px-3 py-1 rounded-md shadow-sm z-10 border border-yellow-500 animate-pulse">
                                             {item.capacityBadge}
-                                        </div>
-                                    )}
-                                    {!item.capacityBadge && item.specs?.capacity && (
-                                        <div className="absolute top-2 right-2 bg-yellow-400 text-gray-900 text-[11px] font-black px-2 py-0.5 rounded-md shadow-sm z-10 border border-yellow-500 whitespace-nowrap">
-                                            {item.specs.capacity}
                                         </div>
                                     )}
 
                                     <img
                                         src={item.images?.[0] || ''}
                                         alt={item.name}
-                                        className={`w-full h-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300 mix-blend-multiply ${isLevelGauge ? 'p-8 scale-90' : ''}`}
+                                        className={`w-full h-full object-contain drop-shadow-lg ${isLevelGauge ? 'p-10' : ''}`}
                                     />
                                 </div>
 
-                                <div className="p-5 flex flex-col flex-1 cursor-default bg-white border-t border-gray-50">
-                                    <h3 className="text-base font-bold text-gray-900 mb-1 leading-snug">
+                                {/* 상품 정보 영역 */}
+                                <div className="p-6 pt-2 flex flex-col flex-1">
+                                    <h3 className="text-xl font-black text-[#111827] mb-2 leading-tight">
                                         {item.name}
                                     </h3>
 
                                     {item.description && (
-                                        <p className="text-xs text-gray-500 mb-3 font-medium line-clamp-2">
+                                        <p className="text-base text-gray-500 mb-4 font-bold leading-snug">
                                             {item.description}
                                         </p>
                                     )}
 
-                                    <div className="mt-auto pt-4 border-t border-slate-100">
-                                        <div className="flex flex-col mb-4">
-                                            <span className="text-[10px] text-slate-400 font-semibold mb-0.5 uppercase tracking-wider">판매가 (VAT 포함)</span>
-                                            <span className="font-bold text-xl tracking-tight text-slate-900">
-                                                {item.price.toLocaleString()}원{isOverview && <span className="text-sm font-normal text-slate-500 ml-0.5">~</span>}
-                                            </span>
+                                    <div className="mt-auto space-y-4">
+                                        <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100/50">
+                                            <span className="block text-xs text-gray-400 font-black mb-1 uppercase tracking-wider">판매가 (VAT 포함)</span>
+                                            <div className="flex items-baseline gap-1">
+                                                <span className="font-black text-2xl sm:text-3xl text-[#003366] tracking-tighter">
+                                                    {item.price.toLocaleString()}원
+                                                </span>
+                                                {isOverview && <span className="text-lg font-bold text-gray-400">~</span>}
+                                            </div>
                                         </div>
 
-                                        <div className="mt-4">
+                                        <div className="flex flex-col gap-2">
                                             {isOverview ? (
-                                                <button className="w-full flex items-center justify-center gap-1.5 text-xs font-bold text-[#003399] bg-blue-50 py-3 rounded-xl hover:bg-blue-100 transition-colors">
-                                                    용량별 목록 보기
-                                                    <ArrowRight className="w-3 h-3 ml-1" />
+                                                <button className="w-full flex items-center justify-center gap-2 text-lg font-black text-white bg-[#003366] py-4 rounded-2xl hover:bg-[#002855] transition-all shadow-lg active:scale-95">
+                                                    종류별 확인
+                                                    <ArrowRight className="w-5 h-5" />
                                                 </button>
                                             ) : (
                                                 <Link
                                                     href={`/products/${item.id}`}
-                                                    className="flex items-center justify-center gap-1.5 text-xs font-bold text-white bg-industrial-900 py-3 rounded-xl hover:bg-industrial-800 transition-colors shadow-sm"
+                                                    className="flex items-center justify-center gap-2 text-lg font-black text-white bg-[#003366] py-4 rounded-2xl hover:bg-[#002855] transition-all shadow-lg active:scale-95"
                                                 >
-                                                    상세 정보 보기
-                                                    <ArrowRight className="w-3 h-3 ml-1" />
+                                                    상세보기
+                                                    <ArrowRight className="w-5 h-5" />
                                                 </Link>
                                             )}
                                         </div>
