@@ -6,6 +6,8 @@ import HeroSection from '@/components/home/HeroSection';
 import TrustIndicators from '@/components/home/TrustIndicators';
 import CategoryGrid from '@/components/checkout/CategoryGrid';
 
+import RegionCTA from './RegionCTA';
+
 const regionData: Record<string, { name: string; title: string; description: string; keywords: string[] }> = {
   suwon: {
     name: '수원',
@@ -92,13 +94,7 @@ export default async function RegionPage({ params }: Props) {
                 전화 한 통으로 견적부터 배송까지 한 번에 해결하세요.
               </p>
               <div className="flex flex-wrap gap-4">
-                <button 
-                  onClick={() => window.dispatchEvent(new Event('open-chat'))}
-                  className="inline-flex items-center justify-center bg-[#FFD400] text-industrial-950 hover:bg-[#E6BF00] font-black h-16 px-8 rounded-2xl text-xl shadow-lg transition-all active:scale-95"
-                >
-                  <Calculator className="w-6 h-6 mr-2" />
-                  스마트 견적 확인
-                </button>
+                <RegionCTA />
                 <a 
                   href="tel:031-236-8227"
                   className="inline-flex items-center justify-center border-2 border-industrial-700 text-white hover:bg-industrial-800 font-bold h-16 px-8 rounded-2xl text-xl transition-all active:scale-95"
