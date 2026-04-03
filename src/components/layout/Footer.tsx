@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Phone, MapPin, Mail, Printer } from 'lucide-react';
+import { Phone, MapPin, Mail, Printer, Truck } from 'lucide-react';
 
 export default function Footer() {
     return (
@@ -10,69 +10,55 @@ export default function Footer() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
 
                     {/* Company Info */}
-                    <div className="md:col-span-2 lg:col-span-1">
-                        <h3 className="text-[#FFD400] text-3xl font-black mb-4 tracking-tight drop-shadow-md">진양건재</h3>
-                        <p className="text-sm text-white/70 font-medium mb-6 leading-relaxed break-keep">
-                            물탱크, 정화조, 배관자재 전문 유통기업.<br />
-                            현장에 필요한 모든 자재를 정직한 가격에 공급합니다.
+                    <div>
+                        <h3 className="text-[#FFD400] text-2xl font-black mb-4 tracking-tight">진양건재</h3>
+                        <p className="text-xs text-white/60 font-medium mb-6 leading-relaxed break-keep">
+                            37년 전통의 물탱크·정화조 전문 유통기업. 정직한 가격과 신속한 전국 배송을 약속합니다.
                         </p>
                         <div className="flex items-start gap-2 pt-4 border-t border-industrial-900">
-                            <MapPin className="w-4 h-4 text-industrial-500 shrink-0 mt-0.5" />
-                            <span className="text-xs text-industrial-400 font-medium leading-relaxed">경기도 수원시 팔달구 효원로 209-5 (인계동)</span>
+                            <MapPin className="w-3.5 h-3.5 text-industrial-500 shrink-0 mt-0.5" />
+                            <span className="text-[11px] text-industrial-400 font-medium">경기도 수원시 팔달구 효원로 209-5</span>
                         </div>
                     </div>
 
                     {/* Customer Center */}
                     <div>
-                        <h3 className="text-white text-lg font-bold mb-4 border-b border-industrial-800 pb-2">고객센터</h3>
-                        <ul className="space-y-4 text-sm">
-                            <li className="flex items-center gap-3">
-                                <Phone className="w-5 h-5 text-orange-500 shrink-0" />
-                                <div>
-                                    <span className="block text-white font-black text-xl tracking-tight">031-236-8227</span>
-                                    <span className="text-xs text-industrial-400">평일 07:00 - 18:00 | 토요일 07:00 - 15:00</span>
-                                </div>
+                        <h3 className="text-white text-sm font-bold mb-4 border-b border-industrial-800 pb-2 text-industrial-400">고객센터</h3>
+                        <ul className="space-y-3 text-sm">
+                            <li className="flex items-center gap-2">
+                                <span className="text-white font-black text-lg">031-236-8227</span>
                             </li>
-                            <li className="flex items-center gap-3 border-t border-industrial-900 pt-3 text-industrial-400">
-                                <Printer className="w-5 h-5 shrink-0 opacity-50" />
-                                <span>FAX: 031-237-4435</span>
-                            </li>
-                            <li className="flex items-center gap-3 text-industrial-400">
-                                <Mail className="w-5 h-5 shrink-0 opacity-50" />
-                                <span>jy2368227@naver.com</span>
+                            <li className="text-[11px] text-industrial-500 leading-tight">
+                                평일 07:00 - 18:00<br />
+                                토요일 07:00 - 15:00
                             </li>
                         </ul>
                     </div>
 
-                    {/* Policies */}
-                    <div>
-                        <h3 className="text-white text-lg font-bold mb-4 border-b border-industrial-800 pb-2">정보 및 정책</h3>
-                        <div className="flex flex-col gap-3 text-sm text-industrial-400">
-                            <Link href="/about" className="hover:text-white transition-colors flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 bg-industrial-700 rounded-full"></span> 회사소개
-                            </Link>
-                            <Link href="/terms" className="hover:text-white transition-colors flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 bg-industrial-700 rounded-full"></span> 이용약관
-                            </Link>
-                            <Link href="/privacy" className="hover:text-white transition-colors flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 bg-industrial-700 rounded-full"></span> 개인정보처리방침
-                            </Link>
-                            <a href="https://blog.naver.com/jypvc-" target="_blank" rel="noopener noreferrer" className="hover:text-[#03C75A] transition-colors flex items-center gap-2 mt-2">
-                                <span className="text-[10px] bg-[#03C75A] text-white px-1.5 py-0.5 rounded-sm font-black">N</span> 공식 블로그
-                            </a>
-                        </div>
-                    </div>
-
-                    {/* Regional Services */}
-                    <div>
-                        <h3 className="text-white text-lg font-bold mb-4 border-b border-industrial-800 pb-2">주요 배송 지역</h3>
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-industrial-400">
+                    {/* Regional Services - Sleek SEO Directory */}
+                    <div className="lg:col-span-1">
+                        <h3 className="text-white text-sm font-bold mb-4 border-b border-industrial-800 pb-2 text-industrial-400">주요 배송거점</h3>
+                        <div className="grid grid-cols-2 gap-x-2 gap-y-2 text-[12px] text-industrial-400">
                             <Link href="/regions/suwon" className="hover:text-white transition-colors">수원 물탱크</Link>
                             <Link href="/regions/hwaseong" className="hover:text-white transition-colors">화성 물탱크</Link>
                             <Link href="/regions/yongin" className="hover:text-white transition-colors">용인 물탱크</Link>
                             <Link href="/regions/ansan" className="hover:text-white transition-colors">안산 정화조</Link>
                             <Link href="/regions/pyeongtaek" className="hover:text-white transition-colors">평택 물탱크</Link>
                             <Link href="/regions/osan" className="hover:text-white transition-colors">오산 물탱크</Link>
+                        </div>
+                    </div>
+
+                    {/* Policies & National Delivery */}
+                    <div>
+                        <h3 className="text-white text-sm font-bold mb-4 border-b border-industrial-800 pb-2 text-industrial-400">안내 및 정책</h3>
+                        <div className="flex flex-col gap-2.5 text-xs text-industrial-400">
+                            <div className="flex items-center gap-2 text-orange-500/80 font-bold mb-1">
+                                <Truck className="w-3.5 h-3.5" /> 전국 화물 배송 가능
+                            </div>
+                            <Link href="/about" className="hover:text-white transition-colors">회사소개</Link>
+                            <Link href="/terms" className="hover:text-white transition-colors">이용약관</Link>
+                            <Link href="/privacy" className="hover:text-white transition-colors">개인정보처리방침</Link>
+                            <a href="https://blog.naver.com/jypvc-" target="_blank" rel="noopener noreferrer" className="text-[#03C75A] font-bold mt-1">N 공식 블로그</a>
                         </div>
                     </div>
                 </div>

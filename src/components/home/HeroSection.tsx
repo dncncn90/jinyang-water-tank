@@ -36,20 +36,23 @@ export default function HeroSection() {
                             </p>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row gap-4 mt-4 lg:mt-8">
+                        <div className="flex flex-col sm:flex-row items-stretch gap-4 mt-4 lg:mt-8">
                             <button 
                                 onClick={() => window.dispatchEvent(new Event('open-chat'))} 
-                                className="group flex items-center justify-center gap-2 bg-[#003366] hover:bg-[#002855] text-white text-xl font-black py-5 px-10 rounded-2xl transition-all shadow-xl shadow-blue-900/20 active:scale-95"
+                                className="flex-1 group flex flex-col items-center justify-center bg-[#003366] hover:bg-[#002855] text-white py-4 px-6 rounded-2xl transition-all shadow-xl shadow-blue-900/20 active:scale-95 text-center min-h-[88px]"
                             >
-                                <span>전화 없이 확인하는 2026 물탱크 단가표(스마트 견적)</span>
-                                <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                                <div className="flex items-center gap-2 mb-0.5">
+                                    <span className="text-xs sm:text-sm font-bold text-blue-200/80">전화 없이 확인하는</span>
+                                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform text-blue-300" />
+                                </div>
+                                <span className="text-lg sm:text-xl font-black tracking-tight">2026 물탱크 단가표 <span className="text-xs sm:text-sm font-bold opacity-80">(스마트 견적)</span></span>
                             </button>
                             <a 
                                 href="tel:031-236-8227" 
-                                className="flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-[#003366] text-xl font-black py-5 px-10 rounded-2xl border-4 border-[#003366] transition-all active:scale-95"
+                                className="flex-1 flex flex-col items-center justify-center bg-white hover:bg-gray-50 text-[#003366] py-4 px-6 rounded-2xl border-2 border-[#003366] transition-all active:scale-95 text-center min-h-[88px]"
                             >
-                                <Phone className="w-6 h-6 fill-current" />
-                                <span>바로 전화하기</span>
+                                <Phone className="w-5 h-5 mb-1 fill-current" />
+                                <span className="text-lg sm:text-xl font-black">바로 전화하기</span>
                             </a>
                         </div>
                     </div>
