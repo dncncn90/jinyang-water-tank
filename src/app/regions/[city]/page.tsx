@@ -129,10 +129,10 @@ export default async function RegionPage({ params }: Props) {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white rounded-3xl p-8 shadow-xl hover:translate-y-[-8px] transition-all border border-gray-100">
                 <Truck className="w-12 h-12 text-industrial-900 mb-6" />
-                <h3 className="text-xl font-bold mb-4">{data.name} 전역 당일 배송</h3>
+                <h3 className="text-xl font-bold mb-4">{data.name} 전 지역 신속 배송</h3>
                 <p className="text-industrial-600 leading-relaxed text-sm">
-                  {data.name} 시내 및 외곽 지역까지 직영 트럭으로 직접 배달합니다. 
-                  화물 연락의 번거로움 없이 현장에서 즉시 자재를 받으실 수 있습니다.
+                  {data.name} 시내 및 외곽 지역까지 직영 배송팀과 전문 화물 네트워크를 통해 가장 효율적으로 전달합니다. 
+                  현장 위치와 제품 규격에 최적화된 배송 수단으로 신속하고 안전하게 자재를 받으실 수 있습니다.
                 </p>
             </div>
             <div className="bg-white rounded-3xl p-8 shadow-xl hover:translate-y-[-8px] transition-all border border-gray-100">
