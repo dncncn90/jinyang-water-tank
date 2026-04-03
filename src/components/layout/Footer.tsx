@@ -7,7 +7,7 @@ export default function Footer() {
     return (
         <footer className="bg-industrial-950 text-industrial-200 py-12 border-t border-industrial-900">
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
 
                     {/* Company Info */}
                     <div className="md:col-span-2 lg:col-span-1">
@@ -45,7 +45,7 @@ export default function Footer() {
                     </div>
 
                     {/* Policies */}
-                    <div className="flex flex-col">
+                    <div>
                         <h3 className="text-white text-lg font-bold mb-4 border-b border-industrial-800 pb-2">정보 및 정책</h3>
                         <div className="flex flex-col gap-3 text-sm text-industrial-400">
                             <Link href="/about" className="hover:text-white transition-colors flex items-center gap-2">
@@ -60,6 +60,19 @@ export default function Footer() {
                             <a href="https://blog.naver.com/jypvc-" target="_blank" rel="noopener noreferrer" className="hover:text-[#03C75A] transition-colors flex items-center gap-2 mt-2">
                                 <span className="text-[10px] bg-[#03C75A] text-white px-1.5 py-0.5 rounded-sm font-black">N</span> 공식 블로그
                             </a>
+                        </div>
+                    </div>
+
+                    {/* Regional Services */}
+                    <div>
+                        <h3 className="text-white text-lg font-bold mb-4 border-b border-industrial-800 pb-2">주요 배송 지역</h3>
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-industrial-400">
+                            <Link href="/regions/suwon" className="hover:text-white transition-colors">수원 물탱크</Link>
+                            <Link href="/regions/hwaseong" className="hover:text-white transition-colors">화성 물탱크</Link>
+                            <Link href="/regions/yongin" className="hover:text-white transition-colors">용인 물탱크</Link>
+                            <Link href="/regions/ansan" className="hover:text-white transition-colors">안산 정화조</Link>
+                            <Link href="/regions/pyeongtaek" className="hover:text-white transition-colors">평택 물탱크</Link>
+                            <Link href="/regions/osan" className="hover:text-white transition-colors">오산 물탱크</Link>
                         </div>
                     </div>
                 </div>

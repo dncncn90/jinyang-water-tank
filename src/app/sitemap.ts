@@ -46,5 +46,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: 0.8,
     }));
 
-    return [...staticPages, ...productPages];
+    // 지역 전용 페이지
+    const regions = ['suwon', 'hwaseong', 'yongin', 'ansan', 'pyeongtaek', 'osan'];
+    const regionalPages: MetadataRoute.Sitemap = regions.map(city => ({
+        url: `${baseUrl}/regions/${city}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.85,
+    }));
+
+    return [...staticPages, ...productPages, ...regionalPages];
 }

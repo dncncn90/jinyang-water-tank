@@ -41,7 +41,7 @@ export default function HeroSection() {
                                 onClick={() => window.dispatchEvent(new Event('open-chat'))} 
                                 className="group flex items-center justify-center gap-2 bg-[#003366] hover:bg-[#002855] text-white text-xl font-black py-5 px-10 rounded-2xl transition-all shadow-xl shadow-blue-900/20 active:scale-95"
                             >
-                                <span>실시간 가격 확인하기</span>
+                                <span>전화 없이 확인하는 2026 물탱크 단가표(스마트 견적)</span>
                                 <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                             </button>
                             <a 
@@ -59,7 +59,7 @@ export default function HeroSection() {
                         <div className="relative rounded-3xl overflow-hidden shadow-2xl border-8 border-white aspect-[16/10] bg-gray-200">
                             <Image
                                 src="/images/hero-main-warehouse.jpg"
-                                alt="진양건재 물탱크 제품 이미지"
+                                alt="수원-PE물탱크-도매-진양건재"
                                 fill
                                 className="object-cover"
                                 priority
