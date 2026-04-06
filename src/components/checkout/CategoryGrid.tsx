@@ -111,7 +111,7 @@ export default function CategoryGrid() {
                     ))}
                 </div>
 
-                <div className={`grid grid-cols-1 sm:grid-cols-2 gap-8 mx-auto ${activeTab === '전체 보기' ? 'md:grid-cols-3 max-w-6xl' : 'lg:grid-cols-3 xl:grid-cols-4'}`}>
+                <div className={`grid grid-cols-1 sm:grid-cols-2 gap-8 mx-auto ${activeTab === '전체 보기' ? 'lg:grid-cols-4 md:grid-cols-2 max-w-7xl' : 'lg:grid-cols-3 xl:grid-cols-4'}`}>
                     {displayItems.map((item: any) => {
                         const isOverview = item.isOverview;
                         const isLevelGauge = item.id === 'fit-level-gauge';

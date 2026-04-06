@@ -587,6 +587,44 @@ export const PRODUCTS: Product[] = [
 
 
     
+    {
+        id: 'coir-mat-premium',
+        name: '프리미엄 야자매트 (코코넛 매트)',
+        category: 'coir-mat',
+        price: 99000,
+        description: '베트남산 최고급 천연 코코넛 섬유로 제작된 친환경 야자매트입니다. 보행로, 등산로, 조경용으로 최적화되어 있습니다.',
+        isRecommended: true,
+        isFreeShipping: true,
+        features: ['100% 천연 코코넛', '미끄럼 방지', '토양 보호', '내구성 강화'],
+        specs: { material: '베트남산 코코넛 섬유', warranty: '1년' },
+        images: ['/images/products/yaja/yaja-product.png'],
+        reviews: [],
+        options: [
+            {
+                name: '매트 폭(너비) 선택',
+                type: 'select',
+                required: true,
+                choices: [
+                    { label: '0.6m x 10m - 75,000원', priceChange: -24000 },
+                    { label: '0.8m x 10m - 87,000원', priceChange: -12000 },
+                    { label: '1.0m x 10m (표준) - 99,000원', priceChange: 0 },
+                    { label: '1.2m x 10m - 111,000원', priceChange: 12000 },
+                    { label: '1.5m x 10m - 136,000원', priceChange: 37000 },
+                    { label: '2.0m x 10m - 166,000원', priceChange: 67000 },
+                ]
+            },
+            {
+                name: '고정용 철근핀 추가',
+                type: 'radio',
+                required: true,
+                choices: [
+                    { label: '철근핀 10개 포함 (기본형) - 0원', priceChange: 0 },
+                    { label: '철근핀 20개 포함 (강화형) - 5,000원', priceChange: 5000 },
+                    { label: '철근핀 50개 포함 (대량) - 12,000원', priceChange: 12000 },
+                ]
+            }
+        ]
+    }
 ];
 
 export function getProductById(id: string): Product | undefined {
