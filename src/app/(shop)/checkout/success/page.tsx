@@ -10,6 +10,8 @@ function SuccessContent() {
     const orderId = searchParams.get('orderId');
     const amount = searchParams.get('amount') || '0';
     const type = searchParams.get('type') || 'delivery';
+    const category = searchParams.get('category');
+    const isCoirMat = category === 'coir-mat';
 
     // 결제 성공 (무통장 입금 안내)
     return (
@@ -23,10 +25,20 @@ function SuccessContent() {
                     <h1 className="text-3xl font-bold text-gray-900 mb-4">주문이 완료되었습니다!</h1>
                     <div className="bg-orange-50 border border-orange-100 rounded-xl p-5 inline-block text-left mb-2 max-w-lg w-full">
                         <p className="text-orange-900 font-bold mb-2 break-keep text-lg">
-                            {type === 'delivery' ? '건자재 특성상 지역별 운임비 확인이 필요합니다.' : '방문 수령 전 피팅(타공) 위치 확인 등 상담이 필요합니다.'}
+                            {isCoirMat 
+                                ? '야자매트 부자재(핀) 수량 및 도삭/배송 일정을 확인 중입니다.'
+                                : type === 'delivery' 
+                                    ? '건자재 특성상 지역별 운임비 확인이 필요합니다.' 
+                                    : '방문 수령 전 피팅(타공) 위치 확인 등 상담이 필요합니다.'
+                            }
                         </p>
                         <p className="text-orange-800 text-sm leading-relaxed break-keep font-medium">
-                            담당자가 기재하신 번호로 곧 연락드려 {type === 'delivery' ? '최종 금액을 안내해' : '수령 일정과 피팅 위치를 확인해'} 드리겠습니다.<br/>
+                            담당자가 기재하신 번호로 곧 연락드려 {isCoirMat 
+                                ? '규격 재확인 및 가장 저렴한 배송 방식을 안내해' 
+                                : type === 'delivery' 
+                                    ? '최종 금액을 안내해' 
+                                    : '수령 일정과 피팅 위치를 확인해'
+                            } 드리겠습니다.<br/>
                             <strong className="text-red-500 font-extrabold text-base bg-red-50 px-1 py-0.5 rounded mt-1 inline-block">전화 상담 전에는 입금을 잠시 기다려 주세요.</strong>
                         </p>
                     </div>
@@ -109,7 +121,14 @@ function SuccessContent() {
                         <div className="mt-8 pt-6 border-t border-gray-100">
                             <p className="text-sm text-center text-gray-600 font-medium leading-relaxed break-keep">
                                 <span className="text-industrial-600 font-black">잠시만 기다려주세요!</span> 담당 전문가가 주문 내역을 확인한 후, <br />
-                                바로 직접 전화를 드려 <strong className="text-orange-600 font-black text-base italic">{type === 'delivery' ? '최저가 운임비' : '피팅(타공) 위치 등'}</strong>를 맞춰드리겠습니다.
+                                바로 직접 전화를 드려 <strong className="text-orange-600 font-black text-base italic">
+                                    {isCoirMat 
+                                        ? '최적의 배송 수단(택배/화물) 안내' 
+                                        : type === 'delivery' 
+                                            ? '최저가 운임비' 
+                                            : '피팅(타공) 위치 등'
+                                    }
+                                </strong>를 맞춰드리겠습니다.
                             </p>
                         </div>
                     </div>

@@ -155,7 +155,11 @@ export default function CheckoutPage() {
 
             if (response.ok && data.success) {
                 clearCart();
-                router.push(`/checkout/success?orderId=${data.orderId}&amount=${totalAmount}&type=${shippingType}`);
+                const isCoirMat = items.some(item => 
+                    item.name.includes('야자매트') || item.productId.includes('coir')
+                );
+                const categoryParam = isCoirMat ? '&category=coir-mat' : '';
+                router.push(`/checkout/success?orderId=${data.orderId}&amount=${totalAmount}&type=${shippingType}${categoryParam}`);
             } else {
                 alert(data.error || '주문 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
             }

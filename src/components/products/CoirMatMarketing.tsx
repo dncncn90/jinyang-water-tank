@@ -7,10 +7,7 @@ interface CoirMatMarketingProps {
 
 export default function CoirMatMarketing({ hidePurchaseGrid = false }: CoirMatMarketingProps) {
     // 2개의 통합 이미지 구성을 지원합니다 (1.png, 2.png)
-    const images = [
-        { src: '/images/products/yaja/1.png', alt: '야자매트 상세안내 1 (소개 및 특장점)' },
-        { src: '/images/products/yaja/2.png', alt: '야자매트 상세안내 2 (규격 및 시공가이드)' },
-    ];
+    const detailImage = { src: '/images/products/yaja/detail_full.jpg', alt: '야자매트 프리미엄 전용 상세안내 (소개, 특장점, 규격 및 시공 가이드)' };
 
     return (
         <div className="space-y-0 py-0 text-gray-800 font-['Pretendard'] overflow-hidden">
@@ -30,23 +27,13 @@ export default function CoirMatMarketing({ hidePurchaseGrid = false }: CoirMatMa
                 </div>
             </div>
 
-            {/* 상세 이미지 1 (연결1) */}
-            <div className="flex flex-col items-center w-full max-w-3xl mx-auto">
+            {/* 통합 상세 이미지 (고화질) */}
+            <div className="flex flex-col items-center w-full max-w-4xl mx-auto bg-white">
                 <img 
-                    src={images[0].src} 
-                    alt={images[0].alt} 
-                    className="w-full h-auto block select-none"
-                    onError={(e) => { (e.target as any).style.display = 'none'; }}
-                />
-            </div>
-
-            {/* 상세 이미지 2 (연결2) */}
-            <div className="flex flex-col items-center w-full max-w-3xl mx-auto">
-                <img 
-                    src={images[1].src} 
-                    alt={images[1].alt} 
-                    className="w-full h-auto block select-none"
-                    onError={(e) => { (e.target as any).style.display = 'none'; }}
+                    src={detailImage.src} 
+                    alt={detailImage.alt} 
+                    className="w-full h-auto block select-none shadow-sm"
+                    loading="lazy"
                 />
             </div>
 

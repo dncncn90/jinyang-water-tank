@@ -619,7 +619,7 @@ export const PRODUCTS: Product[] = [
                 required: true,
                 choices: [
                     { label: '철근핀 15개 포함 (기본형) - 0원', priceChange: 0 },
-                    { label: '철근핀 30개 포함 (강화형) - 5,000원', priceChange: 5000 },
+                    { label: '철근핀 30개 포함 (강화형) - 9,000원', priceChange: 9000 },
                 ]
             }
         ]

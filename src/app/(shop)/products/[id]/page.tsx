@@ -184,6 +184,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     } else if (name.includes('PE')) {
                         subProductId = 'fit-pe-series';
                         subImage = '/images/products/fit-pe-real.jpg';
+                    } else if (name.includes('철근핀')) {
+                        subProductId = 'coir-mat-pins';
+                        subImage = '/images/products/yaja/pins.png';
                     }
 
                     addToCart({
