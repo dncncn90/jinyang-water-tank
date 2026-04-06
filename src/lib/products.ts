@@ -618,9 +618,8 @@ export const PRODUCTS: Product[] = [
                 type: 'radio',
                 required: true,
                 choices: [
-                    { label: '철근핀 10개 포함 (기본형) - 0원', priceChange: 0 },
-                    { label: '철근핀 20개 포함 (강화형) - 5,000원', priceChange: 5000 },
-                    { label: '철근핀 50개 포함 (대량) - 12,000원', priceChange: 12000 },
+                    { label: '철근핀 15개 포함 (기본형) - 0원', priceChange: 0 },
+                    { label: '철근핀 30개 포함 (강화형) - 5,000원', priceChange: 5000 },
                 ]
             }
         ]

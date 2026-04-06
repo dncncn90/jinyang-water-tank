@@ -46,7 +46,7 @@ export default function Footer() {
 
                     {/* Regional Services - Unified Keywords */}
                     <div className="lg:col-span-1">
-                        <h3 className="text-white text-sm font-bold mb-4 border-b border-industrial-800 pb-2 text-industrial-400">지역별 물탱크</h3>
+                        <h3 className="text-white text-sm font-bold mb-4 border-b border-industrial-800 pb-2 text-industrial-400">지역별 물탱크·저수조</h3>
                         <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 text-[13px] text-industrial-400">
                             <Link href="/regions/suwon" className="hover:text-white transition-colors">수원 물탱크</Link>
                             <Link href="/regions/hwaseong" className="hover:text-white transition-colors">화성 물탱크</Link>

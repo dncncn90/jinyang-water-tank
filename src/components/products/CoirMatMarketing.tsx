@@ -30,24 +30,8 @@ export default function CoirMatMarketing({ hidePurchaseGrid = false }: CoirMatMa
                 </div>
             </div>
 
-            {/* 2. 메인 강조 문구 섹션 */}
-            <section className="bg-emerald-50 py-16 px-6 text-center border-b border-emerald-100">
-                <div className="max-w-4xl mx-auto">
-                    <span className="inline-block bg-white text-emerald-700 border border-emerald-200 px-4 py-1.5 rounded-full text-sm font-bold mb-6">
-                        진양건재의 솔직한 약속
-                    </span>
-                    <h2 className="text-3xl md:text-5xl font-black text-gray-900 leading-tight mb-6">
-                        "철근핀 추가금 장난, 이제 그만!<br />
-                        진양건재는 처음부터 <span className="text-emerald-600 font-black">'풀세트'</span>로 보내드립니다."
-                    </h2>
-                    <p className="text-gray-600 text-lg max-w-2xl mx-auto break-keep">
-                        별도 구매의 번거로움을 없앴습니다. 시공에 꼭 필요한 두껍고 튼튼한 '철근핀'을 현장 용도에 맞게 꽉 채워 드립니다.
-                    </p>
-                </div>
-            </section>
-
-            {/* 3. 이미지 1번 (인트로 및 제조공정) */}
-            <div className="flex flex-col items-center w-full max-w-5xl mx-auto">
+            {/* 상세 이미지 1 (연결1) */}
+            <div className="flex flex-col items-center w-full max-w-3xl mx-auto">
                 <img 
                     src={images[0].src} 
                     alt={images[0].alt} 
@@ -56,56 +40,8 @@ export default function CoirMatMarketing({ hidePurchaseGrid = false }: CoirMatMa
                 />
             </div>
 
-            {/* 4. 3가지 핵심 포인트 섹션 (디자인 강화) */}
-            <section className="py-24 px-6 bg-white">
-                <div className="max-w-6xl mx-auto">
-                    <div className="text-center mb-16">
-                        <h3 className="text-4xl font-black text-gray-900">3 CORE POINTS</h3>
-                        <div className="w-16 h-1 w-24 bg-emerald-500 mx-auto mt-4"></div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                        {/* Point 1 */}
-                        <div className="bg-gray-50 p-10 rounded-[40px] border border-gray-100 relative group hover:border-emerald-200 transition-all">
-                            <div className="absolute -top-6 left-10 w-12 h-12 bg-white shadow-lg rounded-2xl flex items-center justify-center font-black text-2xl text-emerald-600">1</div>
-                            <div className="mb-6 mt-2">
-                                <Shield className="w-10 h-10 text-emerald-600" />
-                            </div>
-                            <h4 className="text-xl font-bold mb-4">얇고 휘어지는 일반 핀은 NO!</h4>
-                            <p className="text-gray-600 leading-relaxed text-[15px] break-keep">
-                                "현장에서 몇 번 치면 구부러지는 약한 핀이 아닙니다. 토목/조경 현장에서 실제로 사용하는 <span className="font-bold text-gray-900">두껍고 튼튼한 진짜 철근핀</span>만 취급합니다."
-                            </p>
-                        </div>
-
-                        {/* Point 2 */}
-                        <div className="bg-gray-50 p-10 rounded-[40px] border border-gray-100 relative group hover:border-emerald-200 transition-all">
-                            <div className="absolute -top-6 left-10 w-12 h-12 bg-white shadow-lg rounded-2xl flex items-center justify-center font-black text-2xl text-emerald-600">2</div>
-                            <div className="mb-6 mt-2">
-                                <Zap className="w-10 h-10 text-emerald-600" />
-                            </div>
-                            <h4 className="text-xl font-bold mb-4">현장 맞춤형 구성 세트</h4>
-                            <p className="text-gray-600 leading-relaxed text-[15px] break-keep">
-                                "일반 평지라면 15개 세트를, 단단한 고정이 필요한 <span className="font-bold text-gray-900">경사지라면 30개 세트</span>를 선택하세요. 현장에 꼭 맞는 수량으로 넉넉하게 챙겨드립니다."
-                            </p>
-                        </div>
-
-                        {/* Point 3 */}
-                        <div className="bg-gray-50 p-10 rounded-[40px] border border-gray-100 relative group hover:border-emerald-200 transition-all">
-                            <div className="absolute -top-6 left-10 w-12 h-12 bg-white shadow-lg rounded-2xl flex items-center justify-center font-black text-2xl text-emerald-600">3</div>
-                            <div className="mb-6 mt-2">
-                                <Truck className="w-10 h-10 text-emerald-600" />
-                            </div>
-                            <h4 className="text-xl font-bold mb-4">무통장 입금 전용 도매가</h4>
-                            <p className="text-gray-600 leading-relaxed text-[15px] break-keep">
-                                "플랫폼 수수료를 100% 없앴습니다. <span className="font-bold text-gray-900">그 혜택을 무료배송과 철근핀 풀세트 구성</span>으로 고객님께 돌려드립니다." (무통장 특가 적용 완료)
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* 5. 이미지 2번 (규격 및 시공방법) */}
-            <div className="flex flex-col items-center w-full max-w-5xl mx-auto">
+            {/* 상세 이미지 2 (연결2) */}
+            <div className="flex flex-col items-center w-full max-w-3xl mx-auto">
                 <img 
                     src={images[1].src} 
                     alt={images[1].alt} 
