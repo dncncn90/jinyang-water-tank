@@ -1,7 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async redirects() {
+    return [
+      {
+        source: '/products/chem-:id',
+        destination: '/products/pe-round-1t',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

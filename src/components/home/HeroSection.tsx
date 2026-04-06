@@ -42,10 +42,10 @@ export default function HeroSection() {
                                 className="flex-1 group flex flex-col items-center justify-center bg-[#003366] hover:bg-[#002855] text-white py-4 px-6 rounded-2xl transition-all shadow-xl shadow-blue-900/20 active:scale-95 text-center min-h-[88px]"
                             >
                                 <div className="flex items-center gap-2 mb-0.5">
-                                    <span className="text-xs sm:text-sm font-bold text-blue-200/80">전화 없이 확인하는</span>
+                                    <span className="text-xs sm:text-sm font-bold text-blue-200/80">바로 확인 가능한</span>
                                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform text-blue-300" />
                                 </div>
-                                <span className="text-lg sm:text-2xl font-black tracking-tight">진양스마트견적</span>
+                                <span className="text-lg sm:text-2xl font-black tracking-tight">실시간 스마트 견적</span>
                             </button>
                             <a 
                                 href="tel:031-236-8227" 

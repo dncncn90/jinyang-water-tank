@@ -36,7 +36,7 @@ const regionData: Record<string, { name: string; title: string; description: str
   pyeongtaek: {
     name: '평택',
     title: '평택 물탱크 저수조 도매 | PE/사각 물탱크 당일 배송 - 진양건재',
-    description: '평택 전 지역 물탱크 및 저수조 직배송. 37년 전통의 신뢰, 진양건재에서 평택 지역 물탱크 단가표를 확인하세요.',
+    description: '평택 전 지역 물탱크 및 저수조 직배송. 37년 전통의 신뢰, 진양건재에서 평택 지역 물탱크 스마트 견적을 확인하세요.',
     keywords: ['평택 물탱크', '평택 저수조', '평택 PE물탱크', '평택 정화조', '평택 물탱크 도매', '평택 물탱크 가격'],
   },
   osan: {
@@ -148,7 +148,7 @@ export default async function RegionPage({ params }: Props) {
                 <h3 className="text-xl font-bold mb-4">정직한 공장 직영가</h3>
                 <p className="text-industrial-600 leading-relaxed text-sm">
                   중간 유통 단계를 줄여 {data.name} 지역 어디보다 합리적인 가격대를 제안합니다. 
-                  전화 없이도 확인 가능한 실시간 단가표를 이용해 보세요.
+                  전화 없이도 바로 확인 가능한 실시간 스마트 견적 시스템을 이용해 보세요.
                 </p>
             </div>
           </div>
