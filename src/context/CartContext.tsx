@@ -18,6 +18,7 @@ export type CartItem = {
     quantity: number;
     totalPrice: number;
     image: string;
+    isFreeShipping?: boolean;
 };
 
 type CartContextType = {
@@ -107,7 +108,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
                         return {
                             ...item,
                             quantity: newQuantity,
-                            totalPrice: newQuantity * unitPrice
+                            totalPrice: newQuantity * unitPrice,
+                            isFreeShipping: newItem.isFreeShipping
                         };
                     }
                     return item;

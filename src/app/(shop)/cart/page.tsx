@@ -52,7 +52,10 @@ export default function CartPage() {
     const estimatedShipping = useMemo(() => {
         if (shippingType === 'pickup') return 0;
         if (!shippingAddress) return 0;
-        return calculateShippingCost(items, shippingAddress);
+        return calculateShippingCost(
+            items.map(item => ({ name: item.name, quantity: item.quantity, isFreeShipping: item.isFreeShipping })),
+            shippingAddress
+        );
     }, [shippingAddress, shippingType, items]);
 
     return (

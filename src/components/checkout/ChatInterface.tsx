@@ -78,7 +78,8 @@ export default function ChatInterface() {
         // Calculate shipping using shared logic
         const items = [{
             name: `${shape} 물탱크 ${tonnageStr}톤`,
-            quantity: qty
+            quantity: qty,
+            isFreeShipping: false // Water tanks are not free shipping
         }];
 
         return calculateShippingCost(items, location);

@@ -29,8 +29,11 @@ export default function Footer() {
                                 <span className="text-white font-black text-lg">031-236-8227</span>
                             </li>
                             <li className="text-[11px] text-industrial-500 leading-tight">
-                                평일 07:00 - 18:00<br />
-                                토요일 07:00 - 15:00
+                                평일 07:00 - 18:00 | 토요일 07:00 - 15:00
+                            </li>
+                            <li className="flex flex-col gap-1 text-[11px] text-industrial-400 border-t border-industrial-900 pt-3 mt-1">
+                                <span className="flex items-center gap-1.5"><Printer className="w-3 h-3 text-industrial-500" /> FAX: 031-237-4435</span>
+                                <span className="flex items-center gap-1.5"><Mail className="w-3 h-3 text-industrial-500" /> E-mail: jy2368227@naver.com</span>
                             </li>
                         </ul>
                     </div>
@@ -39,12 +42,12 @@ export default function Footer() {
                     <div className="lg:col-span-1">
                         <h3 className="text-white text-sm font-bold mb-4 border-b border-industrial-800 pb-2 text-industrial-400">지역별 물탱크·저수조</h3>
                         <div className="grid grid-cols-2 gap-x-2 gap-y-2 text-[12px] text-industrial-400">
-                            <Link href="/regions/suwon" className="hover:text-white transition-colors">수원 물탱크 저수조</Link>
-                            <Link href="/regions/hwaseong" className="hover:text-white transition-colors">화성 물탱크 판매</Link>
-                            <Link href="/regions/yongin" className="hover:text-white transition-colors">용인 물탱크 가격</Link>
-                            <Link href="/regions/ansan" className="hover:text-white transition-colors">안산 정화조 도매</Link>
-                            <Link href="/regions/pyeongtaek" className="hover:text-white transition-colors">평택 사각 물탱크</Link>
-                            <Link href="/regions/osan" className="hover:text-white transition-colors">오산 물탱크 구매</Link>
+                            <Link href="/regions/suwon" className="hover:text-white transition-colors">수원 물탱크</Link>
+                            <Link href="/regions/hwaseong" className="hover:text-white transition-colors">화성 물탱크</Link>
+                            <Link href="/regions/yongin" className="hover:text-white transition-colors">용인 물탱크</Link>
+                            <Link href="/regions/ansan" className="hover:text-white transition-colors">안산 물탱크</Link>
+                            <Link href="/regions/pyeongtaek" className="hover:text-white transition-colors">평택 물탱크</Link>
+                            <Link href="/regions/osan" className="hover:text-white transition-colors">오산 물탱크</Link>
                         </div>
                     </div>
 

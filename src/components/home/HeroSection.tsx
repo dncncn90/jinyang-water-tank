@@ -45,7 +45,7 @@ export default function HeroSection() {
                                     <span className="text-xs sm:text-sm font-bold text-blue-200/80">전화 없이 확인하는</span>
                                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform text-blue-300" />
                                 </div>
-                                <span className="text-lg sm:text-xl font-black tracking-tight">2026 물탱크 단가표 <span className="text-xs sm:text-sm font-bold opacity-80">(스마트 견적)</span></span>
+                                <span className="text-lg sm:text-2xl font-black tracking-tight">진양스마트견적</span>
                             </button>
                             <a 
                                 href="tel:031-236-8227" 

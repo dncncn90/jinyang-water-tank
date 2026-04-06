@@ -28,6 +28,11 @@ const CATEGORY_INFO: Record<string, { title: string; description: string; emoji:
         description: '내화학성이 뛰어난 산업용 약품 탱크',
         emoji: '🧪',
     },
+    'coir-mat': {
+        title: '야자매트',
+        description: '산책로, 공원, 등산로 등에 설치하는 친환경 코코넛 섬유 매트입니다.',
+        emoji: '🌴',
+    },
 };
 
 export default function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {

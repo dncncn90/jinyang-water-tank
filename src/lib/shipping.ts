@@ -15,7 +15,7 @@ export const SHIPPING_RATES = [
     { km: 400, cost: 250000 },
 ];
 
-export const calculateShippingCost = (items: { name: string, quantity: number }[], address: string) => {
+export const calculateShippingCost = (items: { name: string, quantity: number, isFreeShipping?: boolean }[], address: string) => {
     if (!address) return 0;
 
     // Origin: Suwon (JinYang PVC)
@@ -30,6 +30,8 @@ export const calculateShippingCost = (items: { name: string, quantity: number }[
     let totalTruckUnitsNeeded = 0;
 
     items.forEach(item => {
+        if (item.isFreeShipping) return; // Skip calculation for free shipping items
+        
         const name = item.name;
 
         // Extract tonnage only if "톤" or "T" (case-insensitive) follows the number

@@ -40,7 +40,10 @@ export default function CheckoutPage() {
     const shippingCost = useMemo(() => {
         if (shippingType === 'pickup') return 0;
         if (!formData.address) return 0;
-        return calculateShippingCost(items, formData.address);
+        return calculateShippingCost(
+            items.map(item => ({ name: item.name, quantity: item.quantity, isFreeShipping: item.isFreeShipping })),
+            formData.address
+        );
     }, [formData.address, items, shippingType]);
 
     const isLocalArea = useMemo(() => {

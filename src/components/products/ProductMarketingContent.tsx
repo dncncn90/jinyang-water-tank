@@ -3,6 +3,7 @@ import { Shield, Check, Ruler, PenTool, Truck, Phone, AlertTriangle, Droplets, S
 import Image from 'next/image';
 import PERoundMarketing from './PERoundMarketing';
 import PESquareMarketing from './PESquareMarketing';
+import CoirMatMarketing from './CoirMatMarketing';
 
 interface ProductMarketingContentProps {
     category: string;
@@ -11,8 +12,9 @@ interface ProductMarketingContentProps {
 export default function ProductMarketingContent({ category }: ProductMarketingContentProps) {
     const isSquare = category === 'pe-square';
     const isRound = category === 'pe-round';
+    const isCoirMat = category === 'coir-mat';
 
-    if (!isSquare && !isRound) {
+    if (!isSquare && !isRound && !isCoirMat) {
         return null;
     }
 
@@ -20,9 +22,12 @@ export default function ProductMarketingContent({ category }: ProductMarketingCo
         return <PESquareMarketing hidePurchaseGrid={true} />;
     }
 
-    // 새롭게 디자인된 PE 원형 물탱크 상세페이지 컴포넌트 출력
     if (isRound) {
         return <PERoundMarketing hidePurchaseGrid={true} />;
+    }
+
+    if (isCoirMat) {
+        return <CoirMatMarketing hidePurchaseGrid={true} />;
     }
 
     return (

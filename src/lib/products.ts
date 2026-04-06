@@ -5,6 +5,7 @@ export type Product = {
     price: number;
     description: string;
     isRecommended?: boolean;
+    isFreeShipping?: boolean;
     features: string[];
     specs: {
         dimensions?: string;
@@ -64,6 +65,14 @@ export const PRICING_DB = {
             '15': 8360, '20': 12870, '25': 14960, '32': 38170, '40': 48510, '50': 74580
         },
         gauge: 33000
+    },
+    coir_mat: {
+        '0.6': 75000,
+        '0.8': 87000,
+        '1.0': 99000,
+        '1.2': 111000,
+        '1.5': 136000,
+        '2.0': 166000
     }
 };
 
@@ -868,6 +877,45 @@ export const PRODUCTS: Product[] = [
         },
         images: ['/images/products/toilet.svg'],
         reviews: []
+    },
+
+    // --- Coir Mats (Yaja Mats) ---
+    {
+        id: 'coir-mat-premium',
+        name: '야자매트 10m (두께 3.5mm) + 전용 철근핀 풀세트 [무료배송]',
+        category: 'coir-mat',
+        price: 99000,
+        isFreeShipping: true,
+        description: "\"철근핀 추가구매 장난 NO!\" 시공에 꼭 필요한 고강도 철근핀을 넉넉하게 꽉 채워드립니다. [불필요한 유통 마진을 뺀 최저가 도전 특가]",
+        features: ['전국 무료배송', '전용 철근핀 풀세트 증정', '100% 천연 코코넛 섬유', '3.5mm 고강도 밀착 직조'],
+        isRecommended: true,
+        specs: { dimensions: '폭 선택형 x 길이 10m', material: 'Coco-fiber (코코넛 섬유)', warranty: '1년' },
+        images: ['/images/products/yaja/yaja-product.png'],
+        reviews: [],
+        options: [
+            {
+                name: '매트 폭 선택 (필수 옵션)',
+                type: 'select',
+                required: true,
+                choices: [
+                    { label: '0.6m 폭 (6㎡) - 75,000원 (-24,000원)', priceChange: -24000 },
+                    { label: '0.8m 폭 (8㎡) - 87,000원 (-12,000원)', priceChange: -12000 },
+                    { label: '1.0m 폭 (10㎡) - 99,000원 (0원)', priceChange: 0 },
+                    { label: '1.2m 폭 (12㎡) - 111,000원 (+12,000원)', priceChange: 12000 },
+                    { label: '1.5m 폭 (15㎡) - 136,000원 (+37,000원)', priceChange: 37000 },
+                    { label: '2.0m 폭 (20㎡) - 166,000원 (+67,000원)', priceChange: 67000 },
+                ]
+            },
+            {
+                name: '철근핀 구성 선택 (필수 옵션)',
+                type: 'select',
+                required: true,
+                choices: [
+                    { label: '일반 평지 세트 (철근핀 15개 포함) - 0원', priceChange: 0 },
+                    { label: '경사지/촘촘 세트 (철근핀 30개 포함) - 9,000원 (+9,000원)', priceChange: 9000 },
+                ]
+            }
+        ]
     },
 ];
 

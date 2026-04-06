@@ -12,6 +12,7 @@ const NAVIGATION = [
     { name: '원형물탱크', href: '/categories/pe-round' },
     { name: '사각물탱크', href: '/categories/pe-square' },
     { name: '부속자재', href: '/categories/fittings' },
+    { name: '야자매트', href: '/categories/coir-mat' },
     { name: '도매·견적문의', href: '/wholesale' },
 ];
 
