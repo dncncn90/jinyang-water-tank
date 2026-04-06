@@ -24,24 +24,30 @@ export default function Footer() {
                     {/* Customer Center */}
                     <div>
                         <h3 className="text-white text-sm font-bold mb-4 border-b border-industrial-800 pb-2 text-industrial-400">고객센터</h3>
-                        <ul className="space-y-3 text-sm">
+                        <ul className="space-y-2 text-sm">
                             <li className="flex items-center gap-2">
-                                <span className="text-white font-black text-lg">031-236-8227</span>
+                                <span className="text-white font-black text-2xl">031-236-8227</span>
                             </li>
-                            <li className="text-[11px] text-industrial-500 leading-tight">
+                            <li className="text-[12px] text-industrial-400 font-bold mb-4">
                                 평일 07:00 - 18:00 | 토요일 07:00 - 15:00
                             </li>
-                            <li className="flex flex-col gap-1 text-[11px] text-industrial-400 border-t border-industrial-900 pt-3 mt-1">
-                                <span className="flex items-center gap-1.5"><Printer className="w-3 h-3 text-industrial-500" /> FAX: 031-237-4435</span>
-                                <span className="flex items-center gap-1.5"><Mail className="w-3 h-3 text-industrial-500" /> E-mail: jy2368227@naver.com</span>
+                            <li className="flex flex-col gap-1.5 text-[13px] text-industrial-300 pt-4 border-t border-industrial-900">
+                                <span className="flex items-center gap-2">
+                                    <Printer className="w-4 h-4 text-industrial-500" /> 
+                                    <span className="font-bold text-industrial-500 mr-1">FAX</span> 031-237-4435
+                                </span>
+                                <span className="flex items-center gap-2">
+                                    <Mail className="w-4 h-4 text-industrial-500" /> 
+                                    <span className="font-bold text-industrial-500 mr-1">E-mail</span> jy2368227@naver.com
+                                </span>
                             </li>
                         </ul>
                     </div>
 
-                    {/* Regional Services - Sleek SEO Directory */}
+                    {/* Regional Services - Unified Keywords */}
                     <div className="lg:col-span-1">
-                        <h3 className="text-white text-sm font-bold mb-4 border-b border-industrial-800 pb-2 text-industrial-400">지역별 물탱크·저수조</h3>
-                        <div className="grid grid-cols-2 gap-x-2 gap-y-2 text-[12px] text-industrial-400">
+                        <h3 className="text-white text-sm font-bold mb-4 border-b border-industrial-800 pb-2 text-industrial-400">지역별 물탱크</h3>
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 text-[13px] text-industrial-400">
                             <Link href="/regions/suwon" className="hover:text-white transition-colors">수원 물탱크</Link>
                             <Link href="/regions/hwaseong" className="hover:text-white transition-colors">화성 물탱크</Link>
                             <Link href="/regions/yongin" className="hover:text-white transition-colors">용인 물탱크</Link>

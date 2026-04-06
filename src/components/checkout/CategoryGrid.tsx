@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
 import { PRODUCTS, PRICING_DB } from '@/lib/products';
 
-const TABS = ['전체 보기', '원형물탱크', '사각물탱크', '부속자재'];
+const TABS = ['전체 보기', '원형물탱크', '사각물탱크', '부속자재', '야자매트'];
 
 // Define the top-level overview cards for the "전체 보기" tab
 const overviewCategories = [
@@ -44,6 +44,18 @@ const overviewCategories = [
         features: ['신주/PE'],
         images: ['/images/products/fit-bronze-real.png'],
         targetTab: '부속자재'
+    },
+    {
+        id: 'overview-coir-mat',
+        name: '품질인정 야자매트',
+        tag: '무료배송',
+        tagColor: 'bg-emerald-600',
+        capacityBadge: '추천상품',
+        price: PRICING_DB.coir_mat['1.0'],
+        description: 'B2B/공사 현장 대량 납품 전용 · 철근핀 풀세트 구성',
+        features: ['천연코코넛'],
+        images: ['/images/products/yaja/yaja-product.png'],
+        targetTab: '야자매트'
     }
 ];
 
@@ -66,6 +78,7 @@ export default function CategoryGrid() {
             if (activeTab === '원형물탱크') return product.category === 'pe-round';
             if (activeTab === '사각물탱크') return product.category === 'pe-square';
             if (activeTab === '부속자재') return product.category === 'fittings';
+            if (activeTab === '야자매트') return product.category === 'coir-mat';
 
             return false;
         });
