@@ -11,7 +11,7 @@ export default function CoirMatMarketing({ hidePurchaseGrid = false }: CoirMatMa
 
     return (
         <div className="space-y-0 py-0 text-gray-800 font-['Pretendard'] overflow-hidden">
-            
+
             {/* 1. B2B 대량 구매 타겟 공지사항 (최상단 노출) */}
             <div className="bg-[#003366] text-white py-6 px-4">
                 <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-4 text-center md:text-left">
@@ -29,9 +29,9 @@ export default function CoirMatMarketing({ hidePurchaseGrid = false }: CoirMatMa
 
             {/* 통합 상세 이미지 (고화질) */}
             <div className="flex flex-col items-center w-full max-w-4xl mx-auto bg-white">
-                <img 
-                    src={detailImage.src} 
-                    alt={detailImage.alt} 
+                <img
+                    src={detailImage.src}
+                    alt={detailImage.alt}
                     className="w-full h-auto block select-none shadow-sm"
                     loading="lazy"
                 />

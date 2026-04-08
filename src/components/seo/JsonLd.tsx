@@ -11,7 +11,7 @@ export function LocalBusinessJsonLd() {
         '@type': 'LocalBusiness',
         name: '진양건재',
         alternateName: ['진양탱크', '진양수조', '진양물탱크'],
-        description: '수원 30년 경력의 PE 물탱크 및 저수조 전문 판매업체. 원형/사각 물탱크, 정화조, 배관 피팅 자재 도소매 전문 건재상.',
+        description: '수원 30년 경력의 PE 물탱크, 저수조 및 친환경 야자매트 전문 판매업체. 원형/사각 물탱크, 정화조, 코코넛 보행매트, 배관 피팅 자재 도소매 전문 건재상.',
         url: 'https://www.진양건재.com',
         logo: 'https://www.진양건재.com/images/products/pe-round-src/1.jpg',
         image: 'https://www.진양건재.com/images/hero-tanks.jpg',

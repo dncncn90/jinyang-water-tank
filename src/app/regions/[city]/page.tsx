@@ -11,27 +11,27 @@ import RegionCTA from './RegionCTA';
 const regionData: Record<string, { name: string; title: string; description: string; keywords: string[] }> = {
   suwon: {
     name: '수원',
-    title: '수원 물탱크 저수조 도매 | PE 물탱크, 정화조 당일 배송 - 진양건재',
-    description: '수원 전 지역 물탱크 및 저수조 직배송. 1분 만에 확인하는 스마트 견적 시스템! 1989년 설립된 37년 전통의 진양건재에서 정직한 가격으로 만나보세요.',
-    keywords: ['수원 물탱크', '수원 저수조', '수원 PE물탱크', '수원 정화조', '수원 물탱크 도매', '수원 물탱크 파는곳', '수원 물탱크 가격'],
+    title: '수원 물탱크 도매 전문 및 야자매트 당일배송 - 진양건재',
+    description: '수원 전 지역 물탱크, 저수조 및 친환경 야자매트 전문 도매. 37년 전통의 진양건재에서 수원 지역 최저가 견적과 신속한 당일 직배송 서비스를 만나보세요.',
+    keywords: ['수원 물탱크', '수원 야자매트', '수원 저수조', '수원 PE물탱크', '수원 정화조', '수원 코코넛매트', '수원 건재상'],
   },
   hwaseong: {
     name: '화성',
-    title: '화성 물탱크 저수조 판매 | PE 물탱크, 정화조 당일 배송 - 진양건재',
-    description: '화성 전 지역 물탱크 및 저수조 직배송. 1분 만에 확인하는 스마트 견적 시스템! 1989년 설립된 37년 전통의 진양건재가 화성 지역 물탱크 정보를 전문적으로 제공합니다.',
-    keywords: ['화성 물탱크', '화성 저수조', '화성 PE물탱크', '화성 정화조', '화성 물탱크 판매', '화성 물탱크 단가', '화성 물탱크 파는곳'],
+    title: '화성 물탱크 판매 도매 및 친환경 야자매트 - 진양건재',
+    description: '화성 전 지역 물탱크, 저수조 및 야자매트 직배송. 37년 전통의 진양건재가 화성 건설 현장과 농가에 고품질 물탱크를 정직한 가격으로 공급합니다.',
+    keywords: ['화성 물탱크', '화성 야자매트', '화성 저수조', '화성 PE물탱크', '화성 정화조', '화성 보행매트', '화성 건재상'],
   },
   yongin: {
     name: '용인',
-    title: '용인 PE물탱크 저수조 도매 | 물탱크, 정화조 당일 배송 - 진양건재',
-    description: '용인 전 지역 물탱크 및 저수조 직배송. 1분 만에 확인하는 스마트 견적 시스템! 37년 전통 진양건재에서 용인 지역 물탱크 최저가 견적을 확인하세요.',
-    keywords: ['용인 물탱크', '용인 저수조', '용인 PE물탱크', '용인 정화조', '용인 물탱크 도매', '용인 물탱크 구매', '용인 물탱크 가격'],
+    title: '용인 PE물탱크 도매 및 야자매트 수도권 직배송 - 진양건재',
+    description: '용인 전 지역 물탱크, 저수조 및 친환경 야자매트 직배송 전문. 1분 스마트 견적 시스템으로 용인 지역 전용 물탱크 최저가 단가를 지금 확인하세요.',
+    keywords: ['용인 물탱크', '용인 야자매트', '용인 저수조', '용인 PE물탱크', '용인 정화조', '용인 식생매트'],
   },
   ansan: {
     name: '안산',
-    title: '안산 정화조·물탱크 저수조 도매 | 수도권 당일 배송 - 진양건재',
-    description: '안산 전 지역 물탱크, 저수조 및 정화조 직배송. 1분 스마트 견적 시스템으로 안산 지역 최저가 단가를 지금 확인해 보세요.',
-    keywords: ['안산 정화조', '안산 물탱크', '안산 저수조', '안산 PE물탱크', '안산 정화조 가격', '안산 물탱크 파는곳'],
+    title: '안산 물탱크·정화조·야자매트 도매 판매 - 진양건재',
+    description: '안산 전 지역 물탱크, 저수조, 야자매트 및 정화조 전문 공급. 37년 경력의 신뢰로 안산 현장까지 신속하게 직배송해 드립니다.',
+    keywords: ['안산 정화조', '안산 물탱크', '안산 야자매트', '안산 저수조', '안산 PE물탱크', '안산 정화조 가격'],
   },
   pyeongtaek: {
     name: '평택',
@@ -89,13 +89,13 @@ export default async function RegionPage({ params }: Props) {
                 <span className="text-[#FFD400]">도매가 직배송</span>
               </h1>
               <p className="text-xl text-industrial-300 mb-8 leading-relaxed break-keep">
-                {data.name} 전 지역 어디든 당일 배송 원칙! 
+                {data.name} 전 지역 어디든 메인 물탱크부터 친환경 야자매트까지 당일 배송 원칙! 
                 37년 전통의 진양건재가 정직한 가격과 신속한 서비스를 보장합니다. 
                 전화 한 통으로 견적부터 배송까지 한 번에 해결하세요.
               </p>
               <div className="flex flex-wrap gap-4">
                 <RegionCTA />
-                <a 
+                <a
                   href="tel:031-236-8227"
                   className="inline-flex items-center justify-center border-2 border-industrial-700 text-white hover:bg-industrial-800 font-bold h-16 px-8 rounded-2xl text-xl transition-all active:scale-95"
                 >
@@ -105,8 +105,8 @@ export default async function RegionPage({ params }: Props) {
               </div>
             </div>
             <div className="relative rounded-3xl overflow-hidden border-4 border-industrial-800 aspect-video lg:aspect-square">
-              <Image 
-                src="/images/hero-main-warehouse.jpg" 
+              <Image
+                src="/images/hero-main-warehouse.jpg"
                 alt={`${data.name}-PE물탱크-도매-진양건재`}
                 fill
                 className="object-cover"
@@ -125,31 +125,31 @@ export default async function RegionPage({ params }: Props) {
             </h2>
             <div className="w-20 h-1.5 bg-industrial-900 mx-auto rounded-full"></div>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white rounded-3xl p-8 shadow-xl hover:translate-y-[-8px] transition-all border border-gray-100">
-                <Truck className="w-12 h-12 text-industrial-900 mb-6" />
-                <h3 className="text-xl font-bold mb-4">{data.name} 전 지역 신속 배송</h3>
-                <p className="text-industrial-600 leading-relaxed text-sm">
-                  {data.name} 시내 및 외곽 지역까지 직영 배송팀과 전문 화물 네트워크를 통해 가장 효율적으로 전달합니다. 
-                  현장 위치와 제품 규격에 최적화된 배송 수단으로 신속하고 안전하게 자재를 받으실 수 있습니다.
-                </p>
+              <Truck className="w-12 h-12 text-industrial-900 mb-6" />
+              <h3 className="text-xl font-bold mb-4">{data.name} 전 지역 신속 배송</h3>
+              <p className="text-industrial-600 leading-relaxed text-sm">
+                {data.name} 시내 및 외곽 지역까지 직영 배송팀과 전문 화물 네트워크를 통해 가장 효율적으로 전달합니다.
+                현장 위치와 제품 규격에 최적화된 배송 수단으로 신속하고 안전하게 자재를 받으실 수 있습니다.
+              </p>
             </div>
             <div className="bg-white rounded-3xl p-8 shadow-xl hover:translate-y-[-8px] transition-all border border-gray-100">
-                <CheckCircle2 className="w-12 h-12 text-industrial-900 mb-6" />
-                <h3 className="text-xl font-bold mb-4">1989년부터 이어진 신뢰</h3>
-                <p className="text-industrial-600 leading-relaxed text-sm">
-                  {data.name} 지역의 수많은 건설 현장과 농가에 납품해 온 37년의 노하우. 
-                  품질 문제 없는 검증된 제품만을 엄선하여 공급합니다.
-                </p>
+              <CheckCircle2 className="w-12 h-12 text-industrial-900 mb-6" />
+              <h3 className="text-xl font-bold mb-4">1989년부터 이어진 신뢰</h3>
+              <p className="text-industrial-600 leading-relaxed text-sm">
+                {data.name} 지역의 수많은 건설 현장과 농가에 납품해 온 37년의 노하우.
+                품질 문제 없는 검증된 제품만을 엄선하여 공급합니다.
+              </p>
             </div>
             <div className="bg-white rounded-3xl p-8 shadow-xl hover:translate-y-[-8px] transition-all border border-gray-100">
-                <Calculator className="w-12 h-12 text-industrial-900 mb-6" />
-                <h3 className="text-xl font-bold mb-4">정직한 공장 직영가</h3>
-                <p className="text-industrial-600 leading-relaxed text-sm">
-                  중간 유통 단계를 줄여 {data.name} 지역 어디보다 합리적인 가격대를 제안합니다. 
-                  전화 없이도 바로 확인 가능한 실시간 스마트 견적 시스템을 이용해 보세요.
-                </p>
+              <Calculator className="w-12 h-12 text-industrial-900 mb-6" />
+              <h3 className="text-xl font-bold mb-4">정직한 공장 직영가</h3>
+              <p className="text-industrial-600 leading-relaxed text-sm">
+                중간 유통 단계를 줄여 {data.name} 지역 어디보다 합리적인 가격대를 제안합니다.
+                전화 없이도 바로 확인 가능한 실시간 스마트 견적 시스템을 이용해 보세요.
+              </p>
             </div>
           </div>
         </div>
@@ -158,14 +158,14 @@ export default async function RegionPage({ params }: Props) {
       {/* Re-use main home components for consistency and functional features */}
       <div className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-12">
-            <h2 className="text-3xl font-black text-gray-900 mb-4">{data.name} 지역 물탱크 카테고리</h2>
-            <p className="text-gray-500 font-medium">원하시는 규격을 선택하여 즉시 견적을 확인하세요.</p>
+          <h2 className="text-3xl font-black text-gray-900 mb-4">{data.name} 지역 물탱크 카테고리</h2>
+          <p className="text-gray-500 font-medium">원하시는 규격을 선택하여 즉시 견적을 확인하세요.</p>
         </div>
         <CategoryGrid />
       </div>
 
       <TrustIndicators />
-      
+
       <div className="h-24"></div>
     </main>
   );

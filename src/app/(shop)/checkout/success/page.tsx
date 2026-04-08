@@ -26,7 +26,7 @@ function SuccessContent() {
                     <div className="bg-orange-50 border border-orange-100 rounded-xl p-5 inline-block text-left mb-2 max-w-lg w-full">
                         <p className="text-orange-900 font-bold mb-2 break-keep text-lg">
                             {isCoirMat 
-                                ? '야자매트 부자재(핀) 수량 및 도삭/배송 일정을 확인 중입니다.'
+                                ? '야자매트 부자재(핀) 수량 및 배송 일정을 확인 중입니다.'
                                 : type === 'delivery' 
                                     ? '건자재 특성상 지역별 운임비 확인이 필요합니다.' 
                                     : '방문 수령 전 피팅(타공) 위치 확인 등 상담이 필요합니다.'
