@@ -6,8 +6,19 @@ interface CoirMatMarketingProps {
 }
 
 export default function CoirMatMarketing({ hidePurchaseGrid = false }: CoirMatMarketingProps) {
-    // 2개의 통합 이미지 구성을 지원합니다 (1.png, 2.png)
-    const detailImage = { src: '/images/products/yaja/detail_full.jpg', alt: '야자매트 프리미엄 전용 상세안내 (소개, 특장점, 규격 및 시공 가이드)' };
+    // 고화질 원본 이미지 구성을 사용합니다 (1.png, 2.png)
+    // 사용자가 요청한 고화질 원본 이미지 조각 구성 (1~5번 먼저 연결)
+    const detailImages = [
+        { src: '/images/products/yaja/yaja_detail_1.jpg', alt: '야자매트 상세 1' },
+        { src: '/images/products/yaja/yaja_detail_2.jpg', alt: '야자매트 상세 2' },
+        { src: '/images/products/yaja/yaja_detail_3.png', alt: '야자매트 상세 3' },
+        { src: '/images/products/yaja/yaja_detail_4.png', alt: '야자매트 상세 4' },
+        { src: '/images/products/yaja/yaja_detail_5.jpg', alt: '야자매트 상세 5' },
+        { src: '/images/products/yaja/yaja_detail_6.png', alt: '야자매트 상세 6' },
+        { src: '/images/products/yaja/yaja_detail_7.png', alt: '야자매트 상세 7' },
+        { src: '/images/products/yaja/yaja_detail_8.png', alt: '야자매트 상세 8' },
+        { src: '/images/products/yaja/yaja_detail_9.png', alt: '야자매트 상세 9' }
+    ];
 
     return (
         <div className="space-y-0 py-0 text-gray-800 font-['Pretendard'] overflow-hidden">
@@ -27,40 +38,18 @@ export default function CoirMatMarketing({ hidePurchaseGrid = false }: CoirMatMa
                 </div>
             </div>
 
-            {/* 통합 상세 이미지 (고화질) */}
-            <div className="flex flex-col items-center w-full max-w-4xl mx-auto bg-white">
-                <img
-                    src={detailImage.src}
-                    alt={detailImage.alt}
-                    className="w-full h-auto block select-none shadow-sm"
-                    loading="lazy"
-                />
+            {/* 통합 상세 이미지 (고화질) - 여러 장을 빈틈없이 순차적으로 렌더링 */}
+            <div className="flex flex-col items-center w-full max-w-4xl mx-auto bg-white shadow-2xl rounded-[2rem] overflow-hidden border border-gray-100">
+                {detailImages.map((img, idx) => (
+                    <img
+                        key={idx}
+                        src={img.src}
+                        alt={img.alt}
+                        className="w-full h-auto block select-none border-0 m-0 p-0"
+                        loading="lazy"
+                    />
+                ))}
             </div>
-
-            {/* 하단 요약 안내 */}
-            <section className="bg-gray-900 text-white py-20 px-6">
-                <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
-                    <div className="text-center md:text-left">
-                        <div className="flex items-center gap-2 mb-4 justify-center md:justify-start">
-                            <Package className="w-6 h-6 text-emerald-400" />
-                            <span className="text-emerald-400 font-black tracking-widest text-sm uppercase">JINYANG COIR MAT SERIES</span>
-                        </div>
-                        <h3 className="text-3xl md:text-4xl font-black mb-4 italic">진양건재 야자매트</h3>
-                        <p className="text-gray-400 font-medium text-lg max-w-md break-keep">
-                            전국 최저가 도전! 대량 발주 관련 문의는 고객센터로 직접 연락주시면 가장 빠른 상담이 가능합니다.
-                        </p>
-                    </div>
-                    <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-                        <a href="tel:031-236-8227" className="flex-1 sm:flex-none flex items-center justify-center gap-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black px-10 py-5 rounded-2xl transition-all shadow-xl shadow-emerald-900/20 text-lg">
-                            <Phone className="w-6 h-6 fill-current" />
-                            031-236-8227
-                        </a>
-                        <button onClick={() => window.dispatchEvent(new Event('open-chat'))} className="flex-1 sm:flex-none flex items-center justify-center gap-3 bg-white text-gray-900 font-black px-10 py-5 rounded-2xl hover:bg-gray-100 transition-all text-lg shadow-xl shadow-black/10">
-                            실시간 견적 문의
-                        </button>
-                    </div>
-                </div>
-            </section>
         </div>
     );
 }
