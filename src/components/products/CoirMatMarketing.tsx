@@ -1,5 +1,6 @@
 import React from 'react';
 import { ShoppingCart, Phone, Truck, Shield, Check, MapPin, Leaf, Zap, AlertCircle, Package } from 'lucide-react';
+import Image from 'next/image';
 
 interface CoirMatMarketingProps {
     hidePurchaseGrid?: boolean;
@@ -9,8 +10,8 @@ export default function CoirMatMarketing({ hidePurchaseGrid = false }: CoirMatMa
     // 고화질 원본 이미지 구성을 사용합니다 (1.png, 2.png)
     // 사용자가 요청한 고화질 원본 이미지 조각 구성 (1~5번 먼저 연결)
     const detailImages = [
-        { src: '/images/products/yaja/yaja_detail_1.jpg', alt: '야자매트 상세 1' },
-        { src: '/images/products/yaja/yaja_detail_2.jpg', alt: '야자매트 상세 2' },
+        { src: '/images/products/yaja/1.png', alt: '야자매트 상세 1' },
+        { src: '/images/products/yaja/2.png', alt: '야자매트 상세 2' },
         { src: '/images/products/yaja/yaja_detail_3.png', alt: '야자매트 상세 3' },
         { src: '/images/products/yaja/yaja_detail_4.png', alt: '야자매트 상세 4' },
         { src: '/images/products/yaja/yaja_detail_5.jpg', alt: '야자매트 상세 5' },
@@ -41,13 +42,18 @@ export default function CoirMatMarketing({ hidePurchaseGrid = false }: CoirMatMa
             {/* 통합 상세 이미지 (고화질) - 여러 장을 빈틈없이 순차적으로 렌더링 */}
             <div className="flex flex-col items-center w-full max-w-4xl mx-auto bg-white shadow-2xl rounded-[2rem] overflow-hidden border border-gray-100">
                 {detailImages.map((img, idx) => (
-                    <img
-                        key={idx}
-                        src={img.src}
-                        alt={img.alt}
-                        className="w-full h-auto block select-none border-0 m-0 p-0"
-                        loading="lazy"
-                    />
+                    <div key={idx} className="w-full relative">
+                        <Image
+                            src={img.src}
+                            alt={img.alt}
+                            width={896}
+                            height={1200} // Approximate height, responsive via style
+                            className="w-full h-auto block select-none border-0 m-0 p-0"
+                            style={{ width: '100%', height: 'auto' }}
+                            priority={true}
+                            unoptimized={true}
+                        />
+                    </div>
                 ))}
             </div>
         </div>
