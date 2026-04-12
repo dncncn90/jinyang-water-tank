@@ -59,8 +59,8 @@ const overviewCategories = [
     }
 ];
 
-export default function CategoryGrid() {
-    const [activeTab, setActiveTab] = useState('전체 보기');
+export default function CategoryGrid({ initialTab = '전체 보기', products }: { initialTab?: string, products?: any[] }) {
+    const [activeTab, setActiveTab] = useState(initialTab);
     const { addToCart } = useCart();
     const router = useRouter();
 

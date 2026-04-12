@@ -10,8 +10,8 @@ export default function CoirMatMarketing({ hidePurchaseGrid = false }: CoirMatMa
     // 고화질 원본 이미지 구성을 사용합니다 (1.png, 2.png)
     // 사용자가 요청한 고화질 원본 이미지 조각 구성 (1~5번 먼저 연결)
     const detailImages = [
-        { src: '/images/products/yaja/1.png', alt: '야자매트 상세 1' },
-        { src: '/images/products/yaja/2.png', alt: '야자매트 상세 2' },
+        { src: '/images/products/yaja/yaja_detail_1.jpg', alt: '야자매트 상세 1' },
+        { src: '/images/products/yaja/yaja_detail_2.jpg', alt: '야자매트 상세 2' },
         { src: '/images/products/yaja/yaja_detail_3.png', alt: '야자매트 상세 3' },
         { src: '/images/products/yaja/yaja_detail_4.png', alt: '야자매트 상세 4' },
         { src: '/images/products/yaja/yaja_detail_5.jpg', alt: '야자매트 상세 5' },
@@ -52,6 +52,7 @@ export default function CoirMatMarketing({ hidePurchaseGrid = false }: CoirMatMa
                             style={{ width: '100%', height: 'auto' }}
                             priority={true}
                             unoptimized={true}
+                            quality={100}
                         />
                     </div>
                 ))}

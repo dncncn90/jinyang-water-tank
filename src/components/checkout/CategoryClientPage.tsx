@@ -13,6 +13,14 @@ export default function CategoryClientPage({
 }) {
     const { slug } = use(params);
     const categoryProducts = PRODUCTS.filter(p => p.category === slug);
+    
+    const slugMap: Record<string, string> = {
+        'pe-round': '원형물탱크',
+        'pe-square': '사각물탱크',
+        'fittings': '부속자재',
+        'coir-mat': '야자매트',
+    };
+    const initialTab = slugMap[slug] || '전체 보기';
 
     return (
         <div className="bg-white min-h-screen pt-28 pb-24">
@@ -27,7 +35,7 @@ export default function CategoryClientPage({
                     </p>
                 </div>
 
-                <CategoryGrid products={categoryProducts} />
+                <CategoryGrid initialTab={initialTab} products={categoryProducts} />
             </section>
         </div>
     );
