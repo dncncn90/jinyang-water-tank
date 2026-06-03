@@ -42,7 +42,7 @@ export const PRICING_DB = {
         m_series: {
             '0.2': 93000, '0.4': 148000, '0.6': 168000, '1': 251000, '2': 462000
         },
-        u_series: { '2': 448800, '5': 990000 },
+        u_series: { '2': 634000, '5': 1386000 },
         white: { '0.6': 176000, '1': 261000 } // 농약용
     },
     lids: { 'small': 16500, 'large': 33000 },
@@ -369,6 +369,30 @@ export const PRODUCTS: Product[] = [
         features: ['잔량 확인 용이(백색)', '약품용 고밀도 PE', '경운기 적재 최적화'],
         specs: { capacity: '1,000L', dimensions: 'Ø1050 x H1450 mm', material: 'PE', warranty: '1년' },
         images: ['/images/products/tank-white-kem.png'],
+        reviews: [],
+        options: COMMON_TANK_OPTIONS
+    },
+    {
+        id: 'pe-round-u-2t',
+        name: '매설용 2U 물탱크(지하매립형)',
+        category: 'pe-round',
+        price: PRICING_DB.tanks.u_series['2'],
+        description: '지하 매립에 최적화되어 흙의 강력한 토압을 견디고 찌그러짐을 방지하는 고강도 매설형 2톤(2U) 물탱크입니다.',
+        features: ['지하 매설용 특수 설계', '토압 분산 고강도 구조', '찌그러짐 방지 보강벽', 'KC 위생안전기준 통과'],
+        specs: { capacity: '2,000L', dimensions: 'Ø1400 x H1680 mm', material: 'PE (이중 고밀도)', warranty: '1년' },
+        images: ['/images/products/tank-underground-real.png'],
+        reviews: [],
+        options: COMMON_TANK_OPTIONS
+    },
+    {
+        id: 'pe-round-u-5t',
+        name: '매설용 5U 물탱크(지하매립형)',
+        category: 'pe-round',
+        price: PRICING_DB.tanks.u_series['5'],
+        description: '대용량 지하 용수 확보에 최적화되어 강력한 토압을 견디고 찌그러짐을 방지하는 고밀도 매설형 5톤(5U) 물탱크입니다.',
+        features: ['지하 매설용 특수 설계', '토압 분산 고강도 구조', '찌그러짐 방지 보강벽', 'KC 위생안전기준 통과'],
+        specs: { capacity: '5,000L', dimensions: 'Ø1900 x H2180 mm', material: 'PE (이중 고밀도)', warranty: '1년' },
+        images: ['/images/products/tank-underground-real.png'],
         reviews: [],
         options: COMMON_TANK_OPTIONS
     },

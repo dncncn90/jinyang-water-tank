@@ -20,6 +20,8 @@ const ROUND_PRODUCTS = [
     { id: 'pe-round-10t', name: '10톤 원형 물탱크', capacity: '10', price: PRICING_DB.tanks.standard['10'] },
     { id: 'pe-round-white-06t', name: '경운기용(백색) 농약 0.6톤', capacity: '0.6', price: PRICING_DB.tanks.white['0.6'] },
     { id: 'pe-round-white-1t', name: '경운기용(백색) 농약 1.0톤', capacity: '1', price: PRICING_DB.tanks.white['1'] },
+    { id: 'pe-round-u-2t', name: '매설용 2U 물탱크(지하매립형)', capacity: '2', price: PRICING_DB.tanks.u_series['2'] },
+    { id: 'pe-round-u-5t', name: '매설용 5U 물탱크(지하매립형)', capacity: '5', price: PRICING_DB.tanks.u_series['5'] },
 ];
 
 interface MarketingProps {

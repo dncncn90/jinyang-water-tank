@@ -292,6 +292,24 @@ export default function FloatingChatWidget() {
                             description: '경운기용 백색 농약탱크',
                             price: PRICING_DB.tanks.white['1'],
                             isBest: false
+                        },
+                        {
+                            label: `매설용 2U 물탱크 (지하 매립형) - ${PRICING_DB.tanks.u_series['2'].toLocaleString()}원`,
+                            value: 'u_2',
+                            tag: 'NEW',
+                            capacity: '2.0톤 매설용',
+                            description: '지하 매립 전용 U시리즈',
+                            price: PRICING_DB.tanks.u_series['2'],
+                            isBest: false
+                        },
+                        {
+                            label: `매설용 5U 물탱크 (지하 매립형) - ${PRICING_DB.tanks.u_series['5'].toLocaleString()}원`,
+                            value: 'u_5',
+                            tag: 'NEW',
+                            capacity: '5.0톤 매설용',
+                            description: '지하 매립 전용 U시리즈',
+                            price: PRICING_DB.tanks.u_series['5'],
+                            isBest: false
                         }
                     ];
                 }
@@ -306,6 +324,9 @@ export default function FloatingChatWidget() {
                 if (value.startsWith('white_')) {
                     dbKey = 'white';
                     cap = value.replace('white_', '');
+                } else if (value.startsWith('u_')) {
+                    dbKey = 'u_series';
+                    cap = value.replace('u_', '');
                 }
                 const basePrice = (PRICING_DB.tanks[dbKey] as any)[cap] || 0;
                 if (basePrice === 0) {
@@ -315,17 +336,24 @@ export default function FloatingChatWidget() {
                     nextState.capacity = cap;
                     nextState.type = dbKey as any;
                     
-                    const displayName = dbKey === 'white'
-                        ? `${cap === '0.6' ? '농약탱크 0.6톤' : '농약탱크 1.0톤'} (경운기용 백색)`
-                        : `${cap}톤 물탱크 (${getProductName(dbKey)})`;
+                    let displayName = `${cap}톤 물탱크 (${getProductName(dbKey)})`;
+                    if (dbKey === 'white') {
+                        displayName = `${cap === '0.6' ? '농약탱크 0.6톤' : '농약탱크 1.0톤'} (경운기용 백색)`;
+                    } else if (dbKey === 'u_series') {
+                        displayName = `매설용 ${cap}U 물탱크 (지하매립형)`;
+                    }
                         
                     nextState.items = [{ name: displayName, price: basePrice, quantity: 1 }];
                     nextState.totalPrice = basePrice;
                     
-                    responseText = dbKey === 'white'
-                        ? `${cap === '0.6' ? '농약탱크 0.6톤' : '농약탱크 1.0톤'} 선택 완료!\n\n물탱크에 배관을 연결할 피팅 크기를 골라주세요.`
-                        : `${cap}톤 선택 완료!\n\n물탱크에 배관을 연결할 피팅 크기를 골라주세요.`;
-                        
+                    let responseTextMsg = `${cap}톤 선택 완료!\n\n물탱크에 배관을 연결할 피팅 크기를 골라주세요.`;
+                    if (dbKey === 'white') {
+                        responseTextMsg = `${cap === '0.6' ? '농약탱크 0.6톤' : '농약탱크 1.0톤'} 선택 완료!\n\n물탱크에 배관을 연결할 피팅 크기를 골라주세요.`;
+                    } else if (dbKey === 'u_series') {
+                        responseTextMsg = `매설용 ${cap}U 물탱크 선택 완료!\n\n물탱크에 배관을 연결할 피팅 크기를 골라주세요.`;
+                    }
+                    
+                    responseText = responseTextMsg;
                     nextOptions = [
                         { label: '15mm', value: '15' }, { label: '20mm', value: '20' },
                         { label: '25mm', value: '25' }, { label: '40mm', value: '40' },
@@ -747,6 +775,8 @@ export default function FloatingChatWidget() {
         let shapeName = quoteState.type === 'm_series' ? '사각' : '원형';
         if (quoteState.type === 'white') {
             shapeName = '경운기용(백색) 농약';
+        } else if (quoteState.type === 'u_series') {
+            shapeName = '지하매설용';
         }
         
         let productIdStr = quoteState.type === 'm_series' 
@@ -756,6 +786,8 @@ export default function FloatingChatWidget() {
         if (quoteState.type === 'white') {
             const capKey = quoteState.capacity === '0.6' ? '06' : '1';
             productIdStr = `pe-round-white-${capKey}t`;
+        } else if (quoteState.type === 'u_series') {
+            productIdStr = `pe-round-u-${quoteState.capacity}t`;
         }
 
         // Create options for the tank based on selected features
@@ -779,10 +811,14 @@ export default function FloatingChatWidget() {
             imagePath = '/images/products/tank-square-real.jpg';
         } else if (quoteState.type === 'white') {
             imagePath = '/images/products/tank-white-kem.png';
+        } else if (quoteState.type === 'u_series') {
+            imagePath = '/images/products/tank-underground-real.png';
         }
 
         const tankName = quoteState.type === 'white'
             ? `${quoteState.capacity === '0.6' ? '농약탱크 0.6톤' : '농약탱크 1.0톤'} (경운기용 백색) 물탱크`
+            : quoteState.type === 'u_series'
+            ? `매설용 ${quoteState.capacity}U 물탱크(지하매립형)`
             : `${quoteState.capacity}톤 ${shapeName} 물탱크`;
 
         // Add Tank
