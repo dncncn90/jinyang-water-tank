@@ -279,7 +279,7 @@ export default function FloatingChatWidget() {
                             label: `농약탱크 0.6톤 (경운기용 백색) - ${PRICING_DB.tanks.white['0.6'].toLocaleString()}원`,
                             value: 'white_0.6',
                             tag: 'NEW',
-                            capacity: '0.6',
+                            capacity: '0.6톤 농약탱크',
                             description: '경운기용 백색 농약탱크',
                             price: PRICING_DB.tanks.white['0.6'],
                             isBest: false
@@ -288,7 +288,7 @@ export default function FloatingChatWidget() {
                             label: `농약탱크 1.0톤 (경운기용 백색) - ${PRICING_DB.tanks.white['1'].toLocaleString()}원`,
                             value: 'white_1',
                             tag: 'NEW',
-                            capacity: '1',
+                            capacity: '1.0톤 농약탱크',
                             description: '경운기용 백색 농약탱크',
                             price: PRICING_DB.tanks.white['1'],
                             isBest: false
@@ -1098,7 +1098,11 @@ export default function FloatingChatWidget() {
                                 <div className="bg-white border border-gray-200 p-5 rounded-xl shadow-sm space-y-3">
                                     <div className="flex justify-between items-center pb-3 border-b border-gray-100">
                                         <span className="text-gray-500 font-medium">품목</span>
-                                        <span className="font-bold text-gray-900">{quoteState.capacity || '-'}톤 물탱크 ({getProductName(quoteState.type || 'standard')})</span>
+                                        <span className="font-bold text-gray-900">
+                                            {quoteState.type === 'white'
+                                                ? `${quoteState.capacity === '0.6' ? '농약탱크 0.6톤' : '농약탱크 1.0톤'} (경운기용 백색)`
+                                                : `${quoteState.capacity || '-'}톤 물탱크 (${getProductName(quoteState.type || 'standard')})`}
+                                        </span>
                                     </div>
 
                                     {quoteState.items.map((item, idx) => (
