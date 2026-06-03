@@ -13,7 +13,10 @@ const ROUND_PRODUCTS = [
     { id: 'pe-round-1t', name: '1톤 원형 물탱크', capacity: '1', price: PRICING_DB.tanks.standard['1'] },
     { id: 'pe-round-2t', name: '2톤 원형 물탱크', capacity: '2', price: PRICING_DB.tanks.standard['2'] },
     { id: 'pe-round-3t', name: '3톤 원형 물탱크', capacity: '3', price: PRICING_DB.tanks.standard['3'] },
+    { id: 'pe-round-4t', name: '4톤 원형 물탱크', capacity: '4', price: PRICING_DB.tanks.standard['4'] },
     { id: 'pe-round-5t', name: '5톤 원형 물탱크', capacity: '5', price: PRICING_DB.tanks.standard['5'] },
+    { id: 'pe-round-6t', name: '6톤 원형 물탱크', capacity: '6', price: PRICING_DB.tanks.standard['6'] },
+    { id: 'pe-round-8t', name: '8톤 원형 물탱크', capacity: '8', price: PRICING_DB.tanks.standard['8'] },
     { id: 'pe-round-10t', name: '10톤 원형 물탱크', capacity: '10', price: PRICING_DB.tanks.standard['10'] },
 ];
 
