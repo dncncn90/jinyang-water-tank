@@ -43,7 +43,7 @@ export const PRICING_DB = {
             '0.2': 93000, '0.4': 148000, '0.6': 168000, '1': 251000, '2': 462000
         },
         u_series: { '2': 448800, '5': 990000 },
-        white: { '0.6': 135300, '1': 200200 } // 농약용
+        white: { '0.6': 176000, '1': 261000 } // 농약용
     },
     lids: { 'small': 16500, 'large': 33000 },
     fittings: {
@@ -345,6 +345,30 @@ export const PRODUCTS: Product[] = [
         features: ['소방·플랜트', '압도적 내구성'],
         specs: { capacity: '10,000L', dimensions: 'Ø2280 x H2750 mm', material: 'PE', warranty: '1년' },
         images: ['/images/products/tank-round-real.png'],
+        reviews: [],
+        options: COMMON_TANK_OPTIONS
+    },
+    {
+        id: 'pe-round-white-06t',
+        name: '경운기용(백색) 농약 0.6톤',
+        category: 'pe-round',
+        price: PRICING_DB.tanks.white['0.6'],
+        description: '농작물 방제 및 화학 약품 보관에 특화된 백색 경운기용 농약 물탱크(600L)입니다. 잔량 확인이 용이하며 견고한 구조를 자랑합니다.',
+        features: ['잔량 확인 용이(백색)', '약품용 고밀도 PE', '경운기 적재 최적화'],
+        specs: { capacity: '600L', dimensions: 'Ø880 x H1240 mm', material: 'PE', warranty: '1년' },
+        images: ['/images/products/tank-white-kem.png'],
+        reviews: [],
+        options: COMMON_TANK_OPTIONS
+    },
+    {
+        id: 'pe-round-white-1t',
+        name: '경운기용(백색) 농약 1.0톤',
+        category: 'pe-round',
+        price: PRICING_DB.tanks.white['1'],
+        description: '대규모 농가 및 방제 작업에 최적화된 백색 경운기용 농약 물탱크(1,000L)입니다. 내화학성이 뛰어난 특수 백색 PE 재질입니다.',
+        features: ['잔량 확인 용이(백색)', '약품용 고밀도 PE', '경운기 적재 최적화'],
+        specs: { capacity: '1,000L', dimensions: 'Ø1050 x H1450 mm', material: 'PE', warranty: '1년' },
+        images: ['/images/products/tank-white-kem.png'],
         reviews: [],
         options: COMMON_TANK_OPTIONS
     },

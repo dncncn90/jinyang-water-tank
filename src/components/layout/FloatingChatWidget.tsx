@@ -268,6 +268,24 @@ export default function FloatingChatWidget() {
                         getLabel('0.4', '가정용'),
                         getLabel('0.6', '추천/다용도'),
                         getLabel('1', '가장 많이 씀', true),
+                        {
+                            label: `★특수 | 0.6톤 (경운기용 백색 농약탱크) - ${PRICING_DB.tanks.white['0.6'].toLocaleString()}원`,
+                            value: 'white_0.6',
+                            tag: 'NEW',
+                            capacity: '0.6톤',
+                            description: '경운기용 백색 농약탱크',
+                            price: PRICING_DB.tanks.white['0.6'],
+                            isBest: false
+                        },
+                        {
+                            label: `★특수 | 1.0톤 (경운기용 백색 농약탱크) - ${PRICING_DB.tanks.white['1'].toLocaleString()}원`,
+                            value: 'white_1',
+                            tag: 'NEW',
+                            capacity: '1톤',
+                            description: '경운기용 백색 농약탱크',
+                            price: PRICING_DB.tanks.white['1'],
+                            isBest: false
+                        },
                         getLabel('2', '농업용/식당용'),
                         getLabel('3', '중형/학원·상가'),
                         getLabel('4', '빌라/소형건물'),
@@ -283,8 +301,12 @@ export default function FloatingChatWidget() {
 
             // Step 2: Capacity Selected -> Ask Fitting Size
             else if (evaluationStep === 'RECOMMENDATION_SHOWN') {
-                const cap = value;
-                const dbKey = (quoteState.recType || 'standard') as keyof typeof PRICING_DB.tanks;
+                let cap = value;
+                let dbKey = (quoteState.recType || 'standard') as keyof typeof PRICING_DB.tanks;
+                if (value.startsWith('white_')) {
+                    dbKey = 'white';
+                    cap = value.replace('white_', '');
+                }
                 const basePrice = (PRICING_DB.tanks[dbKey] as any)[cap] || 0;
                 if (basePrice === 0) {
                     addMessage('assistant', '해당 용량의 가격 정보가 없습니다. 상담원에게 문의해주세요.');
@@ -713,10 +735,19 @@ export default function FloatingChatWidget() {
 
         // 1. Add Tank (Main Item)
         const tankItem = quoteState.items[0];
-        const shapeName = quoteState.type === 'm_series' ? '사각' : '원형';
-        const productIdStr = quoteState.type === 'm_series' 
+        let shapeName = quoteState.type === 'm_series' ? '사각' : '원형';
+        if (quoteState.type === 'white') {
+            shapeName = '경운기용(백색) 농약';
+        }
+        
+        let productIdStr = quoteState.type === 'm_series' 
             ? `pe-square-${quoteState.capacity?.replace('.', '')}t` 
             : `pe-round-${quoteState.capacity?.replace('.', '')}t`;
+
+        if (quoteState.type === 'white') {
+            const capKey = quoteState.capacity === '0.6' ? '06' : '1';
+            productIdStr = `pe-round-white-${capKey}t`;
+        }
 
         // Create options for the tank based on selected features
         const tankOptions: any[] = [];
@@ -734,6 +765,13 @@ export default function FloatingChatWidget() {
             });
         }
 
+        let imagePath = '/images/products/tank-round-real.png';
+        if (quoteState.type === 'm_series') {
+            imagePath = '/images/products/tank-square-real.jpg';
+        } else if (quoteState.type === 'white') {
+            imagePath = '/images/products/tank-white-kem.png';
+        }
+
         // Add Tank
         addToCart({
             productId: productIdStr,
@@ -742,7 +780,7 @@ export default function FloatingChatWidget() {
             options: tankOptions,
             requirements: '',
             quantity: 1,
-            image: quoteState.type === 'm_series' ? '/images/products/tank-square-real.jpg' : '/images/products/tank-round-real.png'
+            image: imagePath
         });
 
         // 2. Add extra items (Fittings, Valves, Balltops, Lids, Gauge) separately
