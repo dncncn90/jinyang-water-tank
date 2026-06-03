@@ -147,7 +147,7 @@ export default function ProductClientPage({ product }: { product: Product }) {
             </section>
             
             <div className={product.category === 'coir-mat' ? "w-full mt-8" : "max-w-7xl mx-auto px-6 lg:px-8 mt-12 border-t border-gray-100 pt-12"}>
-                <ProductMarketingContent category={product.category} />
+                <ProductMarketingContent category={product.category} productId={product.id} />
             </div>
         </div>
     );

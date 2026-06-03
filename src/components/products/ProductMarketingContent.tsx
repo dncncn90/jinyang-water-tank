@@ -4,12 +4,14 @@ import Image from 'next/image';
 import PERoundMarketing from './PERoundMarketing';
 import PESquareMarketing from './PESquareMarketing';
 import CoirMatMarketing from './CoirMatMarketing';
+import PERoundCSSection from './PERoundCSSection';
 
 interface ProductMarketingContentProps {
     category: string;
+    productId?: string;
 }
 
-export default function ProductMarketingContent({ category }: ProductMarketingContentProps) {
+export default function ProductMarketingContent({ category, productId }: ProductMarketingContentProps) {
     const isSquare = category === 'pe-square';
     const isRound = category === 'pe-round';
     const isCoirMat = category === 'coir-mat';
@@ -23,6 +25,9 @@ export default function ProductMarketingContent({ category }: ProductMarketingCo
     }
 
     if (isRound) {
+        if (productId?.startsWith('pe-round-white-')) {
+            return <PERoundCSSection />;
+        }
         return <PERoundMarketing hidePurchaseGrid={true} />;
     }
 
