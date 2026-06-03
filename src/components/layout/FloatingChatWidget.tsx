@@ -268,31 +268,31 @@ export default function FloatingChatWidget() {
                         getLabel('0.4', '가정용'),
                         getLabel('0.6', '추천/다용도'),
                         getLabel('1', '가장 많이 씀', true),
-                        {
-                            label: `★특수 | 0.6톤 (경운기용 백색 농약탱크) - ${PRICING_DB.tanks.white['0.6'].toLocaleString()}원`,
-                            value: 'white_0.6',
-                            tag: 'NEW',
-                            capacity: '0.6톤',
-                            description: '경운기용 백색 농약탱크',
-                            price: PRICING_DB.tanks.white['0.6'],
-                            isBest: false
-                        },
-                        {
-                            label: `★특수 | 1.0톤 (경운기용 백색 농약탱크) - ${PRICING_DB.tanks.white['1'].toLocaleString()}원`,
-                            value: 'white_1',
-                            tag: 'NEW',
-                            capacity: '1톤',
-                            description: '경운기용 백색 농약탱크',
-                            price: PRICING_DB.tanks.white['1'],
-                            isBest: false
-                        },
                         getLabel('2', '농업용/식당용'),
                         getLabel('3', '중형/학원·상가'),
                         getLabel('4', '빌라/소형건물'),
                         getLabel('5', '현장/대용량'),
                         getLabel('6', '대형'),
                         getLabel('8', '대형'),
-                        getLabel('10', '초대형/소방용')
+                        getLabel('10', '초대형/소방용'),
+                        {
+                            label: `농약탱크 0.6톤 (경운기용 백색) - ${PRICING_DB.tanks.white['0.6'].toLocaleString()}원`,
+                            value: 'white_0.6',
+                            tag: 'NEW',
+                            capacity: '0.6',
+                            description: '경운기용 백색 농약탱크',
+                            price: PRICING_DB.tanks.white['0.6'],
+                            isBest: false
+                        },
+                        {
+                            label: `농약탱크 1.0톤 (경운기용 백색) - ${PRICING_DB.tanks.white['1'].toLocaleString()}원`,
+                            value: 'white_1',
+                            tag: 'NEW',
+                            capacity: '1',
+                            description: '경운기용 백색 농약탱크',
+                            price: PRICING_DB.tanks.white['1'],
+                            isBest: false
+                        }
                     ];
                 }
                 nextType = 'options';
@@ -314,9 +314,18 @@ export default function FloatingChatWidget() {
                     nextState.step = 'CAPACITY_SELECTED';
                     nextState.capacity = cap;
                     nextState.type = dbKey as any;
-                    nextState.items = [{ name: `${cap}톤 물탱크 (${getProductName(dbKey)})`, price: basePrice, quantity: 1 }];
+                    
+                    const displayName = dbKey === 'white'
+                        ? `${cap === '0.6' ? '농약탱크 0.6톤' : '농약탱크 1.0톤'} (경운기용 백색)`
+                        : `${cap}톤 물탱크 (${getProductName(dbKey)})`;
+                        
+                    nextState.items = [{ name: displayName, price: basePrice, quantity: 1 }];
                     nextState.totalPrice = basePrice;
-                    responseText = `${cap}톤 선택 완료!\n\n물탱크에 배관을 연결할 피팅 크기를 골라주세요.`;
+                    
+                    responseText = dbKey === 'white'
+                        ? `${cap === '0.6' ? '농약탱크 0.6톤' : '농약탱크 1.0톤'} 선택 완료!\n\n물탱크에 배관을 연결할 피팅 크기를 골라주세요.`
+                        : `${cap}톤 선택 완료!\n\n물탱크에 배관을 연결할 피팅 크기를 골라주세요.`;
+                        
                     nextOptions = [
                         { label: '15mm', value: '15' }, { label: '20mm', value: '20' },
                         { label: '25mm', value: '25' }, { label: '40mm', value: '40' },
@@ -772,10 +781,14 @@ export default function FloatingChatWidget() {
             imagePath = '/images/products/tank-white-kem.png';
         }
 
+        const tankName = quoteState.type === 'white'
+            ? `${quoteState.capacity === '0.6' ? '농약탱크 0.6톤' : '농약탱크 1.0톤'} (경운기용 백색) 물탱크`
+            : `${quoteState.capacity}톤 ${shapeName} 물탱크`;
+
         // Add Tank
         addToCart({
             productId: productIdStr,
-            name: `${quoteState.capacity}톤 ${shapeName} 물탱크`,
+            name: tankName,
             basePrice: tankItem.price,
             options: tankOptions,
             requirements: '',
