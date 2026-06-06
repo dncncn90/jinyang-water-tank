@@ -65,7 +65,6 @@ export default function Footer() {
                                 <Truck className="w-3.5 h-3.5" /> 전국 화물 배송 가능
                             </div>
                             <Link href="/about" className="hover:text-white transition-colors">회사소개</Link>
-                            <Link href="/guides" className="hover:text-white transition-colors">자재 선택 가이드</Link>
                             <Link href="/terms" className="hover:text-white transition-colors">이용약관</Link>
                             <Link href="/privacy" className="hover:text-white transition-colors">개인정보처리방침</Link>
                             <a href="https://blog.naver.com/jypvc-" target="_blank" rel="noopener noreferrer" className="text-[#03C75A] font-bold mt-1">N 공식 블로그</a>
