@@ -52,21 +52,21 @@ export default function OfflineMaterials() {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-b from-slate-50 to-white">
+    <section className="py-20 bg-gradient-to-b from-slate-50 to-white font-['Pretendard']">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-14">
-          <span className="text-xs font-semibold text-blue-600 tracking-wider uppercase bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-full">
+          <span className="text-xs font-bold text-blue-600 tracking-wider uppercase bg-blue-50 border border-blue-100 px-4 py-1.5 rounded-full">
             오프라인 매장 취급 품목
           </span>
-          <h2 className="mt-4 text-3xl font-extrabold text-slate-900 sm:text-4xl tracking-tight">
+          <h2 className="mt-5 text-3xl font-extrabold text-slate-900 sm:text-4xl tracking-tight leading-tight break-keep">
             물탱크·야자매트와 함께 <br className="sm:hidden" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
               배관 및 기초 자재
             </span>도 한 번에 해결하세요!
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed">
+          <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed break-keep max-w-2xl mx-auto">
             수원 37년 전통의 진양건재(진양PVC건재총판) 오프라인 매장에 상시 보유 중인 품목입니다. <br className="hidden md:inline" />
             전화 한 통으로 물탱크, 정화조, 야자매트와 함께 수도권 전역에 <strong>묶음 당일 직배송</strong>을 지원합니다.
           </p>
@@ -77,18 +77,18 @@ export default function OfflineMaterials() {
           {materials.map((mat, idx) => (
             <div 
               key={idx} 
-              className={`p-8 rounded-2xl border transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${mat.color}`}
+              className={`p-8 rounded-3xl border transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${mat.color}`}
             >
               <div className="flex items-center space-x-4 mb-4">
                 <span className="text-3xl">{mat.icon}</span>
                 <h3 className="text-xl font-bold text-slate-950">{mat.title}</h3>
               </div>
-              <p className="text-sm text-slate-600 mb-6">{mat.desc}</p>
+              <p className="text-sm text-slate-500 mb-6 break-keep">{mat.desc}</p>
               <ul className="space-y-3">
                 {mat.items.map((item, itemIdx) => (
-                  <li key={itemIdx} className="flex items-start space-x-3">
+                  <li key={itemIdx} className="flex items-start space-x-3 text-left">
                     <CheckCircle2 className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-800 text-[15px] font-medium leading-normal">{item}</span>
+                    <span className="text-slate-800 text-[15px] font-semibold leading-normal break-keep">{item}</span>
                   </li>
                 ))}
               </ul>
@@ -102,17 +102,17 @@ export default function OfflineMaterials() {
           <div className="absolute bottom-0 left-0 -mb-12 -ml-12 w-48 h-48 bg-blue-500/20 rounded-full blur-2xl"></div>
           
           <div className="relative z-10 max-w-2xl mx-auto">
-            <h3 className="text-2xl md:text-3xl font-extrabold mb-4 leading-tight">
+            <h3 className="text-2xl md:text-3xl font-extrabold mb-4 leading-tight break-keep">
               원하시는 규격이나 자재가 있으신가요?
             </h3>
-            <p className="text-blue-100 mb-8 text-sm sm:text-base md:text-lg leading-relaxed">
-              홈페이지에 등록되지 않은 특수 규격의 PVC 파이프, 배관자재, 부속품도 대량 보유하고 있습니다.<br />
+            <p className="text-blue-100 mb-8 text-sm sm:text-base md:text-lg leading-relaxed break-keep">
+              홈페이지에 등록되지 않은 특수 규격의 PVC 파이프, 배관자재, 부속품도 대량 보유하고 있습니다.<br className="hidden md:inline" />
               전화로 문의주시면 도소매 최저가 단가 견적을 즉시 뽑아드립니다!
             </p>
             <div className="flex flex-col items-center gap-3">
               <a 
                 href="tel:031-236-8227" 
-                className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-bold rounded-xl text-blue-700 bg-white hover:bg-blue-50 hover:scale-[1.03] transition-all duration-200 shadow-md"
+                className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-bold rounded-2xl text-blue-700 bg-white hover:bg-blue-50 hover:scale-[1.03] transition-all duration-200 shadow-md"
               >
                 <Phone className="w-5 h-5 mr-3 animate-pulse text-blue-600" />
                 배관자재 견적 전화 문의 (031-236-8227)
