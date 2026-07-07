@@ -35,21 +35,21 @@ export type Product = {
 export const PRICING_DB = {
     tanks: {
         standard: {
-            '0.2': 84000, '0.4': 101000, '0.6': 131000, '1': 198000,
-            '2': 357000, '3': 462000, '4': 594000, '5': 713000,
-            '6': 951000, '8': 1228000, '10': 1518000
+            '0.2': 80000, '0.4': 94000, '0.6': 126000, '1': 188000,
+            '2': 330000, '3': 423000, '4': 561000, '5': 647000,
+            '6': 898000, '8': 1136000, '10': 1307000
         },
         m_series: {
-            '0.2': 93000, '0.4': 148000, '0.6': 168000, '1': 251000, '2': 462000
+            '0.2': 88000, '0.4': 136000, '0.6': 159000, '1': 231000, '2': 396000
         },
-        u_series: { '2': 634000, '5': 1386000 },
-        white: { '0.6': 176000, '1': 261000 } // 농약용
+        u_series: { '2': 594000, '5': 1254000 },
+        white: { '0.6': 165000, '1': 241000 } // 농약용
     },
     lids: { 'small': 16500, 'large': 33000 },
     fittings: {
         bronze: {
-            '15': 3300, '20': 4400, '25': 5500, '30': 7700, '40': 11000,
-            '50': 14300, '65': 29700, '75': 36300, '100': 68200
+            '15': 4000, '20': 5000, '25': 6000, '32': 9000, '40': 11000,
+            '50': 15000, '65': 32000, '80': 37000, '100': 69000
         },
         pe: {
             '15': 14300, '20': 16500, '25': 19800, '30': 23100, '40': 26400,
@@ -131,15 +131,15 @@ const COMMON_TANK_OPTIONS = [
         required: false,
         choices: [
             { label: '규격 선택 안함 / 기본 가공 없음', priceChange: 0 },
-            { label: '15mm - 3,300원', priceChange: 3300 },
-            { label: '20mm - 4,400원', priceChange: 4400 },
-            { label: '25mm - 5,500원', priceChange: 5500 },
-            { label: '30mm - 7,700원', priceChange: 7700 },
+            { label: '15mm - 4,000원', priceChange: 4000 },
+            { label: '20mm - 5,000원', priceChange: 5000 },
+            { label: '25mm - 6,000원', priceChange: 6000 },
+            { label: '32mm - 9,000원', priceChange: 9000 },
             { label: '40mm - 11,000원', priceChange: 11000 },
-            { label: '50mm - 14,300원', priceChange: 14300 },
-            { label: '65mm - 29,700원', priceChange: 29700 },
-            { label: '75mm - 36,300원', priceChange: 36300 },
-            { label: '100mm - 68,200원', priceChange: 68200 }
+            { label: '50mm - 15,000원', priceChange: 15000 },
+            { label: '65mm - 32,000원', priceChange: 32000 },
+            { label: '80mm - 37,000원', priceChange: 37000 },
+            { label: '100mm - 69,000원', priceChange: 69000 }
         ]
     },
     {
@@ -463,7 +463,7 @@ export const PRODUCTS: Product[] = [
         id: 'fit-bronze-series',
         name: '청동니플(신주구찌)',
         category: 'fittings',
-        price: 3300,
+        price: 4000,
         description: '물탱크 피팅용 청동 니플 (신주 구찌) 15mm~100mm 배관 연결 부속',
         features: ['강력한 체결력', '영구적 사용'],
         specs: { capacity: '15A ~ 100A', material: 'Bronze / 황동', warranty: '-' },
@@ -475,15 +475,15 @@ export const PRODUCTS: Product[] = [
                 type: 'select',
                 required: true,
                 choices: [
-                    { label: '15mm - 3,300원', priceChange: 0 },
-                    { label: '20mm - 4,400원', priceChange: 1100 },
-                    { label: '25mm - 5,500원', priceChange: 2200 },
-                    { label: '30mm - 7,700원', priceChange: 4400 },
-                    { label: '40mm - 11,000원', priceChange: 7700 },
-                    { label: '50mm - 14,300원', priceChange: 11000 },
-                    { label: '65mm - 29,700원', priceChange: 26400 },
-                    { label: '75mm - 36,300원', priceChange: 33000 },
-                    { label: '100mm - 68,200원', priceChange: 64900 },
+                    { label: '15mm - 4,000원', priceChange: 0 },
+                    { label: '20mm - 5,000원', priceChange: 1000 },
+                    { label: '25mm - 6,000원', priceChange: 2000 },
+                    { label: '32mm - 9,000원', priceChange: 5000 },
+                    { label: '40mm - 11,000원', priceChange: 7000 },
+                    { label: '50mm - 15,000원', priceChange: 11000 },
+                    { label: '65mm - 32,000원', priceChange: 28000 },
+                    { label: '80mm - 37,000원', priceChange: 33000 },
+                    { label: '100mm - 69,000원', priceChange: 65000 },
                 ]
             }
         ]

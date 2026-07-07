@@ -34,7 +34,13 @@ export default function OfflineMaterials() {
       items: [
         'XL 파이프 (난방 배관용 에이콘 엑셀 파이프)',
         'PB 에이콘 파이프 (간편 시공 및 난방용 조인트 배관)',
-        '몰코관 / SR조�  return (
+        '몰코관 / SR조인트 (스텐 주름관 및 위생관 연결 부속)'
+      ],
+      color: 'border-orange-100 bg-orange-50/20 text-orange-900 hover:border-orange-300'
+    }
+  ];
+
+  return (
     <section className="py-20 bg-gradient-to-b from-slate-50 to-white font-['Pretendard']">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -50,7 +56,7 @@ export default function OfflineMaterials() {
             </span>도 한 번에 해결하세요!
           </h2>
           <p className="mt-4 text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto" style={{ wordBreak: 'keep-all' }}>
-            수원 37년 전통의 진양건재(진양PVC건재총판) 오프라인 매장에 상시 보유 중인 품목입니다. <br className="hidden md:inline" />
+            수원 37년 전통 of 진양건재(진양PVC건재총판) 오프라인 매장에 상시 보유 중인 품목입니다. <br className="hidden md:inline" />
             전화 한 통으로 물탱크, 정화조, 야자매트와 함께 수도권 전역에 <strong>묶음 당일 직배송</strong>을 지원합니다.
           </p>
         </div>
@@ -89,23 +95,6 @@ export default function OfflineMaterials() {
               원하시는 규격이나 자재가 있으신가요?
             </h3>
             <p className="text-blue-100 mb-8 text-sm sm:text-base md:text-lg leading-relaxed" style={{ wordBreak: 'keep-all' }}>
-              홈페이지에 등록되지 않은 특수 규격의 PVC 파이프, 배관자재, 부속품도 대량 보유하고 있습니다.<br className="hidden md:inline" />
-              전화로 문의주시면 도소매 최저가 단가 견적을 즉시 뽑아드립니다!
-            </p>
-            <div className="flex flex-col items-center gap-3">
-              <a 
-                href="tel:031-236-8227" 
-                className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-bold rounded-2xl text-blue-700 bg-white hover:bg-blue-50 hover:scale-[1.03] transition-all duration-200 shadow-md"
-              >
-                <Phone className="w-5 h-5 mr-3 animate-pulse text-blue-600" />
-                배관자재 견적 전화 문의 (031-236-8227)
-              </a>
-              <span className="text-xs text-blue-100/90 font-medium">
-                * 모바일 기기에서는 버튼 클릭 시 즉시 매장으로 통화 연결됩니다.
-              </span>
-            </div>
-          </div>
-        </div>elaxed break-keep">
               홈페이지에 등록되지 않은 특수 규격의 PVC 파이프, 배관자재, 부속품도 대량 보유하고 있습니다.<br className="hidden md:inline" />
               전화로 문의주시면 도소매 최저가 단가 견적을 즉시 뽑아드립니다!
             </p>

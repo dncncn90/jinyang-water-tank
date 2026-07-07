@@ -163,7 +163,7 @@ export default function ChatInterface() {
                 }
 
                 // If no price found (fallback to a default or keep 0)
-                if (productPrice === 0) productPrice = 198000; // Default 1T price
+                if (productPrice === 0) productPrice = 188000; // Default 1T price
 
                 const shipping = calculateShipping(qty, selection.tonnage, selection.shape === 'Square' ? '사각' : '원형', userInput);
                 const total = productPrice;
